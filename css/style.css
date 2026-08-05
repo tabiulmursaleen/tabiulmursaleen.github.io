@@ -106,3 +106,129 @@ section{
     padding:70px 0;
 
 }
+/* =====================================
+   HEADER
+===================================== */
+
+/* ---------- Top Bar ---------- */
+
+.top-bar{
+
+    background:var(--primary-dark);
+    color:var(--white);
+    font-size:15px;
+
+}
+
+.top-bar .container{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:8px 0;
+
+}
+
+.top-right a{
+
+    color:var(--white);
+    font-weight:600;
+
+}
+
+.top-right a:hover{
+
+    opacity:.8;
+
+}
+
+
+/* ---------- Main Header ---------- */
+
+.main-header{
+
+    background:var(--white);
+    box-shadow:var(--shadow);
+
+}
+
+.main-header .container{
+
+    display:flex;
+    align-items:center;
+
+    padding:18px 0;
+
+}
+
+.logo-area{
+
+    display:flex;
+    align-items:center;
+    gap:18px;
+
+}
+
+.logo-area img{
+
+    width:75px;
+    height:75px;
+    object-fit:contain;
+
+}
+
+.logo-area h1{
+
+    font-size:30px;
+    color:var(--primary-dark);
+    margin-bottom:6px;
+
+}
+
+.logo-area p{
+
+    color:#666;
+
+}
+
+
+/* ---------- Navigation ---------- */
+
+.navbar{
+
+    background:var(--primary);
+
+}
+
+.navbar ul{
+
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+
+}
+
+.navbar li{
+
+    list-style:none;
+
+}
+
+.navbar a{
+
+    display:block;
+
+    padding:16px 22px;
+
+    color:white;
+
+    font-weight:600;
+
+}
+
+.navbar a:hover{
+
+    background:var(--primary-dark);
+
+}
