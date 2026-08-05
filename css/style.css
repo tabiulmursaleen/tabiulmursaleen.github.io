@@ -1,1 +1,108 @@
-/* School Website CSS */
+/* =====================================================
+   Tabiul Mursaleen Technical School & College
+   Main Stylesheet
+   Version : 1.0
+===================================================== */
+
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+
+/* ---------- Reset ---------- */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+/* ---------- Theme ---------- */
+
+:root{
+
+    --primary:#00695c;
+    --primary-dark:#004d40;
+    --background:#f5f7fa;
+    --white:#ffffff;
+    --text:#222222;
+    --border:#dddddd;
+
+    --radius:10px;
+
+    --shadow:
+        0 4px 15px rgba(0,0,0,.08);
+
+    --transition:.3s;
+}
+
+/* ---------- Body ---------- */
+
+body{
+
+    font-family:"Hind Siliguri",sans-serif;
+
+    background:var(--background);
+
+    color:var(--text);
+
+    line-height:1.7;
+
+}
+
+/* ---------- Container ---------- */
+
+.container{
+
+    width:92%;
+    max-width:1200px;
+
+    margin:auto;
+
+}
+
+/* ---------- Image ---------- */
+
+img{
+
+    max-width:100%;
+
+    display:block;
+
+}
+
+/* ---------- Link ---------- */
+
+a{
+
+    text-decoration:none;
+
+    color:inherit;
+
+    transition:var(--transition);
+
+}
+
+/* ---------- List ---------- */
+
+ul{
+
+    list-style:none;
+
+}
+
+/* ---------- Heading ---------- */
+
+h1,h2,h3,h4,h5,h6{
+
+    font-weight:700;
+
+    color:var(--primary-dark);
+
+}
+
+/* ---------- Section ---------- */
+
+section{
+
+    padding:70px 0;
+
+}/* School Website CSS */
