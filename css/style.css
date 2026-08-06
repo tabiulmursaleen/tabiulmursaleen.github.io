@@ -392,9 +392,16 @@ section{
 
 }
 
-.principal-content{
+.principal-content h4{
 
-    flex:1;
+    margin-top:-10px;
+    margin-bottom:20px;
+
+    font-size:18px;
+
+    color:#666;
+
+    font-weight:500;
 
 }
 
@@ -413,5 +420,152 @@ section{
     color:#555;
 
     text-align:justify;
+
+}
+/* =====================================
+   TRADES
+===================================== */
+
+.trades{
+    background:#f5f7fa;
+    padding:80px 0;
+}
+
+.trade-group-title{
+    margin:45px 0 30px;
+    font-size:28px;
+    color:var(--primary-dark);
+}
+
+.college-title{
+    margin-top:80px;
+    margin-bottom:30px;
+}
+
+.trade-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+
+    gap:30px;
+
+}
+
+.trade-grid-college{
+
+    max-width:600px;
+
+    margin:auto;
+
+}
+
+.trade-card{
+
+    background:#fff;
+
+    border-radius:12px;
+
+    padding:25px 30px;
+
+    min-height:140px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    box-shadow:var(--shadow);
+
+    transition:.3s;
+
+}
+
+.trade-card:hover{
+    transform:translateY(-8px);
+}
+
+.trade-icon{
+    font-size:48px;
+    margin-bottom:18px;
+}
+
+.trade-card h4{
+    font-size:20px;
+    color:var(--primary-dark);
+    line-height:1.5;
+}
+/* =====================================
+   ACHIEVEMENT
+===================================== */
+
+.achievement{
+
+    background:#ffffff;
+
+    padding:80px 0;
+
+}
+
+.achievement-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:30px;
+
+}
+
+.achievement-card{
+
+    background:#f8f9fa;
+
+    border-radius:12px;
+
+    padding:35px 20px;
+
+    text-align:center;
+
+    box-shadow:var(--shadow);
+
+    transition:.3s;
+
+}
+
+.achievement-card:hover{
+
+    transform:translateY(-6px);
+
+}
+
+.achievement-icon{
+
+    font-size:48px;
+
+    margin-bottom:15px;
+
+}
+
+.achievement-card h3{
+
+    font-size:34px;
+
+    color:var(--primary);
+
+    margin-bottom:10px;
+
+}
+
+.achievement-card p{
+
+    font-size:18px;
+
+    color:#666;
 
 }
