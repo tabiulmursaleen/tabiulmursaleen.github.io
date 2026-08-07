@@ -733,3 +733,48 @@ section{
     margin-top:35px;
 
 }
+/* =====================================
+   NOTICE TICKER
+===================================== */
+
+.notice-ticker{
+
+    background:#fff8e1;
+
+    border-top:1px solid #eee;
+
+    border-bottom:1px solid #eee;
+
+}
+
+.notice-ticker .container{
+
+    display:flex;
+
+    align-items:center;
+
+}
+
+.ticker-label{
+
+    background:var(--primary);
+
+    color:#fff;
+
+    padding:12px 20px;
+
+    font-weight:700;
+
+    white-space:nowrap;
+
+}
+
+.notice-ticker marquee{
+
+    padding:12px 18px;
+
+    font-weight:500;
+
+    color:#333;
+
+}
