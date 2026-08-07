@@ -569,3 +569,72 @@ section{
     color:#666;
 
 }
+/* =====================================
+   WHY CHOOSE US
+===================================== */
+
+.why-us{
+
+    padding:80px 0;
+
+    background:#f5f7fa;
+
+}
+
+.why-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+
+    gap:30px;
+
+}
+
+.why-card{
+
+    background:#fff;
+
+    border-radius:12px;
+
+    padding:35px 25px;
+
+    text-align:center;
+
+    box-shadow:var(--shadow);
+
+    transition:.3s;
+
+}
+
+.why-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+.why-icon{
+
+    font-size:48px;
+
+    margin-bottom:18px;
+
+}
+
+.why-card h3{
+
+    margin-bottom:15px;
+
+    color:var(--primary);
+
+}
+
+.why-card p{
+
+    color:#666;
+
+    font-size:16px;
+
+    line-height:1.8;
+
+}
