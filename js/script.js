@@ -72,4 +72,24 @@ dots.forEach((dot,index)=>{
 
 });
 
-setInterval(nextSlide,5000);
+// ===============================
+// Auto Slide
+// ===============================
+
+let slider = setInterval(nextSlide,5000);
+
+// Pause on hover
+
+const heroSlider = document.querySelector(".hero-slider");
+
+heroSlider.addEventListener("mouseenter",()=>{
+
+    clearInterval(slider);
+
+});
+
+heroSlider.addEventListener("mouseleave",()=>{
+
+    slider = setInterval(nextSlide,5000);
+
+});
