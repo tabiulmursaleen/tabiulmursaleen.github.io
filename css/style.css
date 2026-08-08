@@ -557,55 +557,29 @@ section{
    MOBILE
 ===================================== */
 
-@media (max-width:768px){
+@media(max-width:768px){
 
-    .principal{
+    .notice-list li{
 
-        padding:40px 0;
-
-    }
-
-    .principal-wrapper{
-
-        grid-template-columns:1fr;
+        padding:10px 0;
 
     }
 
-    .principal-box{
+    .notice-list span{
 
-        border-right:none;
+        display:block;
 
-        border-bottom:1px solid #e5e5e5;
+        margin-bottom:4px;
 
-        padding:25px 20px;
-
-    }
-
-    .notice-panel{
-
-        padding:25px 20px;
+        font-size:13px;
 
     }
 
-    .principal-info{
+    .notice-list a{
 
-        align-items:flex-start;
+        display:block;
 
-        gap:18px;
-
-    }
-
-    .principal-image img{
-
-        width:100px;
-
-        height:125px;
-
-    }
-
-    .principal-content h3{
-
-        font-size:18px;
+        line-height:1.6;
 
     }
 
