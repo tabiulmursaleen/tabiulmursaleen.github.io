@@ -93,3 +93,15 @@ heroSlider.addEventListener("mouseleave",()=>{
     slider = setInterval(nextSlide,5000);
 
 });
+// ===============================
+// Mobile Menu
+// ===============================
+
+const menuToggle = document.getElementById("menuToggle");
+const mainMenu = document.getElementById("mainMenu");
+
+menuToggle.addEventListener("click", () => {
+
+    mainMenu.classList.toggle("active");
+
+});

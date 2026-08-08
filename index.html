@@ -25,21 +25,21 @@ content="তাবিউল মুরসালীন নগর কারিগ�
 
 <div class="top-left">
 
-📞 ০১৭১৬-৮৫৮১৯৩
+<span class="phone-number">📞 01716-858193</span>
 
-&nbsp;&nbsp;&nbsp;
-
-✉️ tabiulmursaleen58071@gmail.com
+✉️  tabiulmursaleen58071@gmail.com
 
 </div>
 
 <div class="top-right">
 
-<a href="https://www.facebook.com/tabiulmursaleen/" target="_blank">
+    <a href="https://www.facebook.com/tabiulmursaleen/" target="_blank" aria-label="Facebook">
 
-Facebook
+        <span class="facebook-icon">f</span>
 
-</a>
+    </a>
+
+</div>
 
 </div>
 
@@ -79,29 +79,33 @@ Facebook
 
 <nav class="navbar">
 
-<div class="container">
+    <div class="container">
 
-<ul>
+        <button class="menu-toggle" id="menuToggle" aria-label="মেনু খুলুন">
+            ☰
+        </button>
 
-    <li><a href="index.html">হোম</a></li>
+        <ul id="mainMenu">
 
-    <li><a href="about.html">আমাদের সম্পর্কে</a></li>
+            <li><a href="index.html">হোম</a></li>
 
-    <li><a href="trades.html">ট্রেডসমূহ</a></li>
+            <li><a href="about.html">আমাদের সম্পর্কে</a></li>
 
-    <li><a href="teachers.html">শিক্ষক-কর্মচারী</a></li>
+            <li><a href="trades.html">ট্রেডসমূহ</a></li>
 
-    <li><a href="notice.html">নোটিশ</a></li>
+            <li><a href="teachers.html">শিক্ষক-কর্মচারী</a></li>
 
-    <li><a href="gallery.html">গ্যালারি</a></li>
+            <li><a href="notice.html">নোটিশ</a></li>
 
-    <li><a href="routine.html">ক্লাস রুটিন</a></li>
+            <li><a href="gallery.html">গ্যালারি</a></li>
 
-    <li><a href="contact.html">যোগাযোগ</a></li>
+            <li><a href="routine.html">ক্লাস রুটিন</a></li>
 
-</ul>
+            <li><a href="contact.html">যোগাযোগ</a></li>
 
-</div>
+        </ul>
+
+    </div>
 
 </nav>
 <!-- ========= Hero Slider ========= -->
@@ -181,7 +185,7 @@ Facebook
 </section>
 
 
-<!-- ========= Principal + Notice ========= -->
+<<!-- ========= Principal + Notice ========= -->
 
 <section class="principal">
 
@@ -189,37 +193,46 @@ Facebook
 
         <div class="principal-wrapper">
 
-            <!-- Left -->
+            <!-- Principal Message -->
 
             <div class="principal-box">
 
-                <h2 class="section-title">অধ্যক্ষের বাণী</h2>
-
-                <div class="principal-image">
-                    <img src="images/principal/principal.jpeg" alt="অধ্যক্ষ">
-                </div>
-
                 <div class="principal-content">
 
-                    <h3>মোহাম্মদ রফিকুল ইসলাম বায়েজিদ</h3>
+                    <h2 class="section-title">অধ্যক্ষের বাণী</h2>
 
-                    <h4>অধ্যক্ষ</h4>
+                    <div class="principal-info">
 
-                    <p>
-                        তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজে আপনাকে স্বাগতম।
-                        আমাদের লক্ষ্য শিক্ষার্থীদের কারিগরি দক্ষতা, নৈতিকতা ও আধুনিক
-                        জ্ঞানে সমৃদ্ধ করে একজন আদর্শ নাগরিক হিসেবে গড়ে তোলা।
-                    </p>
+                        <div class="principal-image">
+                            <img src="images/principal/principal.jpeg" alt="অধ্যক্ষ">
+                        </div>
 
-                    <a href="about.html" class="btn">
-                        বিস্তারিত পড়ুন
-                    </a>
+                        <div>
+
+                            <h3>মোহাম্মদ রফিকুল ইসলাম বায়েজিদ</h3>
+
+                            <h4>অধ্যক্ষ</h4>
+
+                            <p>
+                                তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজে আপনাকে স্বাগতম।
+                                আমাদের লক্ষ্য শিক্ষার্থীদের কারিগরি দক্ষতা, নৈতিকতা ও আধুনিক
+                                জ্ঞানে সমৃদ্ধ করে একজন আদর্শ নাগরিক হিসেবে গড়ে তোলা।
+                            </p>
+
+                            <a href="about.html" class="btn">
+                                বিস্তারিত পড়ুন
+                            </a>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
             </div>
 
-            <!-- Right -->
+
+            <!-- Latest Notice -->
 
             <div class="notice-panel">
 
@@ -268,49 +281,66 @@ Facebook
 
         <h2 class="section-title">আমাদের ট্রেডসমূহ</h2>
 
-        <h3 class="trade-group-title">🏫 স্কুল শাখা</h3>
+        <div class="trades-columns">
 
-        <div class="trade-grid">
+            <!-- স্কুল শাখা -->
 
-            <div class="trade-card">
-                <div class="trade-icon">💻</div>
-                <h4>আইটি সাপোর্ট এন্ড আইওটি বেসিকস</h4>
+            <div class="trade-column">
+
+                <h3 class="trade-group-title">🏫 স্কুল শাখা</h3>
+
+                <div class="trade-list">
+
+                    <div class="trade-card">
+                        <div class="trade-icon">💻</div>
+                        <h4>আইটি সাপোর্ট এন্ড আইওটি বেসিকস</h4>
+                    </div>
+
+                    <div class="trade-card">
+                        <div class="trade-icon">🧵</div>
+                        <h4>অ্যাপারেল ম্যানুফ্যাকচারিং বেসিকস</h4>
+                    </div>
+
+                    <div class="trade-card">
+                        <div class="trade-icon">⚙️</div>
+                        <h4>জেনারেল মেকানিক্স</h4>
+                    </div>
+
+                    <div class="trade-card">
+                        <div class="trade-icon">🔌</div>
+                        <h4>জেনারেল ইলেক্ট্রনিক্স</h4>
+                    </div>
+
+                    <div class="trade-card">
+                        <div class="trade-icon">🍽️</div>
+                        <h4>এগ্রো বেসড ফুড</h4>
+                    </div>
+
+                </div>
+
             </div>
 
-            <div class="trade-card">
-                <div class="trade-icon">🧵</div>
-                <h4>অ্যাপারেল ম্যানুফ্যাকচারিং বেসিকস</h4>
-            </div>
 
-            <div class="trade-card">
-                <div class="trade-icon">⚙️</div>
-                <h4>জেনারেল মেকানিক্স</h4>
-            </div>
+            <!-- কলেজ শাখা -->
 
-            <div class="trade-card">
-                <div class="trade-icon">🔌</div>
-                <h4>জেনারেল ইলেক্ট্রনিক্স</h4>
-            </div>
+            <div class="trade-column">
 
-            <div class="trade-card">
-                <div class="trade-icon">🍽️</div>
-                <h4>এগ্রো বেসড ফুড</h4>
-            </div>
+                <h3 class="trade-group-title">🎓 কলেজ শাখা</h3>
 
-        </div>
+                <div class="trade-list">
 
-        <h3 class="trade-group-title college-title">🎓 কলেজ শাখা</h3>
+                    <div class="trade-card">
+                        <div class="trade-icon">💻</div>
+                        <h4>কম্পিউটারাইজড একাউন্টিং সিস্টেম</h4>
+                    </div>
 
-        <div class="trade-grid trade-grid-college">
+                    <div class="trade-card">
+                        <div class="trade-icon">📊</div>
+                        <h4>ডিজিটাল টেকনোলজি ইন বিজনেস</h4>
+                    </div>
 
-            <div class="trade-card">
-                <div class="trade-icon">💻</div>
-                <h4>কম্পিউটারাইজড একাউন্টিং সিস্টেম</h4>
-            </div>
+                </div>
 
-            <div class="trade-card">
-                <div class="trade-icon">📊</div>
-                <h4>ডিজিটাল টেকনোলজি ইন বিজনেস</h4>
             </div>
 
         </div>
@@ -327,30 +357,49 @@ Facebook
 
         <h2 class="section-title">আমাদের সাফল্য</h2>
 
-        <div class="achievement-grid">
+        <div class="achievement-info">
 
-            <div class="achievement-card">
-                <div class="achievement-icon">🏫</div>
+            <div class="achievement-item">
+
+                <div class="achievement-title">
+                    🏫 প্রতিষ্ঠিত
+                </div>
+
                 <h3>২০১২</h3>
-                <p>প্রতিষ্ঠিত</p>
+
             </div>
 
-            <div class="achievement-card">
-                <div class="achievement-icon">🎓</div>
+
+            <div class="achievement-item">
+
+                <div class="achievement-title">
+                    🎓 চলমান ট্রেডসমূহ
+                </div>
+
                 <h3>৭টি</h3>
-                <p>চলমান ট্রেডসমূহ</p>
+
             </div>
 
-            <div class="achievement-card">
-                <div class="achievement-icon">👨‍🏫</div>
+
+            <div class="achievement-item">
+
+                <div class="achievement-title">
+                    👨‍🏫 দক্ষ শিক্ষক
+                </div>
+
                 <h3>২০+</h3>
-                <p>দক্ষ শিক্ষক</p>
+
             </div>
 
-            <div class="achievement-card">
-                <div class="achievement-icon">👨‍🎓</div>
+
+            <div class="achievement-item">
+
+                <div class="achievement-title">
+                    👨‍🎓 শিক্ষার্থী
+                </div>
+
                 <h3>২০০+</h3>
-                <p>শিক্ষার্থী</p>
+
             </div>
 
         </div>
@@ -397,6 +446,108 @@ Facebook
     </div>
 
 </section>
+<!-- ========= Footer ========= -->
+
+<footer class="footer">
+
+    <div class="container">
+
+        <div class="footer-grid">
+
+            <!-- প্রতিষ্ঠানের তথ্য -->
+
+            <div class="footer-info">
+
+                <h3>তাবিউল মুরসালীন নগর<br>কারিগরি স্কুল এন্ড কলেজ</h3>
+
+                <p>টেঙ্গুরী, কেন্দুয়া, নেত্রকোণা</p>
+
+                <p>📞 01716-858193</p>
+
+                <p>✉️ tabiulmursaleen58071@gmail.com</p>
+
+                <a href="https://www.facebook.com/tabiulmursaleen/"
+                   target="_blank"
+                   class="footer-facebook">
+                    📘 Facebook
+                </a>
+
+            </div>
+
+
+            <!-- Google Map -->
+
+            <div class="footer-map">
+
+                <h3>📍 আমাদের অবস্থান</h3>
+
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d862.7168502828526!2d90.83637144181405!3d24.674125458956652!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sbd!4v1786204542716!5m2!1sen!2sbd"
+                    loading="lazy"
+                    allowfullscreen
+                    referrerpolicy="strict-origin-when-cross-origin">
+                </iframe>
+
+            </div>
+
+
+            <!-- গুরুত্বপূর্ণ লিংক -->
+
+            <div class="footer-links">
+
+                <h3>গুরুত্বপূর্ণ লিংক</h3>
+
+                <a href="index.html">হোম</a>
+
+                <a href="about.html">আমাদের সম্পর্কে</a>
+
+                <a href="trades.html">ট্রেডসমূহ</a>
+
+                <a href="teachers.html">শিক্ষক-কর্মচারী</a>
+
+                <a href="notice.html">নোটিশ</a>
+
+                <a href="gallery.html">গ্যালারি</a>
+
+                <a href="routine.html">ক্লাস রুটিন</a>
+
+                <a href="contact.html">যোগাযোগ</a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Copyright -->
+
+    <div class="footer-bottom">
+
+    <div class="footer-copyright">
+
+        <div class="copyright-left">
+            © ২০২৬ তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ —
+            সর্বস্বত্ব সংরক্ষিত
+        </div>
+
+        <div class="copyright-right">
+
+            Designed & Developed by
+
+            <a href="https://wa.me/8801741753844"
+               target="_blank"
+               rel="noopener noreferrer">
+            Jamil Hossain
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</footer>
 <script src="js/script.js"></script>
 </body>
 
