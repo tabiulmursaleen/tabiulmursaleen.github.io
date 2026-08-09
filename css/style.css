@@ -4,6 +4,18 @@
    Version : 1.0
 ===================================================== */
 
+@font-face{
+
+    font-family:"Kalpurush";
+
+    src:url("../fonts/Kalpurush.ttf") format("truetype");
+
+    font-weight:normal;
+
+    font-style:normal;
+
+}
+
 /* Google Font */
 @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
 
@@ -195,11 +207,15 @@ section{
 
     color:var(--primary);
 
-    font-size:28px;
+    font-size:40px;
 
     font-weight:700;
 
     line-height:1.35;
+
+    text-shadow: 1px 2px 3px rgba(0,0,0,.20);
+
+    font-family:"Kalpurush", sans-serif;
 
 }
 
@@ -242,13 +258,19 @@ section{
 
     }
 
+@media(max-width:768px){
+
     .logo-area h1{
 
         font-size:19px;
 
         line-height:1.35;
 
+        text-shadow:1px 2px 3px rgba(0,0,0,.20);
+
     }
+
+}
 
     .logo-area p{
 
@@ -506,7 +528,7 @@ section{
 
     color:#666;
 
-    margin-bottom:8px;
+    margin-bottom:20px;
 
     font-size:15px;
 
@@ -583,13 +605,15 @@ section{
 
 .notice-list span{
 
-    display:inline-block;
+    display:block;
 
-    font-size:13px;
+    font-family:"Kalpurush", sans-serif;
+
+    font-size:14px;
 
     color:#888;
 
-    margin-right:10px;
+    margin-bottom:6px;
 
 }
 
@@ -1874,4 +1898,37 @@ section{
 }
 .footer-info p:nth-of-type(2){
     margin-top:24px;
+}
+/* ===== Mobile Notice Fix ===== */
+
+@media (max-width:768px){
+
+    .notice-list li{
+        display:block !important;
+        padding:12px 0 !important;
+    }
+
+    .notice-list li span{
+        display:block !important;
+        width:100% !important;
+        margin:0 0 6px 0 !important;
+        font-size:13px !important;
+        line-height:1.4 !important;
+    }
+
+    .notice-list li a{
+        display:block !important;
+        width:100% !important;
+        margin:0 !important;
+        padding:0 !important;
+        font-size:14px !important;
+        line-height:1.6 !important;
+    }
+
+}
+.why-card p{
+    font-family:"Kalpurush", sans-serif;
+}
+.principal-content p{
+    font-family:"Kalpurush", sans-serif;
 }
