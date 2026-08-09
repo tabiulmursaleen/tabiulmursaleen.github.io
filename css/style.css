@@ -180,25 +180,20 @@ section{
 }
 
 .logo-area{
-
     display:flex;
-
     align-items:center;
-
     gap:18px;
-
 }
 
 .logo-area img{
-
     width:85px;
-
     height:85px;
-
     object-fit:contain;
-
     flex-shrink:0;
 
+    padding-right:18px;
+
+    border-right:2px solid rgba(0,105,92,.25);
 }
 
 .logo-area h1{
@@ -244,25 +239,33 @@ section{
 
     }
 
+@media(max-width:768px){
+
     .logo-area{
-
         gap:12px;
-
     }
 
-    .logo-area img{
+.logo-area img{
 
-        width:65px;
+    width:90px;
+    height:90px;
 
-        height:65px;
+    object-fit:contain;
+    flex-shrink:0;
 
-    }
+    padding-right:18px;
+
+    border-right:2px solid rgba(0,105,92,.25);
+
+}
+
+}
 
 @media(max-width:768px){
 
     .logo-area h1{
 
-        font-size:19px;
+        font-size:30px;
 
         line-height:1.35;
 
