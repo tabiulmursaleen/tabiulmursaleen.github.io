@@ -690,7 +690,7 @@ section{
 
 .trades{
 
-    padding:60px 0;
+    padding:20px 0 60px;
 
     background:#f5f7fa;
 
@@ -805,11 +805,11 @@ section{
 
 @media(max-width:768px){
 
-    .trades{
+.trades{
 
-        padding:45px 0;
+    padding:20px 0 45px;
 
-    }
+}
 
     .trades-columns{
 
