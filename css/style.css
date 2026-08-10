@@ -2018,3 +2018,7 @@ section{
         text-align:left;
     }
 }
+.teacher-card img {
+    border: 3px solid var(--primary);
+    border-radius: 10px;
+}
