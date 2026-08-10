@@ -1935,3 +1935,86 @@ section{
 .principal-content p{
     font-family:"Kalpurush", sans-serif;
 }
+
+/* =====================================
+   TEACHERS & STAFF
+===================================== */
+
+.navbar a.active{ background:rgba(0,0,0,.16); }
+.teachers-page,.profile-page{ background:#f5f7fa; }
+.teachers-hero{ padding:52px 0 48px; color:#fff; text-align:center; background:linear-gradient(135deg,var(--primary),#00897b); }
+.page-kicker{ margin:0 0 6px; font-size:15px; font-weight:600; letter-spacing:.5px; }
+.teachers-hero h1{ margin:0 0 8px; color:#fff; font-size:32px; }
+.teachers-hero p:last-child{ margin:0; font-size:16px; color:rgba(255,255,255,.9); }
+.teachers-section{ padding:50px 0 65px; }
+.teacher-grid{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:20px; }
+.teacher-card{ overflow:hidden; background:#fff; border-radius:12px; box-shadow:var(--shadow); transition:transform .25s ease,box-shadow .25s ease; }
+.teacher-card:hover{ transform:translateY(-6px); box-shadow:0 12px 24px rgba(0,0,0,.14); }
+.teacher-card img{ display:block; width:100%; aspect-ratio:4/5; object-fit:cover; object-position:center top; background:#e5e5e5; }
+.teacher-card-content{ min-height:122px; padding:15px 13px; text-align:center; }
+.teacher-card h2{ margin:0 0 7px; font-size:17px; line-height:1.45; }
+.teacher-card h2 a{ color:var(--primary); }
+.teacher-card h2 a:hover{ color:var(--primary-dark); text-decoration:underline; }
+.teacher-card p{ margin:0; font-size:14px; font-weight:600; color:#555; }
+.teacher-card span,.profile-summary span{ display:block; margin-top:5px; color:#777; font-size:13px; line-height:1.45; }
+.profile-page{ padding:55px 0 70px; }
+.teacher-profile{ display:grid; grid-template-columns:minmax(250px,340px) 1fr; overflow:hidden; background:#fff; border-radius:14px; box-shadow:var(--shadow); }
+.profile-summary{ padding:32px 28px; text-align:center; color:#fff; background:linear-gradient(155deg,var(--primary),#00796b); }
+.profile-summary img{ width:180px; max-width:100%; aspect-ratio:4/5; object-fit:cover; object-position:center top; border:4px solid rgba(255,255,255,.85); border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,.2); }
+.profile-summary h1{ margin:18px 0 5px; color:#fff; font-size:25px; line-height:1.45; }
+.profile-summary p{ margin:0; font-size:16px; font-weight:600; }
+.profile-summary span{ color:rgba(255,255,255,.88); }
+.profile-details{ padding:36px 42px; }
+.profile-details h2{ margin:0 0 24px; padding-bottom:12px; color:var(--primary); font-size:25px; border-bottom:2px solid #e7efed; }
+.profile-details dl{ margin:0; }
+.profile-details dl > div{ display:grid; grid-template-columns:170px 1fr; gap:18px; padding:13px 0; border-bottom:1px solid #ececec; }
+.profile-details dt{ color:#555; font-weight:700; }
+.profile-details dd{ margin:0; color:#222; }
+.back-to-list{ display:inline-block; margin-top:28px; color:var(--primary); font-weight:700; }
+.back-to-list:hover{ color:var(--primary-dark); }
+.profile-not-found{ grid-column:1/-1; padding:60px 25px; text-align:center; }
+@media(max-width:1100px){ .teacher-grid{ grid-template-columns:repeat(4,minmax(0,1fr)); } }
+@media(max-width:768px){
+  .teachers-hero{ padding:38px 0 35px; }.teachers-hero h1{ font-size:27px; }.teachers-section,.profile-page{ padding:35px 0 45px; }
+  .teacher-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }.teacher-card-content{ min-height:108px; padding:12px 9px; }.teacher-card h2{ font-size:15px; }.teacher-card p{ font-size:13px; }
+  .teacher-profile{ grid-template-columns:1fr; }.profile-summary{ padding:28px 20px; }.profile-summary img{ width:160px; }.profile-details{ padding:28px 20px; }.profile-details h2{ font-size:22px; }.profile-details dl > div{ grid-template-columns:1fr; gap:4px; padding:12px 0; }
+}
+.teachers-hero h1{
+    color:#fff;
+    text-shadow:1px 2px 3px rgba(0,0,0,.28);
+}
+
+.profile-summary img{
+    display:block;
+    margin:0 auto;
+}
+
+.profile-summary h1{
+    color:#fff;
+    text-shadow:1px 2px 3px rgba(0,0,0,.28);
+}
+
+.profile-details h2{
+    text-align:center;
+    text-shadow:1px 1px 2px rgba(0,105,92,.16);
+}
+
+.profile-details dt{
+    padding-right:18px;
+    border-right:1px solid #dce7e4;
+}
+
+.profile-details dd{
+    text-align:center;
+}
+
+@media(max-width:768px){
+    .profile-details dt{
+        padding-right:0;
+        border-right:none;
+    }
+
+    .profile-details dd{
+        text-align:left;
+    }
+}

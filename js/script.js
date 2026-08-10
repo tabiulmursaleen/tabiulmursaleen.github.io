@@ -48,13 +48,13 @@ function prevSlide(){
 
 }
 
-next.addEventListener("click", ()=>{
+next?.addEventListener("click", ()=>{
 
     nextSlide();
 
 });
 
-prev.addEventListener("click", ()=>{
+prev?.addEventListener("click", ()=>{
 
     prevSlide();
 
@@ -76,19 +76,19 @@ dots.forEach((dot,index)=>{
 // Auto Slide
 // ===============================
 
-let slider = setInterval(nextSlide,5000);
+let slider = slides.length ? setInterval(nextSlide,5000) : null;
 
 // Pause on hover
 
 const heroSlider = document.querySelector(".hero-slider");
 
-heroSlider.addEventListener("mouseenter",()=>{
+heroSlider?.addEventListener("mouseenter",()=>{
 
     clearInterval(slider);
 
 });
 
-heroSlider.addEventListener("mouseleave",()=>{
+heroSlider?.addEventListener("mouseleave",()=>{
 
     slider = setInterval(nextSlide,5000);
 
@@ -100,7 +100,7 @@ heroSlider.addEventListener("mouseleave",()=>{
 const menuToggle = document.getElementById("menuToggle");
 const mainMenu = document.getElementById("mainMenu");
 
-menuToggle.addEventListener("click", () => {
+menuToggle?.addEventListener("click", () => {
 
     mainMenu.classList.toggle("active");
 
