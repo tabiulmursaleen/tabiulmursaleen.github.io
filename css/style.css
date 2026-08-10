@@ -2022,3 +2022,145 @@ section{
     border: 3px solid var(--primary);
     border-radius: 10px;
 }
+/* =====================================
+   HOME TEACHER PREVIEW
+===================================== */
+
+.teacher-preview-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(5,1fr);
+
+    gap:20px;
+
+}
+
+.teachers-preview .teacher-card{
+
+    background:#fff;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+    box-shadow:var(--shadow);
+
+    text-align:center;
+
+}
+
+.teachers-preview .teacher-card img{
+
+    width:100%;
+
+    aspect-ratio:4 / 5;
+
+    object-fit:cover;
+
+    display:block;
+
+    border:3px solid var(--primary);
+
+    box-sizing:border-box;
+
+}
+
+.teachers-preview .teacher-card-content{
+
+    padding:12px 10px;
+
+}
+
+.teachers-preview .teacher-card h2{
+
+    margin:0 0 6px;
+
+    font-size:16px;
+
+    line-height:1.4;
+
+}
+
+.teachers-preview .teacher-card h2 a{
+
+    color:var(--primary);
+
+    text-decoration:none;
+
+}
+
+.teachers-preview .teacher-card p{
+
+    margin:0 0 4px;
+
+    font-size:14px;
+
+    color:#555;
+
+}
+
+.teachers-preview .teacher-card span{
+
+    font-size:13px;
+
+    color:#777;
+
+}
+
+.teachers-preview-link{
+
+    text-align:center;
+
+    margin-top:30px;
+
+}
+
+.teachers-preview-link a{
+
+    display:inline-block;
+
+    color:var(--primary);
+
+    font-weight:600;
+
+    text-decoration:none;
+
+}
+
+
+/* =====================================
+   MOBILE
+===================================== */
+
+@media(max-width:768px){
+
+    .teacher-preview-grid{
+
+        grid-template-columns:repeat(2,1fr);
+
+        gap:15px;
+
+    }
+
+    .teachers-preview .teacher-card img{
+
+        height:auto;
+
+        aspect-ratio:4 / 5;
+
+    }
+
+    .teachers-preview .teacher-card h2{
+
+        font-size:14px;
+
+    }
+
+    .teachers-preview .teacher-card p{
+
+        font-size:13px;
+
+    }
+
+}
