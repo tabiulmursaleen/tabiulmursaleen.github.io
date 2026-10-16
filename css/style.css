@@ -122,47 +122,102 @@ section{
    HEADER
 ===================================== */
 
+
 /* ---------- Top Bar ---------- */
 
-.top-bar{
-
-    background:var(--primary-dark);
-    color:var(--white);
-    font-size:15px;
-
-}
-.top-left{
-
-    font-size:16px;
-
-    font-weight:500;
-
-    letter-spacing:.3px;
-
+.top-bar {
+    background: var(--primary-dark);
+    color: var(--white);
+    font-size: 15px;
 }
 
-.top-bar .container{
-
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-
-    padding:8px 0;
-
+.top-bar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
 }
 
-.top-right a{
-
-    color:var(--white);
-    font-weight:600;
-
+.top-left {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    min-width: 0;
 }
 
-.top-right a:hover{
-
-    opacity:.8;
-
+.top-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-shrink: 0;
 }
+
+.top-right a {
+    color: var(--white);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.top-right a:hover {
+    opacity: 0.8;
+}
+
+.admin-login-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+/* ---------- Mobile Top Bar ---------- */
+
+@media (max-width: 600px) {
+    .top-bar .container {
+        padding: 8px 0;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .top-left {
+        flex: 1;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        font-size: 11px;
+        letter-spacing: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .top-right {
+        gap: 10px;
+    }
+
+    .admin-login-link {
+        margin-left: 0;
+        gap: 4px;
+        font-size: 11px;
+    }
+
+    .facebook-icon {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 600px) {
+    .top-bar .admin-login-link,
+    .top-bar .admin-login-link span {
+        font-size: 10px !important;
+    }
+}
+
+
 
 
 /* =====================================
@@ -2499,5 +2554,49 @@ section{
 
     .navbar #mainMenu .has-submenu.open > .submenu {
         display: block;
+    }
+}
+
+
+/* ---------- Class Routine PDF ---------- */
+
+.routine-pdf-section {
+    padding: 30px 0 40px;
+}
+
+.routine-pdf-viewer {
+    width: 100%;
+    height: 750px;
+    overflow: hidden;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.routine-pdf-viewer iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.routine-pdf-note {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.routine-pdf-note a {
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+@media (max-width: 600px) {
+    .routine-pdf-section {
+        padding: 20px 0;
+    }
+
+    .routine-pdf-viewer {
+        height: 600px;
     }
 }
