@@ -1,0 +1,291 @@
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Noto Sans Bengali", "SolaimanLipi", sans-serif;
+  background: #f0f5f1;
+  color: #26352b;
+}
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 28px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.school-icon {
+  text-align: center;
+  font-size: 42px;
+}
+
+h1 {
+  margin: 12px 0;
+  text-align: center;
+  color: #187342;
+  font-size: 26px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #68756b;
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+
+label {
+  display: block;
+  margin: 16px 0 7px;
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccd6ce;
+  border-radius: 7px;
+  font-size: 16px;
+}
+
+input:focus {
+  outline: 2px solid #23834d;
+  border-color: #23834d;
+}
+
+button {
+  width: 100%;
+  margin-top: 22px;
+  padding: 13px;
+  border: none;
+  border-radius: 7px;
+  background: #187342;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #105b32;
+}
+
+button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+#loginMessage {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.back-link {
+  display: block;
+  margin-top: 22px;
+  text-align: center;
+  color: #187342;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 26px 20px;
+  }
+}
+
+.dashboard-header {
+  background: #187342;
+  color: white;
+  padding: 22px max(20px, calc((100% - 1100px) / 2));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.dashboard-header h1 {
+  color: white;
+  text-align: left;
+  margin: 0 0 8px;
+  font-size: 24px;
+}
+
+.dashboard-header p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.dashboard-header button {
+  width: auto;
+  min-width: 95px;
+  margin: 0;
+  background: white;
+  color: #187342;
+}
+
+.dashboard-container {
+  max-width: 1100px;
+  margin: 28px auto;
+  padding: 0 20px;
+}
+
+.welcome-card,
+.dashboard-card,
+.dashboard-section {
+  background: white;
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+}
+
+.welcome-card h2,
+.dashboard-section h2 {
+  color: #187342;
+  margin-top: 0;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin: 22px 0;
+}
+
+.dashboard-card {
+  color: #26352b;
+  text-decoration: none;
+  border: 1px solid #e1e9e3;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.09);
+}
+
+.card-icon {
+  font-size: 30px;
+}
+
+.dashboard-card h3 {
+  color: #187342;
+  margin-bottom: 8px;
+}
+
+.dashboard-card p,
+.dashboard-section p {
+  line-height: 1.7;
+}
+
+.dashboard-section {
+  margin-bottom: 20px;
+  scroll-margin-top: 20px;
+}
+
+@media (max-width: 700px) {
+  .dashboard-header {
+    flex-wrap: wrap;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+#noticeForm {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+#noticeForm label {
+  color: #26352b;
+  font-weight: 600;
+}
+
+#noticeForm input[type="text"],
+#noticeForm input[type="url"],
+#noticeForm textarea {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 11px;
+  border: 1px solid #cbd8ce;
+  border-radius: 7px;
+  font: inherit;
+  background: white;
+}
+
+#noticeForm textarea {
+  resize: vertical;
+}
+
+#noticeForm .notice-publish-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: normal;
+}
+
+#noticeForm .notice-publish-label input {
+  width: auto;
+}
+
+.notice-form-actions,
+.notice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.notice-form-actions button,
+.notice-actions button {
+  width: auto;
+  margin: 0;
+  padding: 10px 14px;
+}
+
+.notice-actions .delete-notice {
+  background: #a72d2d;
+}
+
+.notice-item {
+  padding: 16px 0;
+  border-bottom: 1px solid #e1e9e3;
+}
+
+.notice-item h4 {
+  color: #187342;
+  margin: 0 0 8px;
+}
+
+.notice-item p {
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.notice-pdf-link {
+  display: inline-block;
+  margin: 8px 0;
+  color: #187342;
+  overflow-wrap: anywhere;
+}

@@ -286,45 +286,176 @@ section{
 }
 
 
+
 /* ---------- Navigation ---------- */
 
-.navbar{
-
-    background:var(--primary);
-
+.navbar {
+    background: var(--primary);
+    position: relative;
+    z-index: 1000;
 }
 
-.navbar ul{
-
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-
+.navbar .container {
+    position: relative;
 }
 
-.navbar li{
-
-    list-style:none;
-
+.navbar ul {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
 }
 
-.navbar a{
-
-    display:block;
-
-    padding:16px 22px;
-
-    color:white;
-
-    font-weight:600;
-
+.navbar li {
+    list-style: none;
+    position: relative;
 }
 
-.navbar a:hover{
-
-    background:var(--primary-dark);
-
+.navbar a {
+    display: block;
+    padding: 15px 17px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background .25s ease;
 }
+
+.navbar a:hover,
+.navbar a.active {
+    background: var(--primary-dark);
+}
+
+/* প্রথম স্তরের Dropdown */
+
+.navbar li > .submenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 210px;
+    background: var(--primary);
+    box-shadow: 0 6px 15px rgba(0,0,0,.15);
+    flex-direction: column;
+    flex-wrap: nowrap;
+    z-index: 1001;
+}
+
+/* Dropdown দেখানো */
+
+.navbar li.has-submenu:hover > .submenu,
+.navbar li.has-submenu:focus-within > .submenu {
+    display: flex;
+}
+
+/* দ্বিতীয় স্তরের Dropdown */
+
+.navbar .submenu li > .submenu {
+    top: 0;
+    left: 100%;
+}
+
+/* Submenu links */
+
+.navbar .submenu a {
+    padding: 12px 15px;
+    white-space: normal;
+    border-bottom: 1px solid rgba(255,255,255,.12);
+}
+
+.navbar .submenu a:hover {
+    background: var(--primary-dark);
+}
+
+/* Dropdown indicator */
+
+.navbar li.has-submenu > a::after {
+    content: " ▾";
+    font-size: 11px;
+}
+
+.navbar .submenu li.has-submenu > a::after {
+    content: " ▸";
+    float: right;
+    margin-left: 12px;
+}
+
+/* Mobile menu button */
+
+.menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 25px;
+    cursor: pointer;
+    padding: 10px 15px;
+}
+
+/* ---------- Responsive Navigation ---------- */
+
+@media (max-width: 768px) {
+
+    .navbar .container {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .menu-toggle {
+        display: block;
+        align-self: flex-start;
+    }
+
+    .navbar #mainMenu {
+        display: none;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        width: 100%;
+    }
+
+    .navbar #mainMenu.show {
+        display: flex;
+    }
+
+    .navbar #mainMenu > li {
+        width: 100%;
+    }
+
+    .navbar a {
+        padding: 12px 15px;
+        white-space: normal;
+        border-top: 1px solid rgba(255,255,255,.12);
+    }
+
+    /* Mobile submenu */
+
+    .navbar li > .submenu {
+        display: none;
+        position: static;
+        min-width: 0;
+        width: 100%;
+        box-shadow: none;
+        padding-left: 15px;
+        background: rgba(0,0,0,.10);
+    }
+
+    .navbar li.has-submenu:hover > .submenu {
+        display: none;
+    }
+
+    .navbar li.has-submenu.open > .submenu {
+        display: flex;
+    }
+
+    .navbar .submenu li > .submenu {
+        position: static;
+        padding-left: 15px;
+    }
+}
+
 /* =====================================
    HERO SECTION
 ===================================== */
@@ -2325,5 +2456,48 @@ section{
     .routine-viewer iframe{
         height:650px;
         border-radius:6px;
+    }
+}
+
+/* Mobile Navigation Fix */
+@media (max-width: 768px) {
+    .navbar .container {
+        position: relative;
+    }
+
+    .navbar .menu-toggle {
+        display: block;
+        cursor: pointer;
+    }
+
+    .navbar #mainMenu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar #mainMenu.active {
+        display: flex;
+    }
+
+    .navbar #mainMenu > li {
+        display: block;
+        width: 100%;
+    }
+
+    .navbar #mainMenu a {
+        display: block;
+    }
+
+    .navbar #mainMenu .submenu {
+        display: none;
+        position: static;
+        width: 100%;
+    }
+
+    .navbar #mainMenu .has-submenu.open > .submenu {
+        display: block;
     }
 }

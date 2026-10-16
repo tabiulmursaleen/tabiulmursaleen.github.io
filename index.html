@@ -77,37 +77,82 @@ content="তাবিউল মুরসালীন নগর কারিগ�
 
 <!-- ========= Navigation ========= -->
 
-<nav class="navbar">
 
+<!-- ========= Navigation ========= -->
+<nav class="navbar">
     <div class="container">
 
-        <button class="menu-toggle" id="menuToggle" aria-label="মেনু খুলুন">
+        <button class="menu-toggle"
+                id="menuToggle"
+                aria-label="মেনু খুলুন"
+                aria-expanded="false">
             ☰
         </button>
 
         <ul id="mainMenu">
-
             <li><a href="index.html">হোম</a></li>
 
-            <li><a href="about.html">আমাদের সম্পর্কে</a></li>
+            <li class="has-submenu">
+                <a href="about.html">প্রাতিষ্ঠানিক তথ্য</a>
+                <ul class="submenu">
+                    <li><a href="about.html">আমাদের কথা</a></li>
+                    <li class="has-submenu">
+                        <a href="trades.html">চলমান ট্রেডসমূহ</a>
+                        <ul class="submenu">
+                            <li><a href="school-trades.html">স্কুল শাখা</a></li>
+                            <li><a href="college-trades.html">কলেজ শাখা</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="committee.html">ম্যানেজিং কমিটি</a></li>
+                </ul>
+            </li>
 
-            <li><a href="trades.html">ট্রেডসমূহ</a></li>
+            <li><a href="teachers.html">শিক্ষকমণ্ডলী</a></li>
+            <li><a href="staff.html">কর্মচারীবৃন্দ</a></li>
+            <li><a href="students.html">ছাত্র/ছাত্রী</a></li>
 
-            <li><a href="teachers.html">শিক্ষক-কর্মচারী</a></li>
+            <li class="has-submenu">
+                <a href="academic-results.html">রেজাল্ট</a>
+                <ul class="submenu">
+                    <li><a href="academic-results.html">একাডেমিক</a></li>
+                    <li><a href="board-results.html">বোর্ড</a></li>
+                </ul>
+            </li>
 
             <li><a href="notice.html">নোটিশ</a></li>
 
-            <li><a href="gallery.html">গ্যালারি</a></li>
+            <li class="has-submenu">
+                <a href="online-registration.html">ভর্তি</a>
+                <ul class="submenu">
+                    <li><a href="online-registration.html">অনলাইন রেজিস্ট্রেশন</a></li>
+                </ul>
+            </li>
 
-            <li><a href="routine.html">ক্লাস রুটিন</a></li>
+            <li class="has-submenu">
+                
+                <a href="notice.html">একাডেমিক তথ্য</a>
+                <ul class="submenu">
+                    <li><a href="routine.html">ক্লাস রুটিন</a></li>
+                    <li><a href="exam-routine.html">পরীক্ষার রুটিন</a></li>
+                    <li><a href="holidays.html">ছুটির তালিকা</a></li>
+                    <li><a href="syllabus.html">সিলেবাস</a></li>
+                </ul>
+            </li>
+
+            <li class="has-submenu">
+                <a href="photo-gallery.html">গ্যালারি</a>
+                <ul class="submenu">
+                    <li><a href="photo-gallery.html">ছবি গ্যালারি</a></li>
+                    <li><a href="video-gallery.html">ভিডিয়ো গ্যালারি</a></li>
+                </ul>
+            </li>
 
             <li><a href="contact.html">যোগাযোগ</a></li>
-
         </ul>
 
     </div>
-
 </nav>
+
 <!-- ========= Hero Slider ========= -->
 
 <section class="hero-slider">
@@ -234,39 +279,19 @@ content="তাবিউল মুরসালীন নগর কারিগ�
 
             <!-- Latest Notice -->
 
-            <div class="notice-panel">
+<div class="notice-panel">
 
-                <h2 class="section-title">📢 সর্বশেষ নোটিশ</h2>
+    <h2 class="section-title">📢 সর্বশেষ নোটিশ</h2>
 
-                <ul class="notice-list">
+    <ul class="notice-list" id="latestNotices">
+        <li>নোটিশ লোড হচ্ছে...</li>
+    </ul>
 
-                    <li>
-                        <span>০৭ আগস্ট ২০২৬</span>
-                        <a href="#">২০২৬ শিক্ষাবর্ষে ভর্তি কার্যক্রম চলমান</a>
-                    </li>
+    <a href="notice.html" class="notice-link">
+        সকল নোটিশ দেখুন →
+    </a>
 
-                    <li>
-                        <span>০১ আগস্ট ২০২৬</span>
-                        <a href="#">এইচএসসি শ্রেণির ক্লাস রুটিন প্রকাশিত</a>
-                    </li>
-
-                    <li>
-                        <span>২৫ জুলাই ২০২৬</span>
-                        <a href="#">নতুন শিক্ষার্থীদের প্রয়োজনীয় নির্দেশনা</a>
-                    </li>
-
-                    <li>
-                        <span>১৫ জুলাই ২০২৬</span>
-                        <a href="#">গ্রীষ্মকালীন ছুটির বিজ্ঞপ্তি</a>
-                    </li>
-
-                </ul>
-
-                <a href="notice.html" class="notice-link">
-                    সকল নোটিশ দেখুন →
-                </a>
-
-            </div>
+</div>
 
         </div>
 
@@ -657,6 +682,7 @@ content="তাবিউল মুরসালীন নগর কারিগ�
 
 </footer>
 <script src="js/script.js"></script>
+<script type="module" src="js/public-notices.js"></script>
 </body>
 
 </html>

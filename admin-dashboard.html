@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>অ্যাডমিন ড্যাশবোর্ড | TMNKSC</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <header class="dashboard-header">
+    <div>
+      <h1>অ্যাডমিন ড্যাশবোর্ড</h1>
+      <p>তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</p>
+    </div>
+    <button id="logoutButton" type="button">লগআউট</button>
+  </header>
+
+  <main class="dashboard-container">
+    <section class="welcome-card">
+      <h2>স্বাগতম, অ্যাডমিন!</h2>
+      <p id="adminEmail">অ্যাকাউন্ট যাচাই করা হচ্ছে...</p>
+    </section>
+
+    <section class="dashboard-grid">
+      <a class="dashboard-card" href="#notices">
+        <span class="card-icon">📢</span>
+        <h3>নোটিশ ব্যবস্থাপনা</h3>
+        <p>নোটিশ যোগ, সম্পাদনা ও প্রকাশ করুন।</p>
+      </a>
+
+      <a class="dashboard-card" href="#routines">
+        <span class="card-icon">📅</span>
+        <h3>রুটিন ব্যবস্থাপনা</h3>
+        <p>ক্লাস ও পরীক্ষার রুটিন পরিচালনা করুন।</p>
+      </a>
+
+      <a class="dashboard-card" href="#results">
+        <span class="card-icon">📊</span>
+        <h3>ফলাফল ব্যবস্থাপনা</h3>
+        <p>পরীক্ষার ফলাফল পরিচালনা করুন।</p>
+      </a>
+    </section>
+
+    
+<section id="notices" class="dashboard-section">
+  <h2>নোটিশ ব্যবস্থাপনা</h2>
+
+  <form id="noticeForm">
+    <label for="noticeTitle">নোটিশের শিরোনাম</label>
+    <input
+      id="noticeTitle"
+      type="text"
+      maxlength="200"
+      required
+      placeholder="যেমন: পরীক্ষার সময়সূচি"
+    >
+
+    <label for="noticeBody">নোটিশের বিবরণ</label>
+    <textarea
+      id="noticeBody"
+      rows="5"
+      maxlength="15000"
+      placeholder="নোটিশের বিস্তারিত লিখুন"
+    ></textarea>
+
+    <label for="noticePdfUrl">PDF-এর লিংক (ঐচ্ছিক)</label>
+    <input
+      id="noticePdfUrl"
+      type="url"
+      placeholder="https://drive.google.com/file/d/..."
+    >
+
+    <label class="notice-publish-label">
+      <input id="noticePublished" type="checkbox">
+      এখনই প্রকাশ করব
+    </label>
+
+    <div class="notice-form-actions">
+      <button id="saveNoticeButton" type="submit">
+        নোটিশ সংরক্ষণ
+      </button>
+
+      <button id="cancelEditButton" type="button" hidden>
+        সম্পাদনা বাতিল
+      </button>
+    </div>
+  </form>
+
+  <p id="noticeMessage" role="status" aria-live="polite"></p>
+
+  <hr>
+
+  <h3>সংরক্ষিত নোটিশসমূহ</h3>
+  <div id="noticeList">নোটিশ লোড হচ্ছে...</div>
+</section>
+
+
+    <section id="routines" class="dashboard-section">
+      <h2>রুটিন ব্যবস্থাপনা</h2>
+      <p>এখানে রুটিনের তথ্য ও ফাইল পরিচালনার ব্যবস্থা যুক্ত হবে।</p>
+    </section>
+
+    <section id="results" class="dashboard-section">
+      <h2>ফলাফল ব্যবস্থাপনা</h2>
+      <p>এখানে ফলাফল যোগ ও পরিচালনার ব্যবস্থা যুক্ত হবে।</p>
+    </section>
+
+    <p id="dashboardMessage" role="status" aria-live="polite"></p>
+  </main>
+
+  <script type="module" src="js/admin-dashboard.js"></script>
+  <script type="module" src="js/admin-notices.js"></script>
+</body>
+</html>

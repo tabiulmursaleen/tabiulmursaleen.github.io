@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>অ্যাডমিন লগইন | তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <main class="login-container">
+    <section class="login-card">
+      <div class="school-icon">🏫</div>
+
+      <h1>অ্যাডমিন লগইন</h1>
+      <p class="subtitle">তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</p>
+
+      <form id="loginForm">
+        <label for="email">ইমেইল ঠিকানা</label>
+        <input
+          type="email"
+          id="email"
+          autocomplete="username"
+          placeholder="আপনার ইমেইল লিখুন"
+          required
+        >
+
+        <label for="password">পাসওয়ার্ড</label>
+        <input
+          type="password"
+          id="password"
+          autocomplete="current-password"
+          placeholder="আপনার পাসওয়ার্ড লিখুন"
+          required
+        >
+
+        <button type="submit" id="loginButton">লগইন করুন</button>
+        <p id="loginMessage" role="status" aria-live="polite"></p>
+      </form>
+
+      <a href="index.html" class="back-link">← মূল ওয়েবসাইটে ফিরে যান</a>
+    </section>
+  </main>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
