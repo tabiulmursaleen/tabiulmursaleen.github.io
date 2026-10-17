@@ -2999,3 +2999,15 @@ section{
     }
 }
 
+/* Requested 1px reduction for the header contact items and footer credits */
+.top-left .contact-pill,
+.top-bar .admin-login-link{font-size:14px}
+.top-left .facebook-top-link .facebook-icon{font-size:20px}
+.footer-contact-pill{font-size:14px}
+.footer-facebook-icon{font-size:21px}
+.footer-copyright{font-size:16px}
+
+@media(max-width:600px){
+    .top-bar .admin-login-link{font-size:13px}
+}
+
