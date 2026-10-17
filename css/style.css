@@ -386,7 +386,11 @@ section{
     .logo-area p{font-size:15px;margin-top:3px}
 }
 
-.logo-area h1{font-size:46px;color:#005b4b;text-shadow:0 1px 2px rgba(0,77,64,.14)}
+.logo-area h1{
+    font-size:46px;
+    color:#005b4b;
+    text-shadow:1px 2px 0 rgba(218,177,78,.52),0 4px 7px rgba(0,77,64,.22);
+}
 .logo-area p{font-size:19px;color:#315e50;font-weight:600}
 @media(max-width:768px){.logo-area h1{font-size:30px}.logo-area p{font-size:17px}}
 /* ---------- Navigation ---------- */
