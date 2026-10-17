@@ -1,100 +1,250 @@
-// Excel-এর Serial 1 = teacher-01.jpg, Serial 2 = teacher-02.jpg, ইত্যাদি।
-const teacherPhotoBySerial = serial =>
-  `images/teachers/teacher-${String(serial).padStart(2, "0")}.jpg`;
-
+// Excel-এর ক্রমই ছবির ক্রম: teacher-01.jpg থেকে teacher-19.jpg।
 const teachers = [
-  { id: "teacher-01", name: "জনাব মোহাম্মদ রফিকুল ইসলাম", index: "803257", designation: "অধ্যক্ষ", subject: "", qualification: "এম.এ", joiningDate: "১৭ এপ্রিল ২০২৪", experience: "", dob: "১১ অক্টোবর ১৯৭৭", phone: "01716858193", blood: "", photo: "images/teachers/teacher-01.jpg" },
-
-  { id: "teacher-02", name: "জনাব মুহাম্মদ মাসুদ রানা", index: "25090054", designation: "প্রভাষক", subject: "ব্যবসায় ডিজিটাল প্রযুক্তি", qualification: "এম.এ", joiningDate: "১ নভেম্বর ২০১৫", experience: "", dob: "১ ফেব্রুয়ারি ১৯৭৯", phone: "01879989979", blood: "A+", photo: "images/teachers/teacher-02.jpg" },
-
-  { id: "teacher-03", name: "জনাব মোঃ শফিউল আলিম হোসেন", index: "25090056", designation: "প্রভাষক", subject: "ইংরেজি", qualification: "এম.এ", joiningDate: "১ নভেম্বর ২০১৫", experience: "", dob: "১২ ডিসেম্বর ১৯৮০", phone: "01929617490", blood: "A+", photo: "images/teachers/teacher-03.jpg" },
-
-  { id: "teacher-04", name: "জনাব নাজমা আক্তার", index: "25090055", designation: "প্রভাষক", subject: "কম্পিউটারাইজড অ্যাকাউন্টিং সিস্টেম", qualification: "এম.এ", joiningDate: "১ নভেম্বর ২০১৫", experience: "", dob: "১৪ জুলাই ১৯৮৫", phone: "01603606325", blood: "B+", photo: "images/teachers/teacher-04.jpg" },
-
-  { id: "teacher-05", name: "জনাব আলমগীর কবির", index: "25090057", designation: "প্রভাষক", subject: "বাংলা", qualification: "এম.এ", joiningDate: "১ নভেম্বর ২০১৫", experience: "", dob: "১৫ অক্টোবর ১৯৮৬", phone: "01717738563", blood: "A+", photo: "images/teachers/teacher-05.jpg" },
-
-  { id: "teacher-06", name: "জনাব মোঃ সাইফুল ইসলাম", index: "25090058", designation: "প্রভাষক", subject: "ব্যবস্থাপনা", qualification: "এম.এ", joiningDate: "১ নভেম্বর ২০১৫", experience: "", dob: "১ জানুয়ারি ১৯৮৭", phone: "01929617490", blood: "B+", photo: "images/teachers/teacher-06.jpg" },
-
-  { id: "teacher-07", name: "জনাব মোঃ শামীম মিয়া", index: "26050028", designation: "প্রভাষক", subject: "গণিত", qualification: "এম.এ", joiningDate: "১৭ ফেব্রুয়ারি ২০২৬", experience: "", dob: "১৩ মার্চ ১৯৯৮", phone: "01942976197", blood: "", photo: "images/teachers/teacher-07.jpg" },
-
-  { id: "teacher-08", name: "জনাব মোঃ কামরুজ্জামান খন্দকার", index: "24204093", designation: "সহকারী শিক্ষক", subject: "শারীরিক শিক্ষা", qualification: "এম.এ", joiningDate: "১ অক্টোবর ২০২৩", experience: "", dob: "১১ নভেম্বর ১৯৮৬", phone: "01717110076", blood: "B+", photo: "images/teachers/teacher-08.jpg" },
-
-  { id: "teacher-09", name: "জনাব দ্বিপ্তী রাণী", index: "25120253", designation: "ট্রেড ইনস্ট্রাক্টর", subject: "এগ্রোবেসড ফুড", qualification: "বিএসসি", joiningDate: "৮ সেপ্টেম্বর ২০২৫", experience: "", dob: "৭ ডিসেম্বর ১৯৯৪", phone: "01761316783", blood: "", photo: "images/teachers/teacher-09.jpg" },
-
-  { id: "teacher-10", name: "জনাব জামিল হোসেন", index: "26010283", designation: "ট্রেড ইনস্ট্রাক্টর", subject: "অ্যাপারেল ম্যানুফ্যাকচারিং বেসিকস", qualification: "বিএসএস", joiningDate: "৮ সেপ্টেম্বর ২০২৫", experience: "", dob: "১৬ অক্টোবর ১৯৯৫", phone: "01741753844", blood: "O+", photo: "images/teachers/teacher-10.jpg" },
-
-  { id: "teacher-11", name: "জনাব ইমদাদুল হক", index: "26010279", designation: "ট্রেড ইনস্ট্রাক্টর", subject: "অ্যাপারেল ম্যানুফ্যাকচারিং বেসিকস", qualification: "বিএসসি", joiningDate: "১ সেপ্টেম্বর ২০২৪", experience: "", dob: "১ জানুয়ারি ১৯৯২", phone: "01721342857", blood: "AB+", photo: "images/teachers/teacher-11.jpg" },
-
-  { id: "teacher-12", name: "জনাব মোঃ শফিউল আলম", index: "24112084", designation: "সহকারী শিক্ষক", subject: "কৃষিশিক্ষা", qualification: "এম.এ", joiningDate: "১ অক্টোবর ২০২৩", experience: "", dob: "১২ মে ১৯৮৫", phone: "01718893632", blood: "A+", photo: "images/teachers/teacher-12.jpg" },
-
-  { id: "teacher-13", name: "জনাব নাহিদা ফেরদৌসী", index: "24206170", designation: "সহকারী শিক্ষক", subject: "বাংলা", qualification: "এম.এ", joiningDate: "১ অক্টোবর ২০২৩", experience: "", dob: "১ আগস্ট ১৯৮৬", phone: "01687616795", blood: "O+", photo: "images/teachers/teacher-13.jpg" },
-
-  { id: "teacher-14", name: "জনাব মোঃ রবিউল আলম", index: "24204094", designation: "সহকারী শিক্ষক", subject: "সামাজিক বিজ্ঞান", qualification: "এম.এ", joiningDate: "১ অক্টোবর ২০২৩", experience: "", dob: "৮ জানুয়ারি ১৯৮৬", phone: "01723938865", blood: "O+", photo: "images/teachers/teacher-14.jpg" },
-
-  { id: "teacher-15", name: "জনাব তানজিলা আক্তার", index: "25060219", designation: "সহকারী শিক্ষক", subject: "ইংরেজি", qualification: "এম.এ", joiningDate: "১ সেপ্টেম্বর ২০২৪", experience: "", dob: "১ জানুয়ারি ১৯৯২", phone: "01756520941", blood: "", photo: "images/teachers/teacher-15.jpg" },
-
-  { id: "teacher-16", name: "জনাব ছাদিকুল ইসলাম", index: "24204092", designation: "সহকারী শিক্ষক", subject: "ইসলাম ধর্ম", qualification: "এম.এ", joiningDate: "১ অক্টোবর ২০২৩", experience: "", dob: "১৫ জানুয়ারি ১৯৯২", phone: "01738236721", blood: "O+", photo: "images/teachers/teacher-16.jpg" },
-
-  { id: "teacher-17", name: "জনাব মোঃ সাইফুল ইসলাম", index: "25060218", designation: "সহকারী শিক্ষক", subject: "রসায়ন", qualification: "এম.এ", joiningDate: "১ সেপ্টেম্বর ২০২৪", experience: "", dob: "১০ মার্চ ১৯৯৩", phone: "01935719367", blood: "O+", photo: "images/teachers/teacher-17.jpg" }
+  {
+    "id": "teacher-01",
+    "name": "মোহাম্মদ রফিকুল ইসলাম",
+    "index": "803257",
+    "designation": "অধ্যক্ষ",
+    "subject": "",
+    "qualification": "এম.এ",
+    "joiningDate": "2024-04-17",
+    "dob": "1977-11-10",
+    "phone": "01716858193",
+    "email": "bayezidislam2k25@gmail.com",
+    "photo": "images/teachers/teacher-01.jpg"
+  },
+  {
+    "id": "teacher-02",
+    "name": "আলমগীর কবির",
+    "index": "25090057",
+    "designation": "প্রভাষক",
+    "subject": "বাংলা",
+    "qualification": "এম.এ",
+    "joiningDate": "2015-11-01",
+    "dob": "1986-10-15",
+    "phone": "01717738563",
+    "email": "alamgirkabirraja04@gmail.com",
+    "photo": "images/teachers/teacher-02.jpg"
+  },
+  {
+    "id": "teacher-03",
+    "name": "মোঃ শফিউল আলিম হোসাইন",
+    "index": "25090056",
+    "designation": "প্রভাষক",
+    "subject": "ইংরেজি",
+    "qualification": "এম.এ",
+    "joiningDate": "2015-11-01",
+    "dob": "1980-12-12",
+    "phone": "01677504474",
+    "email": "khokonmahmud51@gmail.com",
+    "photo": "images/teachers/teacher-03.jpg"
+  },
+  {
+    "id": "teacher-04",
+    "name": "নাজমা আক্তার",
+    "index": "25090055",
+    "designation": "প্রভাষক",
+    "subject": "হিসাববিজ্ঞান",
+    "qualification": "এম.এ",
+    "joiningDate": "2015-11-01",
+    "dob": "1985-07-14",
+    "phone": "01974573810",
+    "email": "najma85@gmail.com",
+    "photo": "images/teachers/teacher-04.jpg"
+  },
+  {
+    "id": "teacher-05",
+    "name": "মোঃ সাইফুল ইসলাম",
+    "index": "25090058",
+    "designation": "প্রভাষক",
+    "subject": "ব্যবস্থাপনা",
+    "qualification": "এম.এ",
+    "joiningDate": "2015-11-01",
+    "dob": "1987-01-01",
+    "phone": "01723769993",
+    "email": "sa.saiful1987@gmail.com",
+    "photo": "images/teachers/teacher-05.jpg"
+  },
+  {
+    "id": "teacher-06",
+    "name": "মুহাম্মাদ মাসুদ রানা",
+    "index": "25090054",
+    "designation": "প্রভাষক",
+    "subject": "কম্পিউটার অপারেশন",
+    "qualification": "এম.এ",
+    "joiningDate": "2015-11-01",
+    "dob": "1979-02-01",
+    "phone": "01916820534",
+    "email": "masudrana771978@gmail.com",
+    "photo": "images/teachers/teacher-06.jpg"
+  },
+  {
+    "id": "teacher-07",
+    "name": "মোঃ শামীম মিয়া",
+    "index": "26050028",
+    "designation": "প্রভাষক",
+    "subject": "গণিত",
+    "qualification": "এম.এ",
+    "joiningDate": "2026-02-17",
+    "dob": "1998-03-13",
+    "phone": "01942976197",
+    "email": "mdshamimusman4@gmail.com",
+    "photo": "images/teachers/teacher-07.jpg"
+  },
+  {
+    "id": "teacher-08",
+    "name": "ইমদাদুল হক",
+    "index": "26010279",
+    "designation": "ট্রেড ইনস্ট্রাক্টর",
+    "subject": "অ্যাপারেল ম্যানুফ্যাকচারিং বেসিকস",
+    "qualification": "বি.এসসি",
+    "joiningDate": "2024-09-01",
+    "dob": "1992-01-01",
+    "phone": "01721342857",
+    "email": "emdadulhaque2110@gmail.com",
+    "photo": "images/teachers/teacher-08.jpg"
+  },
+  {
+    "id": "teacher-09",
+    "name": "জামিল হোসেন",
+    "index": "26010283",
+    "designation": "ট্রেড ইনস্ট্রাক্টর",
+    "subject": "অ্যাপারেল ম্যানুফ্যাকচারিং বেসিকস",
+    "qualification": "বি.এস.এস",
+    "joiningDate": "2025-09-08",
+    "dob": "1995-10-16",
+    "phone": "01741753844",
+    "email": "jamilhossain068@gmail.com",
+    "photo": "images/teachers/teacher-09.jpg"
+  },
+  {
+    "id": "teacher-10",
+    "name": "দ্বিপ্তী রানী",
+    "index": "25120253",
+    "designation": "ট্রেড ইনস্ট্রাক্টর",
+    "subject": "এগ্রো বেইজড ফুড",
+    "qualification": "বি.এসসি",
+    "joiningDate": "2025-09-08",
+    "dob": "1994-12-07",
+    "phone": "01761316783",
+    "email": "diptiranidpiti@gmail.com",
+    "photo": "images/teachers/teacher-10.jpg"
+  },
+  {
+    "id": "teacher-11",
+    "name": "মো. কামরুজ্জামান খন্দকার",
+    "index": "24204093",
+    "designation": "সহকারী শিক্ষক",
+    "subject": "শারীরিক শিক্ষা",
+    "qualification": "এম.এ",
+    "joiningDate": "2023-10-01",
+    "dob": "1986-11-11",
+    "phone": "01717110076",
+    "email": "mk.kandokar@gmail.com",
+    "photo": "images/teachers/teacher-11.jpg"
+  },
+  {
+    "id": "teacher-12",
+    "name": "মোঃ শাফিউল আলম",
+    "index": "24112084",
+    "designation": "সহকারী শিক্ষক",
+    "subject": "কৃষি শিক্ষা",
+    "qualification": "এম.এ",
+    "joiningDate": "2023-10-01",
+    "dob": "1985-05-12",
+    "phone": "01718893632",
+    "email": "shafiulalam03@gmail.com",
+    "photo": "images/teachers/teacher-12.jpg"
+  },
+  {
+    "id": "teacher-13",
+    "name": "মোঃ রবিউল আলম",
+    "index": "24204094",
+    "designation": "সহকারী শিক্ষক",
+    "subject": "সামাজিক বিজ্ঞান",
+    "qualification": "এম.এস.এস",
+    "joiningDate": "2023-10-01",
+    "dob": "1987-08-07",
+    "phone": "01723938865",
+    "email": "robiul.alom1987@gmail.com",
+    "photo": "images/teachers/teacher-13.jpg"
+  },
+  {
+    "id": "teacher-14",
+    "name": "নাহিদা ফেরদৌসী",
+    "index": "24206170",
+    "designation": "সহকারী শিক্ষক",
+    "subject": "বাংলা",
+    "qualification": "এম.এ",
+    "joiningDate": "2023-10-01",
+    "dob": "1986-01-08",
+    "phone": "01687616795",
+    "email": "kakoliferdousi36@gmail.com",
+    "photo": "images/teachers/teacher-14.jpg"
+  },
+  {
+    "id": "teacher-15",
+    "name": "ছাদিকুল ইসলাম",
+    "index": "24204092",
+    "designation": "সহকারী শিক্ষক",
+    "subject": "ইসলাম ধর্ম",
+    "qualification": "এম.এ",
+    "joiningDate": "2023-10-01",
+    "dob": "1992-01-15",
+    "phone": "01738236721",
+    "email": "sadikul01738236721@gmail.com",
+    "photo": "images/teachers/teacher-15.jpg"
+  },
+  {
+    "id": "teacher-16",
+    "name": "তানজিলা আক্তার",
+    "index": "25060219",
+    "designation": "সহকারী শিক্ষক",
+    "subject": "ইংরেজি",
+    "qualification": "এম.এ",
+    "joiningDate": "2024-09-01",
+    "dob": "1992-01-01",
+    "phone": "01756520941",
+    "email": "anwarhossain459013@gmail.com",
+    "photo": "images/teachers/teacher-16.jpg"
+  },
+  {
+    "id": "teacher-17",
+    "name": "মোঃ সাইফুল ইসলাম",
+    "index": "25060218",
+    "designation": "সহকারী শিক্ষক",
+    "subject": "রসায়ন",
+    "qualification": "বি.এসসি",
+    "joiningDate": "2024-09-01",
+    "dob": "1993-03-10",
+    "phone": "01935719367",
+    "email": "saiful.web7@gmail.com",
+    "photo": "images/teachers/teacher-17.jpg"
+  },
+  {
+    "id": "teacher-18",
+    "name": "এ বি এম আশিকুজ্জামান",
+    "index": "22201034",
+    "designation": "কম্পিউটার ডেমনস্ট্রেটর",
+    "subject": "",
+    "qualification": "ডিপ্লোমা",
+    "joiningDate": "2013-08-08",
+    "dob": "1985-06-01",
+    "phone": "01710731791",
+    "email": "ashikshipon1@gmail.com",
+    "photo": "images/teachers/teacher-18.jpg"
+  },
+  {
+    "id": "teacher-19",
+    "name": "উম্মে সালমা",
+    "index": "",
+    "designation": "গ্রন্থাগারিক",
+    "subject": "গ্রন্থাগার ও তথ্যবিজ্ঞান",
+    "qualification": "বি.এ",
+    "joiningDate": "2021-09-01",
+    "dob": "1988-10-01",
+    "phone": "01799069408",
+    "email": "",
+    "photo": "images/teachers/teacher-19.jpg"
+  }
 ];
-
-teachers.forEach(teacher => {
-  teacher.serial = Number(teacher.id.replace("teacher-", ""));
-  teacher.photo = teacherPhotoBySerial(teacher.serial);
-});
-
-const joiningDates = {
-  "teacher-01": "2024-04-17",
-  "teacher-02": "2015-11-01",
-  "teacher-03": "2015-11-01",
-  "teacher-04": "2015-11-01",
-  "teacher-05": "2015-11-01",
-  "teacher-06": "2015-11-01",
-  "teacher-07": "2026-02-17",
-  "teacher-08": "2023-10-01",
-  "teacher-09": "2025-09-08",
-  "teacher-10": "2025-09-08",
-  "teacher-11": "2024-09-01",
-  "teacher-12": "2023-10-01",
-  "teacher-13": "2023-10-01",
-  "teacher-14": "2023-10-01",
-  "teacher-15": "2024-09-01",
-  "teacher-16": "2023-10-01",
-  "teacher-17": "2024-09-01"
-};
-
-const toBanglaNumber = number =>
-  String(number).replace(/\d/g, digit => "০১২৩৪৫৬৭৮৯"[digit]);
-
-function calculateExperience(joiningDate) {
-  const [year, month, day] = joiningDate.split("-").map(Number);
-
-  const today = new Date();
-
-  let years = today.getFullYear() - year;
-  let months = today.getMonth() + 1 - month;
-
-  if (today.getDate() < day) months--;
-
-  if (months < 0) {
-    years--;
-    months += 12;
-  }
-
-  const parts = [];
-
-  if (years > 0) {
-    parts.push(`${toBanglaNumber(years)} বছর`);
-  }
-
-  if (months > 0 || parts.length === 0) {
-    parts.push(`${toBanglaNumber(months)} মাস`);
-  }
-
-  return parts.join(" ");
-}
-
-teachers.forEach(teacher => {
-  teacher.joiningDateIso = joiningDates[teacher.id];
-  teacher.experience = calculateExperience(teacher.joiningDateIso);
-});

@@ -6,191 +6,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>সকল নোটিশ | তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</title>
+    <title>চলমান ট্রেডসমূহ | তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</title>
 
     <meta name="description"
-          content="তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজের সকল প্রকাশিত নোটিশ।">
+          content="তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজের স্কুল ও কলেজ শাখার চলমান কারিগরি ট্রেডসমূহ, সংশ্লিষ্ট শিক্ষক ও সম্ভাব্য কর্মক্ষেত্র।">
 
     <link rel="stylesheet" href="css/style.css">
 
-    <style>
-        .all-notices-section {
-            padding: 35px 0 50px;
-            min-height: 400px;
-            background: #f7faf8;
-        }
-
-        .all-notices-heading {
-            margin-bottom: 24px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #198754;
-        }
-
-        .all-notices-heading h2 {
-            margin: 0 0 8px;
-            color: #198754;
-            font-size: 26px;
-        }
-
-        .all-notices-heading p {
-            margin: 0;
-            color: #666;
-        }
-
-        .all-notices-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .all-notice-item {
-            padding: 18px 20px;
-            background: #fff;
-            border: 1px solid #e1e9e3;
-            border-left: 4px solid #198754;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        }
-
-        .all-notice-date {
-            display: block;
-            margin-bottom: 5px;
-            color: #68776d;
-            font-size: 14px;
-        }
-
-        .all-notice-title {
-            margin: 0 0 10px;
-            color: #176b43;
-            font-size: 19px;
-            line-height: 1.6;
-        }
-
-        .all-notice-body {
-            margin: 0 0 12px;
-            color: #333;
-            line-height: 1.8;
-            white-space: pre-wrap;
-            overflow-wrap: anywhere;
-        }
-
-        .all-notice-pdf {
-            display: inline-block;
-            margin-top: 4px;
-            color: #198754;
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .all-notice-pdf:hover {
-            text-decoration: underline;
-        }
-
-        .all-notices-status {
-            padding: 22px;
-            background: #fff;
-            border: 1px solid #e1e9e3;
-            border-radius: 6px;
-            text-align: center;
-        }
-
-        .notice-back-link {
-            display: inline-block;
-            margin-top: 25px;
-            color: #198754;
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .notice-back-link:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 600px) {
-            .all-notices-section {
-                padding: 25px 0 35px;
-            }
-
-            .all-notices-heading h2 {
-                font-size: 22px;
-            }
-
-            .all-notice-item {
-                padding: 14px;
-            }
-
-            .all-notice-title {
-                font-size: 17px;
-            }
-        }
-
-.notice-table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    background: #fff;
-    border: 1px solid #dce7df;
-    border-radius: 6px;
-}
-
-.notice-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #fff;
-}
-
-.notice-table th,
-.notice-table td {
-    padding: 13px 15px;
-    border: 1px solid #e1e8e3;
-    text-align: left;
-    vertical-align: middle;
-}
-
-.notice-table th {
-    background: #198754;
-    color: #fff;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-.notice-table tbody tr:nth-child(even) {
-    background: #f5f9f6;
-}
-
-.notice-table tbody tr:hover {
-    background: #edf6ef;
-}
-
-.notice-table .notice-table-status {
-    padding: 25px;
-    text-align: center;
-    color: #68776d;
-}
-
-.notice-view-link {
-    display: inline-block;
-    padding: 5px 12px;
-    background: #198754;
-    color: #fff;
-    border-radius: 4px;
-    text-decoration: none;
-    white-space: nowrap;
-}
-
-.notice-view-link:hover {
-    background: #146c43;
-    color: #fff;
-}
-
-@media (max-width: 600px) {
-    .notice-table th,
-    .notice-table td {
-        padding: 10px;
-        font-size: 14px;
-    }
-}
-
-    </style>
+<style>
+  .trades-page{--green:#087f5b;--green-dark:#075c45;--ink:#20332d;--muted:#5f7069;--pale:#f2f8f5;color:var(--ink);line-height:1.7}
+  .trades-page *,.trades-page *::before,.trades-page *::after{box-sizing:border-box}
+  .trades-container{width:min(1120px,calc(100% - 36px));margin:0 auto}
+  .trades-hero{padding:48px 18px;text-align:center;color:#fff;background:linear-gradient(135deg,#087f5b,#0b6f82)}
+  .trades-hero h2{margin:0 0 9px;color:#fff;font-size:clamp(31px,4vw,43px)}
+  .trades-hero p{max-width:760px;margin:0 auto;color:rgba(255,255,255,.94);font-size:20px}
+  .trades-section{padding:42px 0}
+  .trades-section--pale{background:#f7faf8}
+  .trades-heading{margin:0 0 8px;color:var(--green-dark);font-size:clamp(26px,3vw,32px)}
+  .trades-lead{max-width:850px;margin:0 0 22px;color:var(--muted)}
+  .trades-page .trade-list{display:grid;grid-template-columns:1fr;gap:18px}
+  .trades-page .trade-card{display:block;--card-accent:#287b93;padding:24px 28px;overflow:hidden;background:linear-gradient(135deg,#eff8fb 0%,#fff 78%);border:1px solid #cfe3e9;border-top:5px solid var(--card-accent);border-radius:13px;box-shadow:0 5px 17px rgba(20,60,40,.07)}
+  .trades-page .trade-card:nth-child(7n+2){--card-accent:#c45e62;background:linear-gradient(135deg,#fff1f0 0%,#fff 78%);border-color:#f0d4d2;border-top-color:var(--card-accent)}
+  .trades-page .trade-card:nth-child(7n+3){--card-accent:#aa741d;background:linear-gradient(135deg,#fff7e7 0%,#fff 78%);border-color:#f0e1be;border-top-color:var(--card-accent)}
+  .trades-page .trade-card:nth-child(7n+4){--card-accent:#7256a4;background:linear-gradient(135deg,#f5f0ff 0%,#fff 78%);border-color:#e2d8f3;border-top-color:var(--card-accent)}
+  .trades-page .trade-card:nth-child(7n+5){--card-accent:#408355;background:linear-gradient(135deg,#eef8f0 0%,#fff 78%);border-color:#d4e9d8;border-top-color:var(--card-accent)}
+  .trades-page .trade-card:nth-child(7n+6){--card-accent:#267b79;background:linear-gradient(135deg,#ebf8f6 0%,#fff 78%);border-color:#cde8e3;border-top-color:var(--card-accent)}
+  .trades-page .trade-card:nth-child(7n){--card-accent:#526ba6;background:linear-gradient(135deg,#eef2ff 0%,#fff 78%);border-color:#d7def2;border-top-color:var(--card-accent)}
+  .trade-card-header{display:flex;align-items:center;justify-content:center;min-height:58px;margin:-24px -28px 0;padding:13px 20px;color:#fff;text-align:center;background:var(--card-accent)}
+  .trade-card-header .trade-title{display:block!important;visibility:visible!important;opacity:1!important;position:static!important;width:100%;margin:0!important;padding:0;color:#fff!important;font-size:24px!important;font-weight:700;line-height:1.4;text-align:center!important}
+  .trade-card-body{display:grid;grid-template-columns:130px minmax(0,1fr) minmax(210px,250px);align-items:stretch}
+  .trade-symbol-panel{display:flex;align-items:center;justify-content:center;text-align:center;padding:20px 0;color:var(--card-accent);font-size:79px;line-height:1;border-right:1px solid color-mix(in srgb,var(--card-accent) 24%,white)}
+  .trade-overview{align-self:center;width:auto;margin:0;padding:20px 24px}
+  .trade-careers{display:flex;flex-direction:column;justify-content:center;padding:18px 0 18px 20px;border-left:1px solid color-mix(in srgb,var(--card-accent) 24%,white)}
+  .trade-card h4{border:0}
+  .trade-jobs span{display:block;width:min(100%,360px);padding:7px 14px;color:var(--card-accent);font-size:17px;text-align:center;background:color-mix(in srgb,var(--card-accent) 8%,white);border:1px solid color-mix(in srgb,var(--card-accent) 24%,white);border-left:4px solid var(--card-accent);border-radius:7px}
+  .trade-jobs span:nth-child(even){background:color-mix(in srgb,var(--card-accent) 13%,white);border-color:color-mix(in srgb,var(--card-accent) 24%,white);border-left-color:var(--card-accent)}
+  .trade-overview{width:auto;margin:0;text-align:center}
+  .trade-overview p{margin:0 auto 13px;color:var(--muted);font-size:18px}
+  .trade-careers h5{margin:0 0 9px;color:var(--ink);font-size:18px;text-align:center}
+  .trade-jobs{display:flex;flex-direction:column;align-items:center;gap:7px}
+  .trade-jobs span{display:block;width:min(100%,360px);padding:7px 14px;color:#245443;font-size:17px;text-align:center;background:#edf5f0;border:1px solid #d8e8de;border-radius:7px}
+  .trade-jobs span:nth-child(even){background:#eef5f8;border-color:#dce8ed;color:#315b6a}
+  .trade-note{margin:20px 0 0;padding:13px 16px;color:#45574f;background:#fff8e7;border-left:4px solid #e6a700;border-radius:6px;font-size:17px}
+  .trade-teachers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px}
+  .trade-teacher{overflow:hidden;background:#fff;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.09);transition:transform .2s ease,box-shadow .2s ease}
+  .trade-teacher:hover{transform:translateY(-4px);box-shadow:0 10px 22px rgba(0,0,0,.14)}
+  .trade-teacher-link{display:block;height:100%;color:inherit;text-align:center;text-decoration:none}
+  .trade-teacher img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center top;background:#e5e5e5}
+  .trade-teacher-info{min-height:122px;padding:15px 13px}
+  .trade-teacher h4{margin:0 0 7px;color:var(--green-dark);font-size:20px;line-height:1.45}
+  .trade-teacher p{margin:0;color:#555;font-size:17px;font-weight:600;line-height:1.5}
+  .trade-teacher .teacher-subject{margin-top:5px;color:#777;font-size:16px;font-weight:400}
+  .trade-cta{padding:30px 20px;color:#fff;text-align:center;background:var(--green-dark);border-radius:13px}
+  .trade-cta h2{margin:0 0 7px;color:#fff;font-size:27px}
+  .trade-cta p{margin:0 auto 15px;color:rgba(255,255,255,.9)}
+  .trade-cta a{display:inline-block;padding:9px 16px;color:var(--green-dark);font-weight:700;text-decoration:none;background:#fff;border-radius:6px}
+  .trade-cta a:hover{background:#e8f5ee}
+  @media(max-width:1100px){.trade-teachers{grid-template-columns:repeat(4,minmax(0,1fr))}}
+  @media(max-width:768px){.trades-section{padding:34px 0}.trade-card{padding:20px}.trade-card-header{min-height:54px;margin:-20px -20px 0;padding:11px 14px}.trade-card-header .trade-title{font-size:21px!important}.trade-card-body{grid-template-columns:minmax(0,1fr)}.trade-symbol-panel{display:none}.trade-overview{grid-column:1;padding:16px 14px}.trade-careers{grid-column:1;padding:15px 0 0;border-left:0;border-top:1px solid color-mix(in srgb,var(--card-accent) 24%,white)}.trade-careers::before{content:attr(data-icon);display:block;margin:0 auto 9px;color:var(--card-accent);font-size:47px;line-height:1;text-align:center}.trade-teachers{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.trade-teacher-info{min-height:108px;padding:12px 9px}.trade-teacher h4{font-size:18px}.trade-teacher p{font-size:16px}}
+  @media(max-width:420px){.trades-container{width:calc(100% - 26px)}.trade-card{padding:17px 14px}.trade-card-header{min-height:50px;margin:-17px -14px 0;padding:10px}.trade-card-header .trade-title{font-size:19px!important}.trade-overview{padding:12px 9px}.trade-overview p{font-size:16px}.trade-careers{padding-top:13px}.trade-careers::before{font-size:41px}.trade-careers h5{font-size:16px}.trade-jobs span{padding:6px 7px;font-size:15px}}
+</style>
 </head>
 
 <body>
@@ -199,18 +74,15 @@
     <header class="top-bar">
         <div class="container">
             <div class="top-left">
-                <span class="phone-number">📞 01716-858193</span>
-                ✉️ tabiulmursaleen58071@gmail.com
-            </div>
-
-            <div class="top-right">
-                <a href="https://www.facebook.com/tabiulmursaleen/"
+            <a class="facebook-top-link" href="https://www.facebook.com/tabiulmursaleen/"
                    target="_blank"
                    rel="noopener noreferrer"
                    aria-label="Facebook">
                     <span class="facebook-icon">f</span>
-                </a>
-            </div>
+                </a><a class="contact-pill phone-number" href="tel:+8801716858193"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.8a2 2 0 0 1-.45 2.11L8.1 9.9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.84.58 2.8.7A2 2 0 0 1 22 16.92z"></path></svg><span>01716-858193</span></a>
+            <a class="contact-pill email-address" href="mailto:tabiulmursaleen58071@gmail.com"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg><span>tabiulmursaleen58071@gmail.com</span></a></div>
+
+            
         </div>
     </header>
 
@@ -218,11 +90,12 @@
     <header class="main-header">
         <div class="container">
             <div class="logo-area">
-                <img src="images/logo/logo.png" alt="School Logo">
+                <div class="logo-stack"><img src="images/logo/logo-transparent.png" alt="School Logo"><small class="school-eiin">EIIN No. 136065</small></div>
 
                 <div>
                     <h1>তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</h1>
                     <p>টেঙ্গুরী, কেন্দুয়া, নেত্রকোণা</p>
+
                 </div>
             </div>
         </div>
@@ -247,7 +120,7 @@
                     <ul class="submenu">
                         <li><a href="about.html">আমাদের কথা</a></li>
                         <li class="has-submenu">
-                            <a href="trades.html">চলমান ট্রেডসমূহ</a>
+                            <a href="javascript:void(0)">চলমান ট্রেডসমূহ</a>
                             <ul class="submenu">
                                 <li><a href="school-trades.html">স্কুল শাখা</a></li>
                                 <li><a href="college-trades.html">কলেজ শাখা</a></li>
@@ -302,8 +175,40 @@
 
 
 
-<br><br><br><br><br><br><br><br>
 
+
+<main class="trades-page">
+  <section class="trades-hero"><div class="trades-container"><h2>আমাদের চলমান ট্রেডসমূহ</h2><p>আমরা কারিগরি জ্ঞান, ব্যবহারিক দক্ষতা ও আগ্রহের সমন্বয়ে শিক্ষার্থীদের উচ্চশিক্ষা ও কর্মজীবনের জন্য প্রস্তুত হতে সহায়তা করি।</p></div></section>
+
+  <section class="trades-section">
+    <div class="trades-container">
+      <h2 class="trades-heading">স্কুল শাখা</h2>
+      <p class="trades-lead">স্কুল শাখায় শিক্ষার্থীরা বিভিন্ন কারিগরি ক্ষেত্রের ভিত্তি, ব্যবহারিক কাজ ও সমস্যা সমাধানের দক্ষতা অর্জনের সুযোগ পায়।</p>
+      <div class="trade-list">
+        <article class="trade-card"><div class="trade-card-header"><h2 class="trade-title">আইটি সাপোর্ট এন্ড আইওটি বেসিকস</h2></div><div class="trade-card-body"><div class="trade-symbol-panel" aria-hidden="true">💻</div><div class="trade-overview"><p>এই ট্রেডে কম্পিউটার হার্ডওয়্যার, অপারেটিং সিস্টেম, সফটওয়্যার স্থাপন ও সাধারণ ত্রুটি নির্ণয়ের হাতে-কলমে ধারণা দেওয়া হয়। নেটওয়ার্ক সংযোগ, ডেটা নিরাপত্তা, প্রিন্টার ও অন্যান্য পেরিফেরাল ব্যবস্থাপনার পাশাপাশি সেন্সর, স্মার্ট ডিভাইস এবং IoT-এর প্রাথমিক ব্যবহার শেখানো হয়, যাতে শিক্ষার্থী দৈনন্দিন আইটি সমস্যার সমাধান ও ব্যবহারকারীকে প্রযুক্তিগত সহায়তা দিতে পারে।</p></div><div class="trade-careers" data-icon="💻"><h5>সম্ভাব্য কর্মক্ষেত্র</h5><div class="trade-jobs"><span>আইটি সাপোর্ট সহকারী</span><span>কম্পিউটার সার্ভিস সহকারী</span><span>হেল্পডেস্ক সহকারী</span><span>ডিভাইস সেটআপ সহকারী</span></div></div></div></article>
+        <article class="trade-card"><div class="trade-card-header"><h2 class="trade-title">অ্যাপারেল ম্যানুফ্যাকচারিং বেসিকস</h2></div><div class="trade-card-body"><div class="trade-symbol-panel" aria-hidden="true">🧵</div><div class="trade-overview"><p>এই ট্রেডে পোশাক শিল্পের উৎপাদন ধারা, কাপড় ও trims চেনা, মাপ নেওয়া, প্যাটার্নের ধারণা এবং শিল্প সেলাই মেশিন চালানোর অনুশীলন থাকে। কাটিং, সেলাই, ফিনিশিং, উৎপাদন লাইনের কাজ ও মান নিয়ন্ত্রণের ধাপ পরিচিত করানো হয়; পাশাপাশি কর্মক্ষেত্রের নিরাপত্তা, সময় ব্যবস্থাপনা এবং অর্ডার অনুযায়ী পণ্যের মান বজায় রাখার দক্ষতা গড়ে তোলা হয়।</p></div><div class="trade-careers" data-icon="🧵"><h5>সম্ভাব্য কর্মক্ষেত্র</h5><div class="trade-jobs"><span>সেলাই অপারেটর</span><span>উৎপাদন সহকারী</span><span>মান যাচাই সহকারী</span><span>নমুনা তৈরির সহকারী</span><span>নিজস্ব সেলাই উদ্যোগ</span></div></div></div></article>
+        <article class="trade-card"><div class="trade-card-header"><h2 class="trade-title">জেনারেল মেকানিক্স</h2></div><div class="trade-card-body"><div class="trade-symbol-panel" aria-hidden="true">⚙️</div><div class="trade-overview"><p>এই ট্রেডে বিভিন্ন যন্ত্রাংশ, হ্যান্ড টুলস ও মাপযন্ত্রের পরিচিতি দিয়ে নিরাপদে কাজ করার নিয়ম শেখানো হয়। ড্রিলিং, কাটিং, ফিটিং, থ্রেড তৈরি, সাধারণ মেশিন পরিচালনা এবং যন্ত্রের অংশ খুলে পরীক্ষা করার ব্যবহারিক অনুশীলন থাকে। নিয়মিত পরিষ্কার, লুব্রিকেশন ও ছোটখাটো ত্রুটি শনাক্ত করে রক্ষণাবেক্ষণের ভিত্তিও তৈরি হয়।</p></div><div class="trade-careers" data-icon="⚙️"><h5>সম্ভাব্য কর্মক্ষেত্র</h5><div class="trade-jobs"><span>ওয়ার্কশপ সহকারী</span><span>যন্ত্রপাতি রক্ষণাবেক্ষণ সহকারী</span><span>মেরামতকাজের সহকারী</span><span>কারিগরি সার্ভিস সহকারী</span></div></div></div></article>
+        <article class="trade-card"><div class="trade-card-header"><h2 class="trade-title">জেনারেল ইলেক্ট্রনিক্স</h2></div><div class="trade-card-body"><div class="trade-symbol-panel" aria-hidden="true">🔌</div><div class="trade-overview"><p>এই ট্রেডে রেজিস্টর, ক্যাপাসিটর, ডায়োড, ট্রানজিস্টর ও অন্যান্য ইলেকট্রনিক উপাদানের কাজ এবং মৌলিক সার্কিট সম্পর্কে শেখানো হয়। মাল্টিমিটার ও প্রয়োজনীয় পরীক্ষণ সরঞ্জাম ব্যবহার করে ভোল্টেজ পরীক্ষা, সংযোগ যাচাই, সোল্ডারিং এবং সাধারণ ত্রুটি শনাক্তের অনুশীলন হয়। ছোট ইলেকট্রনিক যন্ত্রের সার্ভিসিং ও নিরাপদে কাজ করার নিয়মও এর অন্তর্ভুক্ত।</p></div><div class="trade-careers" data-icon="🔌"><h5>সম্ভাব্য কর্মক্ষেত্র</h5><div class="trade-jobs"><span>ইলেকট্রনিক্স সার্ভিস সহকারী</span><span>যন্ত্রাংশ সংযোজন সহকারী</span><span>মেরামতকাজের সহকারী</span><span>রক্ষণাবেক্ষণ সহকারী</span></div></div></div></article>
+        <article class="trade-card"><div class="trade-card-header"><h2 class="trade-title">এগ্রো বেসড ফুড</h2></div><div class="trade-card-body"><div class="trade-symbol-panel" aria-hidden="true">🌾</div><div class="trade-overview"><p>এই ট্রেডে স্থানীয় কৃষিজ কাঁচামাল বাছাই ও প্রস্তুত করা থেকে শুরু করে খাদ্য প্রক্রিয়াজাতকরণ, সংরক্ষণ এবং প্যাকেজিংয়ের মৌলিক ধাপ শেখানো হয়। পরিচ্ছন্নতা, ব্যক্তিগত স্বাস্থ্যবিধি, নিরাপদ খাদ্য পরিচালনা, উৎপাদনের সময় ও তাপমাত্রা নিয়ন্ত্রণ এবং পণ্যের মান যাচাইয়ে গুরুত্ব দেওয়া হয়। শিক্ষার্থীরা ছোট পরিসরে খাদ্যপণ্য তৈরির প্রক্রিয়াও হাতে-কলমে অনুশীলন করে।</p></div><div class="trade-careers" data-icon="🌾"><h5>সম্ভাব্য কর্মক্ষেত্র</h5><div class="trade-jobs"><span>খাদ্য প্রক্রিয়াজাতকরণ সহকারী</span><span>প্যাকেজিং সহকারী</span><span>মান যাচাই সহকারী</span><span>বেকারি ও খাদ্য উৎপাদন</span><span>ক্ষুদ্র খাদ্য উদ্যোগ</span></div></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="trades-section trades-section--pale"><div class="trades-container"><h2 class="trades-heading">কলেজ শাখা</h2><p class="trades-lead">কলেজ শাখার ট্রেডগুলোতে হিসাব, ব্যবসায়িক কার্যক্রম ও প্রযুক্তির ব্যবহার সম্পর্কে জ্ঞান অর্জনের পাশাপাশি কর্মক্ষেত্রে কাজে লাগে এমন দক্ষতা গড়ে তোলার সুযোগ রয়েছে।</p><div class="trade-list">
+    <article class="trade-card"><div class="trade-card-header"><h2 class="trade-title">কম্পিউটারাইজড একাউন্টিং সিস্টেম</h2></div><div class="trade-card-body"><div class="trade-symbol-panel" aria-hidden="true">📊</div><div class="trade-overview"><p>এই ট্রেডে ব্যবসায়িক লেনদেন শনাক্ত ও শ্রেণিবিন্যাস, ভাউচার তৈরি, খতিয়ান ও হিসাবের নথি সংরক্ষণ এবং আয়-ব্যয়ের হিসাব প্রস্তুতের অনুশীলন থাকে। স্প্রেডশিট ও হিসাবরক্ষণ সফটওয়্যারে তথ্য এন্ট্রি, বিল-ইনভয়েস তৈরি, লেনদেন যাচাই এবং সহজ আর্থিক প্রতিবেদন প্রস্তুত শেখানো হয়। নির্ভুলতা, তথ্যের গোপনীয়তা ও অফিসের নথি গুছিয়ে রাখার দক্ষতাও গড়ে ওঠে।</p></div><div class="trade-careers" data-icon="📊"><h5>সম্ভাব্য কর্মক্ষেত্র</h5><div class="trade-jobs"><span>হিসাব সহকারী</span><span>বিলিং সহকারী</span><span>অফিস হিসাবরক্ষণ</span><span>ডেটা এন্ট্রি অপারেটর</span></div></div></div></article>
+    <article class="trade-card"><div class="trade-card-header"><h2 class="trade-title">ডিজিটাল টেকনোলজি ইন বিজনেস</h2></div><div class="trade-card-body"><div class="trade-symbol-panel" aria-hidden="true">📱</div><div class="trade-overview"><p>এই ট্রেডে ব্যবসার দৈনন্দিন কাজে কম্পিউটার, ইন্টারনেট ও ডিজিটাল প্ল্যাটফর্ম ব্যবহারের বাস্তব প্রয়োগ শেখানো হয়। পণ্য ও সেবার তথ্য তৈরি, ডিজিটাল নথি ও ডেটা ব্যবস্থাপনা, অনলাইন যোগাযোগ, ই-কমার্সের প্রাথমিক কার্যক্রম এবং গ্রাহকের প্রশ্নের উত্তর দেওয়ার অনুশীলন থাকে। ডিজিটাল নিরাপত্তা, দায়িত্বশীল অনলাইন আচরণ এবং প্রযুক্তি ব্যবহার করে ব্যবসায়িক কাজ সহজ করার দক্ষতাও এতে অন্তর্ভুক্ত।</p></div><div class="trade-careers" data-icon="📱"><h5>সম্ভাব্য কর্মক্ষেত্র</h5><div class="trade-jobs"><span>ই-কমার্স অপারেশন সহকারী</span><span>ডিজিটাল ব্যবসা সহকারী</span><span>অনলাইন গ্রাহকসেবা</span><span>অফিস ডেটা ব্যবস্থাপনা</span></div></div></div></article>
+  </div></div></section>
+
+  <section class="trades-section"><div class="trades-container"><h2 class="trades-heading">ট্রেড-সংশ্লিষ্ট শিক্ষকবৃন্দ</h2><p class="trades-lead">শিক্ষকের ছবিতে বা পরিচিতিতে ক্লিক করে তাঁর বিস্তারিত প্রোফাইল দেখুন।</p><div class="trade-teachers">
+    <article class="trade-teacher"><a class="trade-teacher-link" href="teacher-profile.html?id=teacher-08"><img src="images/teachers/teacher-08.jpg" alt="ইমদাদুল হক" loading="lazy"><div class="trade-teacher-info"><h4>ইমদাদুল হক</h4><p>ট্রেড ইনস্ট্রাক্টর</p><p class="teacher-subject">অ্যাপারেল ম্যানুফ্যাকচারিং বেসিকস</p></div></a></article>
+    <article class="trade-teacher"><a class="trade-teacher-link" href="teacher-profile.html?id=teacher-09"><img src="images/teachers/teacher-09.jpg" alt="জামিল হোসেন" loading="lazy"><div class="trade-teacher-info"><h4>জামিল হোসেন</h4><p>ট্রেড ইনস্ট্রাক্টর</p><p class="teacher-subject">অ্যাপারেল ম্যানুফ্যাকচারিং বেসিকস</p></div></a></article>
+    <article class="trade-teacher"><a class="trade-teacher-link" href="teacher-profile.html?id=teacher-10"><img src="images/teachers/teacher-10.jpg" alt="দ্বিপ্তী রানী" loading="lazy"><div class="trade-teacher-info"><h4>দ্বিপ্তী রানী</h4><p>ট্রেড ইনস্ট্রাক্টর</p><p class="teacher-subject">এগ্রো বেসড ফুড</p></div></a></article>
+    <article class="trade-teacher"><a class="trade-teacher-link" href="teacher-profile.html?id=teacher-04"><img src="images/teachers/teacher-04.jpg" alt="নাজমা আক্তার" loading="lazy"><div class="trade-teacher-info"><h4>নাজমা আক্তার</h4><p>প্রভাষক</p><p class="teacher-subject">হিসাববিজ্ঞান</p></div></a></article>
+    <article class="trade-teacher"><a class="trade-teacher-link" href="teacher-profile.html?id=teacher-06"><img src="images/teachers/teacher-06.jpg" alt="মুহাম্মাদ মাসুদ রানা" loading="lazy"><div class="trade-teacher-info"><h4>মুহাম্মাদ মাসুদ রানা</h4><p>প্রভাষক</p><p class="teacher-subject">কম্পিউটার অপারেশন</p></div></a></article>
+  </section>
+
+  <section class="trades-section trades-section--pale"><div class="trades-container"><div class="trade-cta"><h2>কারিগরি দক্ষতার পথে এগিয়ে চলুন</h2><p>ভর্তি ও ট্রেডসংক্রান্ত বিস্তারিত জানতে প্রতিষ্ঠানের নোটিশ দেখুন অথবা যোগাযোগ করুন।</p><a href="contact.html">যোগাযোগের তথ্য</a></div></div></section>
+</main>
 
 
 
@@ -315,15 +220,12 @@
                 <div class="footer-info">
                     <h3>তাবিউল মুরসালীন নগর<br>কারিগরি স্কুল এন্ড কলেজ</h3>
                     <p>টেঙ্গুরী, কেন্দুয়া, নেত্রকোণা</p>
-                    <p class="footer-phone">📞 01716-858193</p>
-                    <p>✉️ tabiulmursaleen58071@gmail.com</p>
-
-                    <a href="https://www.facebook.com/tabiulmursaleen/"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       class="footer-facebook">
-                        📘 Facebook
-                    </a>
+                    <p class="footer-eiin">EIIN No. 136065</p>
+                    <div class="footer-contact-list">
+                        <a class="footer-contact-pill footer-facebook-link" href="https://www.facebook.com/tabiulmursaleen/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook"><span class="footer-facebook-icon">f</span></a>
+                        <a class="footer-contact-pill" href="tel:+8801716858193"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.8a2 2 0 0 1-.45 2.11L8.1 9.9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.84.58 2.8.7A2 2 0 0 1 22 16.92z"/></svg><span>01716-858193</span></a>
+                        <a class="footer-contact-pill" href="mailto:tabiulmursaleen58071@gmail.com"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span>tabiulmursaleen58071@gmail.com</span></a>
+                    </div>
                 </div>
 
                 <div class="footer-map">
@@ -337,203 +239,48 @@
                 </div>
 
                 <div class="footer-links">
-                    <h3>গুরুত্বপূর্ণ লিংক</h3>
-                    <a href="index.html">হোম</a>
-                    <a href="about.html">আমাদের সম্পর্কে</a>
-                    <a href="trades.html">ট্রেডসমূহ</a>
-                    <a href="teachers.html">শিক্ষক-কর্মচারী</a>
-                    <a href="notice.html">নোটিশ</a>
-                    <a href="photo-gallery.html">গ্যালারি</a>
-                    <a href="routine.html">ক্লাস রুটিন</a>
-                    <a href="contact.html">যোগাযোগ</a>
+                    <h3>সরকারি নোটিশ</h3>
+                    <a href="https://techedu.gov.bd/pages/notices" target="_blank" rel="noopener noreferrer">কারিগরি শিক্ষা অধিদপ্তর</a>
+                    <a href="https://bteb.gov.bd/pages/notices/" target="_blank" rel="noopener noreferrer">বাংলাদেশ কারিগরি শিক্ষা বোর্ড</a>
+                    <a href="https://tmed.gov.bd/pages/notices/" target="_blank" rel="noopener noreferrer">কারিগরি ও মাদ্রাসা শিক্ষা বিভাগ</a>
+                    <a href="https://dshe.gov.bd/pages/notices/" target="_blank" rel="noopener noreferrer">মাধ্যমিক ও উচ্চশিক্ষা অধিদপ্তর</a>
+                <a href="https://dme.gov.bd/pages/notices" target="_blank" rel="noopener noreferrer">মাদ্রাসা শিক্ষা অধিদপ্তর</a>
+                <a href="https://ntrca.gov.bd/pages/notices/" target="_blank" rel="noopener noreferrer">বেসরকারি শিক্ষক নিবন্ধন ও প্রত্যয়ন কর্তৃপক্ষ (NTRCA)</a>
+                <a href="https://dyd.gov.bd/pages/notices" target="_blank" rel="noopener noreferrer">যুব উন্নয়ন অধিদপ্তর</a>
+                <a href="https://nsda.gov.bd/pages/notices" target="_blank" rel="noopener noreferrer">জাতীয় দক্ষতা উন্নয়ন কর্তৃপক্ষ (NSDA)</a>
                 </div>
 
-            </div>
+                            </div>
         </div>
 
-        <div class="footer-bottom">
-            <div class="footer-copyright">
-                <div class="copyright-left">
-                    © ২০২৬ তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ
-                </div>
+    <div class="footer-bottom">
 
-                <div class="copyright-right">
-                    Designed &amp; Developed by
-                    <a href="https://wa.me/8801741753844"
-                       target="_blank"
-                       rel="noopener noreferrer">
-                        Jamil Hossain
-                    </a>
-                </div>
-            </div>
+    <div class="footer-copyright">
+
+        <div class="copyright-left">
+            © ২০২৬ তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ
         </div>
-    </footer>
+
+        <div class="copyright-right">
+
+            <span>Designed &amp; Developed by</span>
+
+            <a href="https://wa.me/8801741753844"
+               target="_blank"
+               rel="noopener noreferrer">
+            Jamil Hossain
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</footer>
 
     <!-- Existing mobile menu script -->
     <script src="js/script.js"></script>
-
-    <!-- Load all published notices -->
-    
-<script type="module">
-    import { db } from "./js/firebase-config.js";
-
-    import {
-        collection,
-        getDocs,
-        query,
-        where
-    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-
-    const tableBody = document.getElementById("allNoticesList");
-
-    function showMessage(message) {
-        tableBody.replaceChildren();
-
-        const row = document.createElement("tr");
-        const cell = document.createElement("td");
-
-        cell.colSpan = 4;
-        cell.className = "notice-table-status";
-        cell.textContent = message;
-
-        row.appendChild(cell);
-        tableBody.appendChild(row);
-    }
-
-    function formatDate(timestamp) {
-    if (!timestamp || typeof timestamp.toDate !== "function") {
-        return "তারিখ নেই";
-    }
-
-    return new Intl.DateTimeFormat("bn-BD", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric"
-    }).format(timestamp.toDate());
-}
-
-    function getFileInfo(url) {
-        if (!url) {
-            return { type: "সংযুক্ত ফাইল নেই", url: "" };
-        }
-
-        try {
-            const parsedUrl = new URL(url);
-
-            if (parsedUrl.protocol !== "https:") {
-                return { type: "অবৈধ লিংক", url: "" };
-            }
-
-            const host = parsedUrl.hostname.toLowerCase();
-            const path = parsedUrl.pathname.toLowerCase();
-
-            if (host.includes("drive.google.com") ||
-                host.includes("docs.google.com")) {
-                return { type: "Google Drive / PDF", url: parsedUrl.href };
-            }
-
-            if (path.endsWith(".pdf")) {
-                return { type: "PDF", url: parsedUrl.href };
-            }
-
-            if (path.endsWith(".doc") || path.endsWith(".docx")) {
-                return { type: "Word", url: parsedUrl.href };
-            }
-
-            if (path.endsWith(".jpg") ||
-                path.endsWith(".jpeg") ||
-                path.endsWith(".png")) {
-                return { type: "ছবি", url: parsedUrl.href };
-            }
-
-            return { type: "লিংক", url: parsedUrl.href };
-
-        } catch {
-            return { type: "অবৈধ লিংক", url: "" };
-        }
-    }
-
-    async function loadNotices() {
-        try {
-            const noticesQuery = query(
-                collection(db, "notices"),
-                where("published", "==", true)
-            );
-
-            const snapshot = await getDocs(noticesQuery);
-
-            if (snapshot.empty) {
-                showMessage("বর্তমানে কোনো প্রকাশিত নোটিশ নেই।");
-                return;
-            }
-
-            const notices = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-
-            notices.sort((a, b) => {
-                const timeA = a.updatedAt?.toMillis?.()
-                    ?? a.createdAt?.toMillis?.()
-                    ?? 0;
-
-                const timeB = b.updatedAt?.toMillis?.()
-                    ?? b.createdAt?.toMillis?.()
-                    ?? 0;
-
-                return timeB - timeA;
-            });
-
-            tableBody.replaceChildren();
-
-            notices.forEach((notice) => {
-                const row = document.createElement("tr");
-
-                const dateCell = document.createElement("td");
-                dateCell.textContent = formatDate(
-                    notice.updatedAt ?? notice.createdAt
-                );
-
-                const titleCell = document.createElement("td");
-                titleCell.textContent = notice.title || "শিরোনাম নেই";
-
-                const fileCell = document.createElement("td");
-                const fileInfo = getFileInfo(notice.pdfUrl?.trim());
-
-                fileCell.textContent = fileInfo.type;
-
-                const actionCell = document.createElement("td");
-
-                if (fileInfo.url) {
-                    const link = document.createElement("a");
-
-                    link.className = "notice-view-link";
-                    link.href = fileInfo.url;
-                    link.target = "_blank";
-                    link.rel = "noopener noreferrer";
-                    link.textContent = "দেখুন";
-
-                    actionCell.appendChild(link);
-                } else {
-                    actionCell.textContent = "ফাইল নেই";
-                }
-
-                row.appendChild(dateCell);
-                row.appendChild(titleCell);
-                row.appendChild(fileCell);
-                row.appendChild(actionCell);
-
-                tableBody.appendChild(row);
-            });
-
-        } catch (error) {
-            console.error("নোটিশ লোড করার সমস্যা:", error);
-            showMessage("নোটিশ লোড করা যায়নি। পরে আবার চেষ্টা করুন।");
-        }
-    }
-
-    loadNotices();
-</script>
 
 
 </body>

@@ -1,11 +1,26 @@
 
+@font-face {
+  font-family: "Kalpurush";
+  src: url("../fonts/kalpurush.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 * {
   box-sizing: border-box;
 }
 
+body,
+button,
+input,
+select,
+textarea {
+  font-family: Arial, "Kalpurush", sans-serif;
+}
+
 body {
   margin: 0;
-  font-family: "Noto Sans Bengali", "SolaimanLipi", sans-serif;
   background: #f0f5f1;
   color: #26352b;
 }
@@ -29,20 +44,20 @@ body {
 
 .school-icon {
   text-align: center;
-  font-size: 42px;
+  font-size: 45px;
 }
 
 h1 {
   margin: 12px 0;
   text-align: center;
   color: #187342;
-  font-size: 26px;
+  font-size: 29px;
 }
 
 .subtitle {
   text-align: center;
   color: #68756b;
-  font-size: 14px;
+  font-size: 17px;
   line-height: 1.7;
   margin-bottom: 28px;
 }
@@ -58,7 +73,7 @@ input {
   padding: 12px;
   border: 1px solid #ccd6ce;
   border-radius: 7px;
-  font-size: 16px;
+  font-size: 19px;
 }
 
 input:focus {
@@ -74,7 +89,7 @@ button {
   border-radius: 7px;
   background: #187342;
   color: #fff;
-  font-size: 16px;
+  font-size: 19px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -89,7 +104,7 @@ button:disabled {
 }
 
 #loginMessage {
-  font-size: 14px;
+  font-size: 17px;
   line-height: 1.6;
 }
 
@@ -125,7 +140,7 @@ button:disabled {
   color: white;
   text-align: left;
   margin: 0 0 8px;
-  font-size: 24px;
+  font-size: 27px;
 }
 
 .dashboard-header p {
@@ -182,7 +197,7 @@ button:disabled {
 }
 
 .card-icon {
-  font-size: 30px;
+  font-size: 33px;
 }
 
 .dashboard-card h3 {

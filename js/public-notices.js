@@ -9,6 +9,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 const noticesContainer = document.getElementById("latestNotices");
+const tickerTrack = document.getElementById("noticeTickerTrack");
 
 async function loadLatestNotices() {
   if (!noticesContainer) return;
@@ -22,11 +23,17 @@ async function loadLatestNotices() {
     const snapshot = await getDocs(noticesQuery);
 
     noticesContainer.replaceChildren();
+    tickerTrack?.replaceChildren();
 
     if (snapshot.empty) {
       const li = document.createElement("li");
       li.textContent = "বর্তমানে কোনো প্রকাশিত নোটিশ নেই।";
       noticesContainer.appendChild(li);
+      if (tickerTrack) {
+        const tickerItem = document.createElement("li");
+        tickerItem.textContent = li.textContent;
+        tickerTrack.appendChild(tickerItem);
+      }
       return;
     }
 
@@ -79,16 +86,40 @@ async function loadLatestNotices() {
       li.appendChild(date);
       li.appendChild(link);
       noticesContainer.appendChild(li);
+      if (tickerTrack) {
+        const tickerItem = document.createElement("li");
+        tickerItem.appendChild(link.cloneNode(true));
+        tickerTrack.appendChild(tickerItem);
+      }
     });
+
+    if (tickerTrack?.children.length) {
+      const originals = Array.from(tickerTrack.children);
+      originals.forEach((item) => {
+        const clone = item.cloneNode(true);
+        clone.setAttribute("aria-hidden", "true");
+        clone.querySelectorAll("a").forEach((anchor) => {
+          anchor.tabIndex = -1;
+        });
+        tickerTrack.appendChild(clone);
+      });
+      tickerTrack.classList.add("is-moving");
+    }
 
   } catch (error) {
     console.error("নোটিশ লোড করতে সমস্যা:", error);
 
     noticesContainer.replaceChildren();
+    tickerTrack?.replaceChildren();
 
     const li = document.createElement("li");
     li.textContent = "নোটিশ লোড করা যায়নি।";
     noticesContainer.appendChild(li);
+    if (tickerTrack) {
+      const tickerItem = document.createElement("li");
+      tickerItem.textContent = li.textContent;
+      tickerTrack.appendChild(tickerItem);
+    }
   }
 }
 

@@ -23,20 +23,19 @@ content="তাবিউল মুরসালীন নগর কারিগ�
     <div class="container">
 
         <div class="top-left">
-            <span class="phone-number">📞 01716-858193</span>
-            <span class="email-address">✉️ tabiulmursaleen@gmail.com</span>
-        </div>
-
-        <div class="top-right">
-            <a href="https://www.facebook.com/tabiulmursaleen/"
+            <a class="facebook-top-link" href="https://www.facebook.com/tabiulmursaleen/"
                target="_blank"
                rel="noopener noreferrer"
                aria-label="Facebook">
                 <span class="facebook-icon">f</span>
-            </a>
+            </a><a class="contact-pill phone-number" href="tel:+8801716858193"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.8a2 2 0 0 1-.45 2.11L8.1 9.9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.84.58 2.8.7A2 2 0 0 1 22 16.92z"></path></svg><span>01716-858193</span></a>
+            <a class="contact-pill email-address" href="mailto:tabiulmursaleen58071@gmail.com"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg><span>tabiulmursaleen58071@gmail.com</span></a></div>
+
+        <div class="top-right">
+            
 
             <a href="admin.html" class="admin-login-link">
-                <i class="fas fa-sign-in-alt"></i>
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M10 17l5-5-5-5"></path><path d="M15 12H3"></path><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7"></path></svg>
                 <span>এডমিন লগইন</span>
             </a>
         </div>
@@ -53,13 +52,14 @@ content="তাবিউল মুরসালীন নগর কারিগ�
 
 <div class="logo-area">
 
-<img src="images/logo/logo.png" alt="School Logo">
+<div class="logo-stack"><img src="images/logo/logo-transparent.png" alt="School Logo"><small class="school-eiin">EIIN No. 136065</small></div>
 
 <div>
 
 <h1>তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</h1>
 
 <p>টেঙ্গুরী, কেন্দুয়া, নেত্রকোণা</p>
+
 
 </div>
 
@@ -93,7 +93,7 @@ content="তাবিউল মুরসালীন নগর কারিগ�
                 <ul class="submenu">
                     <li><a href="about.html">আমাদের কথা</a></li>
                     <li class="has-submenu">
-                        <a href="trades.html">চলমান ট্রেডসমূহ</a>
+                        <a href="javascript:void(0)">চলমান ট্রেডসমূহ</a>
                         <ul class="submenu">
                             <li><a href="school-trades.html">স্কুল শাখা</a></li>
                             <li><a href="college-trades.html">কলেজ শাখা</a></li>
@@ -149,6 +149,18 @@ content="তাবিউল মুরসালীন নগর কারিগ�
     </div>
 </nav>
 
+
+<section class="notice-strip" aria-label="সর্বশেষ নোটিশ">
+    <div class="notice-strip-inner">
+        <span class="notice-strip-label">📢 সর্বশেষ নোটিশ</span>
+        <div class="notice-strip-window">
+            <ul class="notice-strip-track" id="noticeTickerTrack">
+                <li>নোটিশ লোড হচ্ছে...</li>
+            </ul>
+        </div>
+        <a class="notice-strip-all" href="notice.html">সব নোটিশ →</a>
+    </div>
+</section>
 <!-- ========= Hero Slider ========= -->
 
 <section class="hero-slider">
@@ -226,7 +238,7 @@ content="তাবিউল মুরসালীন নগর কারিগ�
 </section>
 
 
-<<!-- ========= Principal + Notice ========= -->
+<!-- ========= Principal Message ========= -->
 
 <section class="principal">
 
@@ -250,7 +262,7 @@ content="তাবিউল মুরসালীন নগর কারিগ�
 
                         <div>
 
-                            <h3>মোহাম্মদ রফিকুল ইসলাম বায়েজিদ</h3>
+                            <h3><a class="principal-profile-link" href="teacher-profile.html?id=teacher-01">মোহাম্মদ রফিকুল ইসলাম বায়েজিদ</a></h3>
 
                             <h4>অধ্যক্ষ</h4>
 
@@ -271,24 +283,15 @@ content="তাবিউল মুরসালীন নগর কারিগ�
                 </div>
 
             </div>
-
-
             <!-- Latest Notice -->
 
-<div class="notice-panel">
-
-    <h2 class="section-title">📢 সর্বশেষ নোটিশ</h2>
-
-    <ul class="notice-list" id="latestNotices">
-        <li>নোটিশ লোড হচ্ছে...</li>
-    </ul>
-
-    <a href="notice.html" class="notice-link">
-        সকল নোটিশ দেখুন →
-    </a>
-
-</div>
-
+            <div class="notice-panel">
+                <h2 class="section-title">📢 সর্বশেষ নোটিশ</h2>
+                <ul class="notice-list" id="latestNotices">
+                    <li>নোটিশ লোড হচ্ছে...</li>
+                </ul>
+                <a href="notice.html" class="notice-link">সকল নোটিশ দেখুন →</a>
+            </div>
         </div>
 
     </div>
@@ -302,98 +305,7 @@ content="তাবিউল মুরসালীন নগর কারিগ�
 
         <h2 class="section-title">শিক্ষক-কর্মচারীবৃন্দ</h2>
 
-        <div class="teacher-preview-grid">
-
-            <article class="teacher-card">
-                <img src="images/teachers/teacher-01.jpg" alt="জনাব মোহাম্মদ রফিকুল ইসলাম" loading="lazy">
-                <div class="teacher-card-content">
-                    <h2><a href="teacher-profile.html?id=teacher-01">জনাব মোহাম্মদ রফিকুল ইসলাম</a></h2>
-                    <p>অধ্যক্ষ</p>
-                </div>
-            </article>
-
-            <article class="teacher-card">
-                <img src="images/teachers/teacher-02.jpg" alt="জনাব মুহাম্মদ মাসুদ রানা" loading="lazy">
-                <div class="teacher-card-content">
-                    <h2><a href="teacher-profile.html?id=teacher-02">জনাব মুহাম্মদ মাসুদ রানা</a></h2>
-                    <p>প্রভাষক</p>
-                    <span>ব্যবসায় ডিজিটাল প্রযুক্তি</span>
-                </div>
-            </article>
-
-            <article class="teacher-card">
-                <img src="images/teachers/teacher-03.jpg" alt="জনাব মোঃ শফিউল আলিম হোসেন" loading="lazy">
-                <div class="teacher-card-content">
-                    <h2><a href="teacher-profile.html?id=teacher-03">জনাব মোঃ শফিউল আলিম হোসেন</a></h2>
-                    <p>প্রভাষক</p>
-                    <span>ইংরেজি</span>
-                </div>
-            </article>
-
-            <article class="teacher-card">
-                <img src="images/teachers/teacher-04.jpg" alt="জনাব নাজমা আক্তার" loading="lazy">
-                <div class="teacher-card-content">
-                    <h2><a href="teacher-profile.html?id=teacher-04">জনাব নাজমা আক্তার</a></h2>
-                    <p>প্রভাষক</p>
-                    <span>কম্পিউটারাইজড অ্যাকাউন্টিং সিস্টেম</span>
-                </div>
-            </article>
-
-            <article class="teacher-card">
-                <img src="images/teachers/teacher-05.jpg" alt="জনাব আলমগীর কবির" loading="lazy">
-                <div class="teacher-card-content">
-                    <h2><a href="teacher-profile.html?id=teacher-05">জনাব আলমগীর কবির</a></h2>
-                    <p>প্রভাষক</p>
-                    <span>বাংলা</span>
-                </div>
-            </article>
-
-            <article class="teacher-card">
-                <img src="images/teachers/teacher-06.jpg" alt="জনাব মোঃ সাইফুল ইসলাম" loading="lazy">
-                <div class="teacher-card-content">
-                    <h2><a href="teacher-profile.html?id=teacher-06">জনাব মোঃ সাইফুল ইসলাম</a></h2>
-                    <p>প্রভাষক</p>
-                    <span>ব্যবস্থাপনা</span>
-                </div>
-            </article>
-
-            <article class="teacher-card">
-                <img src="images/teachers/teacher-07.jpg" alt="জনাব মোঃ শামীম মিয়া" loading="lazy">
-                <div class="teacher-card-content">
-                    <h2><a href="teacher-profile.html?id=teacher-07">জনাব মোঃ শামীম মিয়া</a></h2>
-                    <p>প্রভাষক</p>
-                    <span>গণিত</span>
-                </div>
-            </article>
-
-            <article class="teacher-card">
-                <img src="images/teachers/teacher-08.jpg" alt="জনাব মোঃ কামরুজ্জামান খন্দকার" loading="lazy">
-                <div class="teacher-card-content">
-                    <h2><a href="teacher-profile.html?id=teacher-08">জনাব মোঃ কামরুজ্জামান খন্দকার</a></h2>
-                    <p>সহকারী শিক্ষক</p>
-                    <span>শারীরিক শিক্ষা</span>
-                </div>
-            </article>
-
-            <article class="teacher-card">
-                <img src="images/teachers/teacher-09.jpg" alt="জনাব দ্বিপ্তী রাণী" loading="lazy">
-                <div class="teacher-card-content">
-                    <h2><a href="teacher-profile.html?id=teacher-09">জনাব দ্বিপ্তী রাণী</a></h2>
-                    <p>ট্রেড ইনস্ট্রাক্টর</p>
-                    <span>এগ্রোবেসড ফুড</span>
-                </div>
-            </article>
-
-            <article class="teacher-card">
-                <img src="images/teachers/teacher-10.jpg" alt="জনাব জামিল হোসেন" loading="lazy">
-                <div class="teacher-card-content">
-                    <h2><a href="teacher-profile.html?id=teacher-10">জনাব জামিল হোসেন</a></h2>
-                    <p>ট্রেড ইনস্ট্রাক্টর</p>
-                    <span>অ্যাপারেল ম্যানুফ্যাকচারিং বেসিকস</span>
-                </div>
-            </article>
-
-        </div>
+        <div class="teacher-preview-grid" id="teacherPreviewGrid"></div>
 
         <div class="teachers-preview-link">
             <a href="teachers.html">অন্যান্য সকল শিক্ষক →</a>
@@ -472,7 +384,6 @@ content="তাবিউল মুরসালীন নগর কারিগ�
                 </div>
 
             </div>
-
         </div>
 
     </div>
@@ -531,7 +442,6 @@ content="তাবিউল মুরসালীন নগর কারিগ�
                 <h3>২০০+</h3>
 
             </div>
-
         </div>
 
     </div>
@@ -570,7 +480,6 @@ content="তাবিউল মুরসালীন নগর কারিগ�
                 <h3>নৈতিক শিক্ষা</h3>
                 <p>দক্ষতার পাশাপাশি নৈতিকতা ও শৃঙ্খলার উপর বিশেষ গুরুত্ব।</p>
             </div>
-
         </div>
 
     </div>
@@ -591,16 +500,13 @@ content="তাবিউল মুরসালীন নগর কারিগ�
                 <h3>তাবিউল মুরসালীন নগর<br>কারিগরি স্কুল এন্ড কলেজ</h3>
 
                 <p>টেঙ্গুরী, কেন্দুয়া, নেত্রকোণা</p>
+                    <p class="footer-eiin">EIIN No. 136065</p>
 
-                <p class="footer-phone">📞 01716-858193</p>
-
-                <p>✉️ tabiulmursaleen58071@gmail.com</p>
-
-                <a href="https://www.facebook.com/tabiulmursaleen/"
-                   target="_blank"
-                   class="footer-facebook">
-                    📘 Facebook
-                </a>
+                <div class="footer-contact-list">
+                    <a class="footer-contact-pill footer-facebook-link" href="https://www.facebook.com/tabiulmursaleen/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook"><span class="footer-facebook-icon">f</span></a>
+                    <a class="footer-contact-pill" href="tel:+8801716858193"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.8a2 2 0 0 1-.45 2.11L8.1 9.9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.84.58 2.8.7A2 2 0 0 1 22 16.92z"/></svg><span>01716-858193</span></a>
+                    <a class="footer-contact-pill" href="mailto:tabiulmursaleen58071@gmail.com"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span>tabiulmursaleen58071@gmail.com</span></a>
+                </div>
 
             </div>
 
@@ -621,28 +527,18 @@ content="তাবিউল মুরসালীন নগর কারিগ�
             </div>
 
 
-            <!-- গুরুত্বপূর্ণ লিংক -->
+            <!-- সরকারি নোটিশ -->
 
             <div class="footer-links">
-
-                <h3>গুরুত্বপূর্ণ লিংক</h3>
-
-                <a href="index.html">হোম</a>
-
-                <a href="about.html">আমাদের সম্পর্কে</a>
-
-                <a href="trades.html">ট্রেডসমূহ</a>
-
-                <a href="teachers.html">শিক্ষক-কর্মচারী</a>
-
-                <a href="notice.html">নোটিশ</a>
-
-                <a href="gallery.html">গ্যালারি</a>
-
-                <a href="routine.html">ক্লাস রুটিন</a>
-
-                <a href="contact.html">যোগাযোগ</a>
-
+                <h3>সরকারি নোটিশ</h3>
+                <a href="https://techedu.gov.bd/pages/notices" target="_blank" rel="noopener noreferrer">কারিগরি শিক্ষা অধিদপ্তর</a>
+                <a href="https://bteb.gov.bd/pages/notices/" target="_blank" rel="noopener noreferrer">বাংলাদেশ কারিগরি শিক্ষা বোর্ড</a>
+                <a href="https://tmed.gov.bd/pages/notices/" target="_blank" rel="noopener noreferrer">কারিগরি ও মাদ্রাসা শিক্ষা বিভাগ</a>
+                <a href="https://dshe.gov.bd/pages/notices/" target="_blank" rel="noopener noreferrer">মাধ্যমিক ও উচ্চশিক্ষা অধিদপ্তর</a>
+                <a href="https://dme.gov.bd/pages/notices" target="_blank" rel="noopener noreferrer">মাদ্রাসা শিক্ষা অধিদপ্তর</a>
+                <a href="https://ntrca.gov.bd/pages/notices/" target="_blank" rel="noopener noreferrer">বেসরকারি শিক্ষক নিবন্ধন ও প্রত্যয়ন কর্তৃপক্ষ (NTRCA)</a>
+                <a href="https://dyd.gov.bd/pages/notices" target="_blank" rel="noopener noreferrer">যুব উন্নয়ন অধিদপ্তর</a>
+                <a href="https://nsda.gov.bd/pages/notices" target="_blank" rel="noopener noreferrer">জাতীয় দক্ষতা উন্নয়ন কর্তৃপক্ষ (NSDA)</a>
             </div>
 
         </div>
@@ -662,7 +558,7 @@ content="তাবিউল মুরসালীন নগর কারিগ�
 
         <div class="copyright-right">
 
-            Designed & Developed by
+            <span>Designed &amp; Developed by</span>
 
             <a href="https://wa.me/8801741753844"
                target="_blank"
@@ -677,6 +573,8 @@ content="তাবিউল মুরসালীন নগর কারিগ�
 </div>
 
 </footer>
+<script src="js/teachers-data.js"></script>
+<script src="js/home-teachers.js"></script>
 <script src="js/script.js"></script>
 <script type="module" src="js/public-notices.js"></script>
 </body>
