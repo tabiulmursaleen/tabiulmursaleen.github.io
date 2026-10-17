@@ -3008,6 +3008,28 @@ section{
 .footer-copyright{font-size:16px}
 
 @media(max-width:600px){
+    .top-bar .container{
+        flex-wrap:wrap;
+        align-items:flex-start;
+        row-gap:6px;
+    }
+    .top-bar .top-left{
+        flex:1 1 100%;
+        width:100%;
+    }
+    .top-bar .email-address{
+        max-width:100%;
+        white-space:normal;
+    }
+    .top-bar .email-address span{
+        min-width:0;
+        overflow-wrap:anywhere;
+    }
+    .top-bar .top-right{
+        flex:1 1 100%;
+        justify-content:flex-end;
+        margin-left:0;
+    }
     .top-bar .admin-login-link{font-size:13px}
 }
 
