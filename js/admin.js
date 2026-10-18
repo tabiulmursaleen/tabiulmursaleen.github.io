@@ -37,7 +37,7 @@ loginForm.addEventListener("submit", async (event) => {
 
     window.location.href = "admin-dashboard.html";
 
-    loginMessage.style.color = "#187342";
+    loginMessage.style.color = "#183d63";
 
   } catch (error) {
     console.error("Login error:", error.code || error.message);

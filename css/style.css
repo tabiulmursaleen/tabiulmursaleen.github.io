@@ -28,8 +28,8 @@
 
 :root{
 
-    --primary:#00695c;
-    --primary-dark:#004d40;
+    --primary:#183d63;
+    --primary-dark:#102b49;
     --background:#f5f7fa;
     --white:#ffffff;
     --text:#222222;
@@ -340,7 +340,7 @@ section{
 
     padding-right:18px;
 
-    border-right:2px solid rgba(0,105,92,.25);
+    border-right:2px solid rgba(208,170,79,.4);
 }
 
 .logo-area h1{
@@ -388,10 +388,10 @@ section{
 
 .logo-area h1{
     font-size:46px;
-    color:#005b4b;
-    text-shadow:1px 2px 0 rgba(218,177,78,.52),0 4px 7px rgba(0,77,64,.22);
+    color:#183d63;
+    text-shadow:1px 2px 0 rgba(218,177,78,.52),0 4px 7px rgba(16,43,73,.22);
 }
-.logo-area p{font-size:19px;color:#315e50;font-weight:600}
+.logo-area p{font-size:19px;color:#536274;font-weight:600}
 @media(max-width:768px){.logo-area h1{font-size:30px}.logo-area p{font-size:17px}}
 /* ---------- Navigation ---------- */
 
@@ -1800,7 +1800,7 @@ section{
 
 .footer{
 
-    background:#004d40;
+    background:#102b49;
 
     color:#fff;
 
@@ -2246,10 +2246,10 @@ section{
 
 .navbar a.active{ background:rgba(0,0,0,.16); }
 .teachers-page,.profile-page{ background:#f5f7fa; }
-.teachers-hero{ padding:52px 0 48px; color:#fff; text-align:center; background:linear-gradient(135deg,var(--primary),#00897b); }
+.teachers-hero{ padding:20px 0 18px; color:#fff; text-align:center; background:linear-gradient(120deg,#16385c 0%,#285a87 55%,#173b63 100%); border-bottom:3px solid #d0aa4f; }
 .page-kicker{ margin:0 0 6px; font-size:18px; font-weight:600; letter-spacing:.5px; }
-.teachers-hero h1{ margin:0 0 8px; color:#fff; font-size:35px; }
-.teachers-hero p:last-child{ margin:0; font-size:19px; color:rgba(255,255,255,.9); }
+.teachers-hero h1{ margin:0 0 4px; color:#fff; font-size:clamp(27px,3.2vw,34px); line-height:1.35; }
+.teachers-hero p:last-child{ margin:0; font-size:18px; line-height:1.5; color:rgba(255,255,255,.94); }
 .teachers-section{ padding:50px 0 65px; }
 .teacher-grid{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:20px; }
 .teacher-card{ overflow:hidden; background:#fff; border-radius:12px; box-shadow:var(--shadow); transition:transform .25s ease,box-shadow .25s ease; }
@@ -2263,7 +2263,7 @@ section{
 .teacher-card span,.profile-summary span{ display:block; margin-top:5px; color:#777; font-size:16px; line-height:1.45; }
 .profile-page{ padding:55px 0 70px; }
 .teacher-profile{ display:grid; grid-template-columns:minmax(250px,340px) 1fr; overflow:hidden; background:#fff; border-radius:14px; box-shadow:var(--shadow); }
-.profile-summary{ padding:32px 28px; text-align:center; color:#fff; background:linear-gradient(155deg,var(--primary),#00796b); }
+.profile-summary{ padding:32px 28px; text-align:center; color:#fff; background:linear-gradient(155deg,var(--primary),#102b49); }
 .profile-summary img{ width:180px; max-width:100%; aspect-ratio:4/5; object-fit:cover; object-position:center top; border:4px solid rgba(255,255,255,.85); border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,.2); }
 .profile-summary h1{ margin:18px 0 5px; color:#fff; font-size:28px; line-height:1.45; }
 .profile-summary p{ margin:0; font-size:19px; font-weight:600; }
@@ -2279,7 +2279,7 @@ section{
 .profile-not-found{ grid-column:1/-1; padding:60px 25px; text-align:center; }
 @media(max-width:1100px){ .teacher-grid{ grid-template-columns:repeat(4,minmax(0,1fr)); } }
 @media(max-width:768px){
-  .teachers-hero{ padding:38px 0 35px; }.teachers-hero h1{ font-size:30px; }.teachers-section,.profile-page{ padding:35px 0 45px; }
+  .teachers-hero{ padding:20px 0 18px; }.teachers-section,.profile-page{ padding:35px 0 45px; }
   .teacher-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }.teacher-card-content{ min-height:108px; padding:12px 9px; }.teacher-card h2{ font-size:18px; }.teacher-card p{ font-size:16px; }
   .teacher-profile{ grid-template-columns:1fr; }.profile-summary{ padding:28px 20px; }.profile-summary img{ width:160px; }.profile-details{ padding:28px 20px; }.profile-details h2{ font-size:25px; }.profile-details dl > div{ grid-template-columns:1fr; gap:4px; padding:12px 0; }
 }
@@ -2338,6 +2338,41 @@ section{
 
     gap:20px;
 
+}
+
+.home-section-title{
+    position:relative;
+    width:fit-content;
+    margin:0 auto 26px;
+    padding:0 10px 11px;
+    color:#183d63;
+    text-align:center;
+    font-size:34px;
+    line-height:1.35;
+}
+
+.home-section-title::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:0;
+    width:66px;
+    height:4px;
+    transform:translateX(-50%);
+    border-radius:999px;
+    background:linear-gradient(90deg,#285780,#d0aa4f,#285780);
+}
+
+.teachers-preview{padding-top:42px}
+.trades{padding-top:16px}
+.achievement{padding-top:40px}
+.why-us{padding-top:42px}
+
+@media(max-width:768px){
+    .home-section-title{font-size:28px;margin-bottom:22px;padding-bottom:9px}
+    .teachers-preview{padding-top:34px}
+    .achievement{padding-top:34px}
+    .why-us{padding-top:36px}
 }
 
 .teachers-preview .teacher-preview-card-link{display:block;height:100%;color:inherit;text-decoration:none}
@@ -2784,9 +2819,9 @@ section{
     }
 }
 
-.logo-stack{display:flex;flex:0 0 auto;flex-direction:column;align-items:center;gap:4px;padding-right:18px;border-right:2px solid rgba(0,105,92,.25)}
+.logo-stack{display:flex;flex:0 0 auto;flex-direction:column;align-items:center;gap:4px;padding-right:18px;border-right:2px solid rgba(208,170,79,.4)}
 .logo-stack img{padding-right:0!important;border-right:0!important}
-.logo-stack .school-eiin{display:block;margin:0;padding:4px 9px;color:#075c45;background:#f2faf5;border:1px solid #17805e;border-radius:999px;box-shadow:0 2px 5px rgba(0,80,55,.12);font-size:15px;font-weight:800;line-height:1.2;white-space:nowrap;letter-spacing:.01em}
+.logo-stack .school-eiin{display:block;margin:0;padding:4px 9px;color:#102b49;background:#fbf7eb;border:1px solid #d0aa4f;border-radius:999px;box-shadow:0 2px 5px rgba(38,53,75,.12);font-size:15px;font-weight:800;line-height:1.2;white-space:nowrap;letter-spacing:.01em}
 
 @media(max-width:768px){.logo-stack .school-eiin{padding:3px 6px;font-size:14px}}
 
@@ -2810,9 +2845,6 @@ section{
 .notice-strip-window::after{right:0;background:linear-gradient(270deg,#f5cccc,transparent)}
 .notice-strip-label{flex:0 0 auto;color:#713238;font-size:17px;font-weight:700;line-height:1.2;white-space:nowrap;animation:notice-label-glow .8s ease-in-out infinite}
 @keyframes notice-label-glow{0%,100%{color:#713238;text-shadow:0 0 0 rgba(166,44,55,0)}50%{color:#a52e3a;text-shadow:0 0 8px rgba(166,44,55,.48)}}
-.notice-strip-all{flex:0 0 auto;color:#075c45;font-size:16px;font-weight:800;line-height:1.2;white-space:nowrap}
-.notice-strip-all{padding:4px 9px;text-decoration:none;background:#f2faf5;border:1px solid #17805e;border-radius:999px;box-shadow:0 2px 5px rgba(0,80,55,.12);transition:background .2s ease,color .2s ease,border-color .2s ease}
-.notice-strip-all:hover{color:#fff;text-decoration:none;background:#075c45;border-color:#075c45}
 .notice-strip-track{display:flex;align-items:center;gap:0;width:max-content;margin:0;padding:0;list-style:none}
 .notice-strip-track li{flex:0 0 auto;padding:1px 18px 1px 0;color:var(--primary);font-size:17px;font-weight:700;line-height:1.2;white-space:nowrap}
 .notice-strip-track li::after{content:"•";margin-left:18px;color:var(--primary)}
@@ -2821,8 +2853,8 @@ section{
 .notice-strip-track.is-moving{animation:notice-strip-scroll 36s linear infinite}
 .notice-strip-window:hover .notice-strip-track,.notice-strip-window:focus-within .notice-strip-track{animation-play-state:paused}
 @keyframes notice-strip-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@media(max-width:768px){.notice-strip{padding:2px 0}.notice-strip-inner{width:calc(100% - 24px);gap:8px}.notice-strip-label{font-size:16px}.notice-strip-all{padding:3px 6px;font-size:15px}.notice-strip-track li{font-size:16px;padding-right:14px}}
-@media(max-width:420px){.notice-strip{padding:1px 0}.notice-strip-inner{width:calc(100% - 16px);gap:6px}.notice-strip-label{font-size:15px}.notice-strip-all{padding:3px 6px;font-size:15px}.notice-strip-track li{font-size:15px;padding-right:12px}.notice-strip-track li::after{margin-left:12px}}
+@media(max-width:768px){.notice-strip{padding:2px 0}.notice-strip-inner{width:calc(100% - 24px);gap:8px}.notice-strip-label{font-size:16px}.notice-strip-track li{font-size:16px;padding-right:14px}}
+@media(max-width:420px){.notice-strip{padding:1px 0}.notice-strip-inner{width:calc(100% - 16px);gap:6px}.notice-strip-label{font-size:15px}.notice-strip-track li{font-size:15px;padding-right:12px}.notice-strip-track li::after{margin-left:12px}}
 @media(prefers-reduced-motion:reduce){.notice-strip-track.is-moving,.notice-strip-label{animation:none;transform:none}.notice-strip-window{overflow-x:auto}}
 
 /* Clear hover and keyboard-focus feedback for teacher and staff cards */
@@ -2870,7 +2902,7 @@ section{
 .teacher-grid .teacher-card-content,
 .teacher-preview-grid .teacher-card-content,
 .staff-grid .teacher-card-content{
-    background:linear-gradient(135deg,#08735a 0%,#004d40 100%);
+    background:linear-gradient(135deg,#183d63 0%,#102b49 100%);
     border-top:2px solid #d9bd68;
 }
 
@@ -2900,7 +2932,7 @@ section{
 
 /* Match teacher and staff profile colors with their directory cards */
 .profile-summary{
-    background:linear-gradient(135deg,#08735a 0%,#004d40 100%);
+    background:linear-gradient(135deg,#183d63 0%,#102b49 100%);
     border-bottom:2px solid #d9bd68;
 }
 
@@ -2990,7 +3022,7 @@ section{
 
 .navbar #mainMenu > li > a:hover,
 .navbar #mainMenu > li > a.active{
-    background:#003f36;
+    background:#102b49;
 }
 
 @media(max-width:768px){
@@ -3032,4 +3064,678 @@ section{
     }
     .top-bar .admin-login-link{font-size:13px}
 }
+
+/* Site-wide classic navy and muted-gold theme */
+:root{
+    --primary:#183d63;
+    --primary-dark:#102b49;
+    --accent:#d0aa4f;
+}
+.main-header{
+    background:linear-gradient(110deg,#fbf6e9 0%,#f3efe4 52%,#e9edf1 100%);
+    border-bottom:1px solid #cdbb88;
+}
+.logo-area h1{
+    color:#26354b;
+    text-shadow:1px 2px 0 rgba(185,155,85,.48),0 4px 7px rgba(24,40,61,.20);
+}
+.logo-area p{color:#26354b}
+.logo-area img,.logo-stack{border-right-color:rgba(185,155,85,.55)}
+.logo-stack .school-eiin{
+    color:#26354b;
+    background:#fbf7eb;
+    border-color:#b99b55;
+    box-shadow:0 2px 5px rgba(38,53,75,.12);
+}
+.hero{
+    background:linear-gradient(rgba(24,40,61,.64),rgba(24,40,61,.64)),url('../images/hero/hero.jpg');
+    background-size:cover;
+    background-position:center;
+}
+.footer{background:linear-gradient(120deg,#102b49 0%,#1b4975 52%,#102b49 100%);border-top:3px solid #d0aa4f}
+.teachers-hero{background:linear-gradient(120deg,#16385c 0%,#285a87 55%,#173b63 100%)}
+.teacher-grid .teacher-card:hover,
+.teacher-grid .teacher-card:focus-within,
+.teacher-preview-grid .teacher-card:hover,
+.teacher-preview-grid .teacher-card:focus-within,
+.staff-grid .teacher-card:hover,
+.staff-grid .teacher-card:focus-within{
+    outline-color:rgba(185,155,85,.42);
+    box-shadow:0 10px 24px rgba(38,53,75,.18);
+}
+.navbar #mainMenu > li > a:hover,
+.navbar #mainMenu > li > a.active{background:linear-gradient(135deg,#285780,#183d63)}
+
+/* Apply the current navy, blue, and gold palette to notice-style pages. */
+.all-notices-section{background:#f6f8fb!important}
+.all-notices-heading{border-bottom-color:#d0aa4f!important}
+.all-notices-heading h2{color:#183d63!important}
+.all-notice-item{border-color:#e0e6ed!important;border-left-color:#d0aa4f!important}
+.all-notice-date{color:#657184!important}
+.all-notice-title{color:#183d63!important}
+.all-notice-pdf,.notice-back-link{color:#1d5682!important}
+.all-notices-status,.notice-table-wrapper{border-color:#dce3ec!important}
+.notice-table th{color:#fff!important;background:linear-gradient(110deg,#183d63,#2b5a83)!important;text-align:center!important}
+.notice-table th:first-child,.notice-table td:first-child{text-align:center}
+.notice-table td:last-child{text-align:center}
+.notice-table th,.notice-table td{padding:8px 12px!important;line-height:1.35}
+.home-notice-table{table-layout:fixed}
+.home-notice-table th:first-child,.home-notice-table td:first-child{width:25%}
+.home-notice-table th:last-child,.home-notice-table td:last-child{width:76px}
+.home-notice-table td:nth-child(2) a{color:#183d63;font-weight:600;text-decoration:none}
+.home-notice-table td:nth-child(2) a:hover{text-decoration:underline}
+.home-notice-table .notice-view-link{padding:4px 8px;font-size:14px}
+.notice-panel .home-notice-table-wrapper{margin:0;border-color:#dce3ec}
+.notice-panel .home-notice-table{margin:0}
+.notice-table td{border-color:#e0e6ed!important}
+.notice-table tbody tr:nth-child(even){background:#f5f7fa!important}
+.notice-table tbody tr:hover{background:#eef3f8!important}
+.notice-view-link{color:#fff!important;background:#1d5682!important;border:1px solid #d0aa4f!important}
+.notice-view-link:hover{background:#285780!important}
+
+/* About page uses the same brightened theme as the rest of the site. */
+.about-page .about-hero{background:linear-gradient(120deg,#16385c 0%,#285a87 55%,#173b63 100%)!important;border-bottom:3px solid #d0aa4f}
+.about-page .about-section-title,.about-page .about-fact strong,.about-page .about-trade-group h3{color:#183d63}
+.about-page .principal-message blockquote,.about-page .about-commitment{background:#f6f0df;border-left-color:#d0aa4f}
+.about-page .about-cta{background:linear-gradient(120deg,#102b49,#1d5682)!important;border-top:3px solid #d0aa4f}
+.about-page .about-cta-links a{color:#173653!important;background:linear-gradient(135deg,#f3df9e,#d0aa4f)!important}
+
+/* Refined footer panels: balanced columns, clear labels, and a larger map. */
+.footer-grid{
+    grid-template-columns:minmax(230px,.95fr) minmax(300px,1.2fr) minmax(250px,1fr);
+    gap:16px;
+    align-items:stretch;
+    padding:0;
+}
+.footer{padding-top:10px}
+.footer-info,.footer-map,.footer-links{
+    min-width:0;
+    padding:15px;
+    background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.025));
+    border:1px solid rgba(208,170,79,.22);
+    border-radius:11px;
+    box-shadow:0 5px 14px rgba(5,20,38,.1),inset 0 1px 0 rgba(255,255,255,.06);
+}
+.footer-info h3,.footer-map h3,.footer-links h3{
+    margin:0 0 10px;
+    padding:0 0 7px;
+    color:#fff;
+    font-size:19px;
+    line-height:1.4;
+    border-bottom:1px solid rgba(208,170,79,.32);
+    text-shadow:0 1px 5px rgba(208,170,79,.1);
+    text-align:center;
+}
+.footer-info p:first-of-type{
+    display:block;
+    margin:6px 0;
+    padding:0;
+    color:#fff;
+    background:transparent;
+    border:0;
+    border-radius:0;
+    font-weight:400;
+}
+.footer-info p.footer-eiin{
+    display:block;
+    margin:4px 0 6px;
+    padding:0;
+    color:#d7dce4;
+    background:transparent;
+    border:0;
+    border-radius:0;
+    font-size:14px;
+    font-weight:500;
+}
+.footer-map{display:flex;flex-direction:column;text-align:left}
+.footer-map h3{text-align:center}
+.footer-map iframe{
+    display:block;
+    flex:1 1 auto;
+    width:100%;
+    height:235px;
+    min-height:235px;
+    border:1px solid rgba(208,170,79,.58);
+    border-radius:10px;
+    box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+.footer-links{align-items:stretch;text-align:left}
+.footer-links h3{text-align:center}
+.footer-links a{
+    display:block;
+    margin:0 0 4px;
+    padding:4px 7px;
+    color:#e4e9f0;
+    background:rgba(255,255,255,.025);
+    border:1px solid rgba(255,255,255,.05);
+    border-left:2px solid rgba(208,170,79,.48);
+    border-radius:5px;
+    font-size:15px;
+    line-height:1.4;
+    text-decoration:none;
+    transition:background .2s ease,border-color .2s ease,transform .2s ease;
+}
+.footer-links a:hover{
+    padding-left:13px;
+    color:#fff;
+    background:rgba(208,170,79,.13);
+    border-color:rgba(208,170,79,.42);
+    transform:translateX(2px);
+}
+@media(max-width:1050px){
+    .footer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .footer-map{grid-column:1/-1;grid-row:2}
+    .footer-map iframe{min-height:280px}
+}
+@media(max-width:768px){
+    .footer-grid{display:flex;flex-direction:column;gap:11px;padding:0}
+    .footer-info,.footer-map,.footer-links{width:100%;padding:13px;border-radius:10px}
+    .footer-info{order:1;text-align:left}
+    .footer-links{order:2}
+    .footer-map{order:3}
+    .footer-info h3,.footer-links h3{font-size:18px}
+    .footer-map h3{font-size:18px;text-align:center}
+    .footer-map iframe{height:205px;min-height:205px;flex:0 0 205px}
+}
+.footer-bottom{margin-top:12px}
+
+.footer-news-links{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    margin-top:0;
+    padding-top:0;
+}
+.footer-news-heading{
+    margin:12px 0 7px;
+    padding-top:9px;
+    color:#e4cf91;
+    border-top:1px solid rgba(208,170,79,.24);
+    font-size:15px;
+    font-weight:700;
+    line-height:1.4;
+    text-align:center;
+}
+.footer-news-links a{
+    display:grid;
+    width:40px;
+    height:40px;
+    flex:0 0 40px;
+    place-items:center;
+    padding:5px;
+    background:#fff;
+    border:1px solid rgba(208,170,79,.65);
+    border-radius:9px;
+    box-shadow:0 2px 7px rgba(0,0,0,.16);
+    transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.footer-news-links a:hover,.footer-news-links a:focus-visible{
+    transform:translateY(-2px);
+    border-color:#f3df9e;
+    box-shadow:0 5px 12px rgba(0,0,0,.24);
+}
+.footer-news-links img{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+.logo-area .logo-home-link{display:block;color:inherit;text-decoration:none}
+.logo-area .logo-home-link:focus-visible{outline:2px solid #d0aa4f;outline-offset:3px;border-radius:4px}
+.logo-area .logo-home-link:last-child:hover h1{text-decoration:none}
+@media(max-width:768px){
+    .footer-news-heading{margin-top:10px}
+    .footer-news-links{justify-content:center;gap:8px}
+    .footer-news-links a{width:38px;height:38px;flex-basis:38px}
+}
+
+.profile-details h2{text-shadow:1px 1px 2px rgba(38,53,75,.16)}
+
+/* Mobile-only refinements requested for the top bar, navigation, and principal card */
+.mobile-nav-ticker{display:none}
+
+@media(max-width:768px){
+    /* Facebook, phone, and admin share the first row; email sits alone below. */
+    .top-bar .container{
+        display:grid;
+        grid-template-columns:34px max-content minmax(0,1fr);
+        align-items:center;
+        justify-content:initial;
+        gap:6px 8px;
+    }
+    .top-bar .top-left,
+    .top-bar .top-right{display:contents}
+    .top-bar .facebook-top-link{grid-column:1;grid-row:1}
+    .top-bar .phone-number{grid-column:2;grid-row:1}
+    .top-bar .admin-login-link{grid-column:3;grid-row:1;justify-self:end}
+    .top-bar .email-address{
+        grid-column:1 / -1;
+        grid-row:2;
+        justify-self:start;
+        max-width:100%;
+        white-space:normal;
+    }
+    .top-bar .email-address span{min-width:0;overflow-wrap:anywhere}
+
+    /* A moving row of useful links fills the nav ribbon; the menu button stays right. */
+    .navbar .container{
+        display:flex;
+        flex-direction:row;
+        align-items:center;
+        justify-content:space-between;
+        gap:8px;
+        min-height:44px;
+    }
+    .mobile-nav-ticker{
+        display:block;
+        flex:1 1 auto;
+        min-width:0;
+        overflow:hidden;
+        -webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);
+        mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);
+    }
+    .mobile-nav-ticker-track{
+        display:flex;
+        width:max-content;
+        animation:mobile-nav-scroll 28s linear infinite;
+    }
+    .mobile-nav-ticker:hover .mobile-nav-ticker-track{animation-play-state:paused}
+    .mobile-nav-ticker-group{display:flex;flex:0 0 auto;align-items:center}
+    .navbar .mobile-nav-ticker a{
+        display:block;
+        padding:8px 12px;
+        color:#fff;
+        font-size:15px;
+        line-height:1.4;
+        white-space:nowrap;
+    }
+    .navbar .mobile-nav-ticker a::after{
+        display:inline-block;
+        width:1px;
+        height:18px;
+        margin-left:18px;
+        content:"";
+        vertical-align:middle;
+        background:linear-gradient(180deg,transparent,rgba(255,255,255,.38),transparent);
+    }
+    @keyframes mobile-nav-scroll{
+        from{transform:translateX(0)}
+        to{transform:translateX(-50%)}
+    }
+    .navbar .menu-toggle{
+        order:2;
+        flex:0 0 auto;
+        align-self:center;
+        margin:0;
+        padding:6px 8px;
+        line-height:1;
+    }
+    .navbar #mainMenu,
+    .navbar #mainMenu.active{
+        position:absolute;
+        z-index:1002;
+        top:100%;
+        right:0;
+        left:0;
+        width:100%;
+        max-height:calc(100vh - 120px);
+        overflow-y:auto;
+        background:var(--primary);
+    }
+
+    /* Principal's title, portrait, name, and message flow vertically without wasted space. */
+    .principal-wrapper > .principal-box{padding:20px 18px}
+    .principal-content .section-title{
+        margin:0 0 14px;
+        text-align:center;
+        font-size:24px;
+    }
+    .principal-info{
+        flex-direction:column;
+        align-items:center;
+        gap:11px;
+    }
+    .principal-image img{width:108px;height:132px}
+    .principal-info > div:not(.principal-image){width:100%;text-align:center}
+    .principal-content h3{margin:0 0 2px;font-size:19px}
+    .principal-content h4{margin:0 0 10px;font-size:16px}
+    .principal-content p{margin:0 0 12px;text-align:justify}
+    .principal-content .btn{margin:0 auto}
+}
+
+/* Classic, consistent teacher and staff directory cards */
+.teacher-grid .teacher-card,
+.teacher-preview-grid .teacher-card,
+.staff-grid .teacher-card{
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    border:1px solid #e1d8c5;
+    background:#f8f5ec;
+}
+.teacher-grid .teacher-card-link,
+.teacher-preview-grid .teacher-preview-card-link,
+.staff-grid .staff-card-link{
+    display:flex;
+    flex:1 1 auto;
+    flex-direction:column;
+    height:100%;
+    color:inherit;
+    text-decoration:none;
+}
+.teacher-grid .teacher-card img,
+.teacher-preview-grid .teacher-card img,
+.staff-grid .teacher-card img{
+    flex:0 0 auto;
+    border-color:#b99b55;
+}
+.teacher-grid .teacher-card-content,
+.teacher-preview-grid .teacher-card-content,
+.staff-grid .teacher-card-content{
+    display:flex;
+    flex:1 1 auto;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    background:linear-gradient(145deg,#285780 0%,#183d63 55%,#102b49 100%);
+    border-top:2px solid #d0aa4f;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.14);
+}
+.teacher-grid .teacher-card-content h2,
+.teacher-preview-grid .teacher-card-content h2,
+.staff-grid .teacher-card-content h2{
+    color:#26354b;
+}
+.teacher-grid .teacher-card-content h2 a,
+.teacher-preview-grid .teacher-card-content h2 a,
+.staff-grid .teacher-card-content h2 a{
+    color:#fff;
+}
+.teacher-grid .teacher-card-content h2,
+.teacher-preview-grid .teacher-card-content h2,
+.staff-grid .teacher-card-content h2{
+    min-height:0;
+    margin:0;
+    color:#fff;
+    line-height:1.4;
+}
+.teacher-grid .teacher-card-content h2 + p,
+.teacher-preview-grid .teacher-card-content h2 + p,
+.staff-grid .teacher-card-content h2 + p{
+    margin-top:-2px;
+}
+.teacher-grid .teacher-card-content p,
+.teacher-preview-grid .teacher-card-content p,
+.staff-grid .teacher-card-content p{
+    margin:0;
+    color:#e4cf91;
+}
+.teacher-grid .teacher-card-content span,
+.teacher-preview-grid .teacher-card-content span,
+.staff-grid .teacher-card-content span{
+    margin:0;
+    color:#e7e4dc;
+}
+.teacher-grid .teacher-card-content::after,
+.teacher-preview-grid .teacher-card-content::after,
+.staff-grid .teacher-card-content::after{
+    content:"";
+    display:block;
+    flex:1 0 8px;
+}
+.teacher-grid .teacher-card:hover,
+.teacher-grid .teacher-card:focus-within,
+.teacher-preview-grid .teacher-card:hover,
+.teacher-preview-grid .teacher-card:focus-within,
+.staff-grid .teacher-card:hover,
+.staff-grid .teacher-card:focus-within,
+.teacher-grid .teacher-card:active,
+.teacher-preview-grid .teacher-card:active,
+.staff-grid .teacher-card:active{
+    border-color:#b99b55;
+    box-shadow:0 10px 24px rgba(38,53,75,.18);
+}
+.teacher-grid .teacher-card-link:focus-visible,
+.teacher-preview-grid .teacher-preview-card-link:focus-visible,
+.staff-grid .staff-card-link:focus-visible{
+    outline:3px solid #b99b55;
+    outline-offset:-3px;
+}
+
+@media(max-width:768px){
+    .teacher-grid .teacher-card:active,
+    .teacher-preview-grid .teacher-card:active,
+    .staff-grid .teacher-card:active{
+        transform:scale(.985);
+    }
+    .teacher-grid .teacher-card-content::after,
+    .teacher-preview-grid .teacher-card-content::after,
+    .staff-grid .teacher-card-content::after{
+        content:"প্রোফাইল দেখুন  →";
+        display:inline-block;
+        flex:0 0 auto;
+        margin-top:auto;
+        padding:3px 10px;
+        color:#5d4a24;
+        background:rgba(255,255,255,.72);
+        border:1px solid rgba(185,155,85,.62);
+        border-radius:999px;
+        font-size:12px;
+        font-weight:700;
+        line-height:1.35;
+    }
+}
+
+/* Carry the classic navy and muted-gold palette into individual profiles. */
+.profile-summary{
+    background:linear-gradient(145deg,#285780 0%,#183d63 55%,#102b49 100%);
+    border-bottom:2px solid #d0aa4f;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.14);
+}
+.profile-summary img{border-color:#d1b66f}
+.profile-summary p{color:#e4cf91}
+.profile-summary span{color:#e7e4dc}
+
+/* Keep the principal first and mark the card with a restrained accent. */
+.teacher-grid .teacher-card.principal-card,
+.teacher-preview-grid .teacher-card.principal-card{
+    grid-column:1 / -1;
+    order:-1;
+    justify-self:center;
+    width:min(100%,235px);
+    margin-bottom:8px;
+    border:2px solid #d0aa4f;
+    background:linear-gradient(150deg,#285780 0%,#183d63 58%,#102b49 100%);
+    box-shadow:0 8px 22px rgba(16,43,73,.28),0 0 0 3px rgba(208,170,79,.15);
+}
+
+/* Cards arrive gently and settle into their grid positions on page load. */
+.teacher-grid .teacher-card,
+.staff-grid .teacher-card,
+.teacher-preview-grid .teacher-card{
+    animation:teacher-card-arrive 1100ms cubic-bezier(.2,.75,.25,1) both;
+    animation-delay:1450ms;
+    transform-origin:center center;
+}
+.teacher-grid .teacher-card:nth-child(2),
+.staff-grid .teacher-card:nth-child(2),
+.teacher-preview-grid .teacher-card:nth-child(2){animation-delay:1485ms}
+.teacher-grid .teacher-card:nth-child(3),
+.staff-grid .teacher-card:nth-child(3),
+.teacher-preview-grid .teacher-card:nth-child(3){animation-delay:1520ms}
+.teacher-grid .teacher-card:nth-child(4),
+.staff-grid .teacher-card:nth-child(4),
+.teacher-preview-grid .teacher-card:nth-child(4){animation-delay:1555ms}
+.teacher-grid .teacher-card:nth-child(5),
+.staff-grid .teacher-card:nth-child(5),
+.teacher-preview-grid .teacher-card:nth-child(5){animation-delay:1590ms}
+.teacher-grid .teacher-card:nth-child(6),
+.staff-grid .teacher-card:nth-child(6),
+.teacher-preview-grid .teacher-card:nth-child(6){animation-delay:1625ms}
+.teacher-grid .teacher-card:nth-child(7),
+.staff-grid .teacher-card:nth-child(7),
+.teacher-preview-grid .teacher-card:nth-child(7){animation-delay:1660ms}
+.teacher-grid .teacher-card:nth-child(8),
+.staff-grid .teacher-card:nth-child(8),
+.teacher-preview-grid .teacher-card:nth-child(8){animation-delay:1695ms}
+.teacher-grid .teacher-card:nth-child(9),
+.staff-grid .teacher-card:nth-child(9),
+.teacher-preview-grid .teacher-card:nth-child(9){animation-delay:1730ms}
+.teacher-grid .teacher-card:nth-child(10),
+.staff-grid .teacher-card:nth-child(10),
+.teacher-preview-grid .teacher-card:nth-child(10){animation-delay:1765ms}
+.teacher-grid .teacher-card:nth-child(11),
+.staff-grid .teacher-card:nth-child(11),
+.teacher-preview-grid .teacher-card:nth-child(11){animation-delay:1800ms}
+.teacher-grid .teacher-card:nth-child(12),
+.staff-grid .teacher-card:nth-child(12),
+.teacher-preview-grid .teacher-card:nth-child(12){animation-delay:1835ms}
+.teacher-grid .teacher-card:nth-child(13),
+.staff-grid .teacher-card:nth-child(13),
+.teacher-preview-grid .teacher-card:nth-child(13){animation-delay:1870ms}
+.teacher-grid .teacher-card:nth-child(14),
+.staff-grid .teacher-card:nth-child(14),
+.teacher-preview-grid .teacher-card:nth-child(14){animation-delay:1905ms}
+.teacher-grid .teacher-card:nth-child(15),
+.staff-grid .teacher-card:nth-child(15),
+.teacher-preview-grid .teacher-card:nth-child(15){animation-delay:1940ms}
+.teacher-grid .teacher-card:nth-child(16),
+.staff-grid .teacher-card:nth-child(16),
+.teacher-preview-grid .teacher-card:nth-child(16){animation-delay:1975ms}
+.teacher-grid .teacher-card:nth-child(17),
+.staff-grid .teacher-card:nth-child(17),
+.teacher-preview-grid .teacher-card:nth-child(17){animation-delay:2010ms}
+.teacher-grid .teacher-card:nth-child(18),
+.staff-grid .teacher-card:nth-child(18),
+.teacher-preview-grid .teacher-card:nth-child(18){animation-delay:2045ms}
+.teacher-grid .teacher-card:nth-child(19),
+.staff-grid .teacher-card:nth-child(19),
+.teacher-preview-grid .teacher-card:nth-child(19){animation-delay:2080ms}
+.teacher-grid .teacher-card:nth-child(20),
+.staff-grid .teacher-card:nth-child(20),
+.teacher-preview-grid .teacher-card:nth-child(20){animation-delay:2115ms}
+.teacher-grid .teacher-card:nth-child(21),
+.staff-grid .teacher-card:nth-child(21),
+.teacher-preview-grid .teacher-card:nth-child(21){animation-delay:2150ms}
+.teacher-grid .teacher-card:nth-child(22),
+.staff-grid .teacher-card:nth-child(22),
+.teacher-preview-grid .teacher-card:nth-child(22){animation-delay:2185ms}
+.teacher-grid .teacher-card:nth-child(23),
+.staff-grid .teacher-card:nth-child(23),
+.teacher-preview-grid .teacher-card:nth-child(23){animation-delay:2220ms}
+.teacher-grid .teacher-card:nth-child(24),
+.staff-grid .teacher-card:nth-child(24),
+.teacher-preview-grid .teacher-card:nth-child(24){animation-delay:2255ms}
+.teacher-grid .teacher-card:nth-child(25),
+.staff-grid .teacher-card:nth-child(25),
+.teacher-preview-grid .teacher-card:nth-child(25){animation-delay:2290ms}
+.teacher-grid .teacher-card:nth-child(26),
+.staff-grid .teacher-card:nth-child(26),
+.teacher-preview-grid .teacher-card:nth-child(26){animation-delay:2325ms}
+.teacher-grid .teacher-card:nth-child(27),
+.staff-grid .teacher-card:nth-child(27),
+.teacher-preview-grid .teacher-card:nth-child(27){animation-delay:2360ms}
+.teacher-grid .teacher-card:nth-child(28),
+.staff-grid .teacher-card:nth-child(28),
+.teacher-preview-grid .teacher-card:nth-child(28){animation-delay:2395ms}
+.teacher-grid .teacher-card:nth-child(29),
+.staff-grid .teacher-card:nth-child(29),
+.teacher-preview-grid .teacher-card:nth-child(29){animation-delay:2430ms}
+.teacher-grid .teacher-card:nth-child(30),
+.staff-grid .teacher-card:nth-child(30),
+.teacher-preview-grid .teacher-card:nth-child(30){animation-delay:2465ms}
+.staff-grid .teacher-card:nth-child(2){animation-delay:35ms}
+.staff-grid .teacher-card:nth-child(3){animation-delay:70ms}
+.staff-grid .teacher-card:nth-child(4){animation-delay:105ms}
+.staff-grid .teacher-card:nth-child(5){animation-delay:140ms}
+.staff-grid .teacher-card:nth-child(6){animation-delay:175ms}
+.staff-grid .teacher-card:nth-child(7){animation-delay:210ms}
+.staff-grid .teacher-card:nth-child(8){animation-delay:245ms}
+.staff-grid .teacher-card:nth-child(9){animation-delay:280ms}
+.staff-grid .teacher-card:nth-child(10){animation-delay:315ms}
+.staff-grid .teacher-card:nth-child(11){animation-delay:350ms}
+.staff-grid .teacher-card:nth-child(12){animation-delay:385ms}
+.staff-grid .teacher-card:nth-child(13){animation-delay:420ms}
+.staff-grid .teacher-card:nth-child(14){animation-delay:455ms}
+.staff-grid .teacher-card:nth-child(15){animation-delay:490ms}
+.staff-grid .teacher-card:nth-child(16){animation-delay:525ms}
+.staff-grid .teacher-card:nth-child(17){animation-delay:560ms}
+.staff-grid .teacher-card:nth-child(18){animation-delay:595ms}
+.staff-grid .teacher-card:nth-child(19){animation-delay:630ms}
+.staff-grid .teacher-card:nth-child(20){animation-delay:665ms}
+.staff-grid .teacher-card:nth-child(21){animation-delay:700ms}
+.staff-grid .teacher-card:nth-child(22){animation-delay:735ms}
+.staff-grid .teacher-card:nth-child(23){animation-delay:770ms}
+.staff-grid .teacher-card:nth-child(24){animation-delay:805ms}
+.staff-grid .teacher-card:nth-child(25){animation-delay:840ms}
+.staff-grid .teacher-card:nth-child(26){animation-delay:875ms}
+.staff-grid .teacher-card:nth-child(27){animation-delay:910ms}
+.staff-grid .teacher-card:nth-child(28){animation-delay:945ms}
+.staff-grid .teacher-card:nth-child(29){animation-delay:980ms}
+.staff-grid .teacher-card:nth-child(30){animation-delay:1015ms}
+
+.teacher-grid .teacher-card.principal-card,
+.teacher-preview-grid .teacher-card.principal-card{
+    animation:principal-card-arrive 1400ms cubic-bezier(.2,.75,.25,1) both;
+    animation-delay:0ms;
+}
+
+@keyframes teacher-card-arrive{
+    from{opacity:0;scale:.68}
+    to{opacity:1;scale:1}
+}
+
+@keyframes principal-card-arrive{
+    from{opacity:0;translate:48px 0}
+    to{opacity:1;translate:0 0}
+}
+
+@media(prefers-reduced-motion:reduce){
+    .teacher-grid .teacher-card,
+    .staff-grid .teacher-card,
+    .teacher-preview-grid .teacher-card,
+    .teacher-grid .teacher-card.principal-card,
+    .teacher-preview-grid .teacher-card.principal-card{animation:none}
+}
+.teacher-grid .principal-card .teacher-card-content,
+.teacher-preview-grid .principal-card .teacher-card-content{
+    background:linear-gradient(145deg,#285780 0%,#183d63 55%,#102b49 100%);
+    border-top:2px solid #d0aa4f;
+}
+.teacher-grid .principal-card .teacher-card-content::before,
+.teacher-preview-grid .principal-card .teacher-card-content::before{
+    content:"প্রতিষ্ঠান প্রধান";
+    display:inline-block;
+    margin-bottom:5px;
+    padding:3px 10px;
+    color:#173653;
+    background:linear-gradient(135deg,#f3df9e,#d0aa4f);
+    border:1px solid rgba(255,255,255,.7);
+    border-radius:999px;
+    box-shadow:0 2px 8px rgba(0,0,0,.18);
+    font-size:13px;
+    font-weight:700;
+    line-height:1.35;
+}
+.teacher-grid .principal-card .teacher-card-content h2,
+.teacher-preview-grid .principal-card .teacher-card-content h2,
+.teacher-grid .principal-card .teacher-card-content h2 a,
+.teacher-preview-grid .principal-card .teacher-card-content h2 a{color:#fff}
+.teacher-grid .principal-card .teacher-card-content p,
+.teacher-preview-grid .principal-card .teacher-card-content p{color:#e4cf91}
+
+/* Ensure all interactive accents follow the navy and gold theme. */
+.teacher-grid .teacher-card:hover,
+.teacher-grid .teacher-card:focus-within,
+.teacher-preview-grid .teacher-card:hover,
+.teacher-preview-grid .teacher-card:focus-within,
+.staff-grid .teacher-card:hover,
+.staff-grid .teacher-card:focus-within{
+    outline-color:rgba(185,155,85,.42);
+    box-shadow:0 10px 24px rgba(38,53,75,.18);
+}
+.navbar #mainMenu > li > a:hover,
+.navbar #mainMenu > li > a.active{background:linear-gradient(135deg,#285780,#183d63)}
 

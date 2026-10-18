@@ -11,6 +11,23 @@ import {
 const noticesContainer = document.getElementById("latestNotices");
 const tickerTrack = document.getElementById("noticeTickerTrack");
 
+function showLatestNoticeMessage(message) {
+  if (noticesContainer) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 3;
+    cell.className = "notice-table-status";
+    cell.textContent = message;
+    row.appendChild(cell);
+    noticesContainer.replaceChildren(row);
+  }
+  if (tickerTrack) {
+    const tickerItem = document.createElement("li");
+    tickerItem.textContent = message;
+    tickerTrack.replaceChildren(tickerItem);
+  }
+}
+
 async function loadLatestNotices() {
   if (!noticesContainer) return;
 
@@ -26,14 +43,7 @@ async function loadLatestNotices() {
     tickerTrack?.replaceChildren();
 
     if (snapshot.empty) {
-      const li = document.createElement("li");
-      li.textContent = "বর্তমানে কোনো প্রকাশিত নোটিশ নেই।";
-      noticesContainer.appendChild(li);
-      if (tickerTrack) {
-        const tickerItem = document.createElement("li");
-        tickerItem.textContent = li.textContent;
-        tickerTrack.appendChild(tickerItem);
-      }
+      showLatestNoticeMessage("বর্তমানে কোনো প্রকাশিত নোটিশ নেই।");
       return;
     }
 
@@ -56,39 +66,52 @@ async function loadLatestNotices() {
 
     // হোমপেজে সর্বশেষ ৫টি নোটিশ দেখাবে
     notices.slice(0, 5).forEach((notice) => {
-      const li = document.createElement("li");
+      const row = document.createElement("tr");
 
-      const date = document.createElement("span");
-      date.textContent = formatNoticeDate(
+      const dateCell = document.createElement("td");
+      dateCell.textContent = formatNoticeDate(
         notice.updatedAt ?? notice.createdAt
       );
 
-      const link = document.createElement("a");
-      link.textContent = notice.title || "নোটিশ";
-      link.href = notice.pdfUrl?.trim() || "notice.html";
+      const titleCell = document.createElement("td");
+      titleCell.textContent = notice.title || "নোটিশ";
 
+      let fileUrl = "";
       if (notice.pdfUrl?.trim()) {
         try {
           const url = new URL(notice.pdfUrl);
 
           if (url.protocol === "https:") {
-            link.href = url.href;
-            link.target = "_blank";
-            link.rel = "noopener noreferrer";
-          } else {
-            link.href = "notice.html";
+            fileUrl = url.href;
           }
-        } catch {
-          link.href = "notice.html";
-        }
+        } catch { /* Invalid attachment URLs are shown as unavailable. */ }
       }
 
-      li.appendChild(date);
-      li.appendChild(link);
-      noticesContainer.appendChild(li);
+      const actionCell = document.createElement("td");
+      if (fileUrl) {
+        const viewLink = document.createElement("a");
+        viewLink.className = "notice-view-link";
+        viewLink.href = fileUrl;
+        viewLink.target = "_blank";
+        viewLink.rel = "noopener noreferrer";
+        viewLink.textContent = "দেখুন";
+        actionCell.appendChild(viewLink);
+      } else {
+        actionCell.textContent = "ফাইল নেই";
+      }
+
+      row.append(dateCell, titleCell, actionCell);
+      noticesContainer.appendChild(row);
       if (tickerTrack) {
         const tickerItem = document.createElement("li");
-        tickerItem.appendChild(link.cloneNode(true));
+        const tickerLink = document.createElement("a");
+        tickerLink.href = fileUrl || "notice.html";
+        if (fileUrl) {
+          tickerLink.target = "_blank";
+          tickerLink.rel = "noopener noreferrer";
+        }
+        tickerLink.textContent = titleCell.textContent;
+        tickerItem.appendChild(tickerLink);
         tickerTrack.appendChild(tickerItem);
       }
     });
@@ -112,14 +135,7 @@ async function loadLatestNotices() {
     noticesContainer.replaceChildren();
     tickerTrack?.replaceChildren();
 
-    const li = document.createElement("li");
-    li.textContent = "নোটিশ লোড করা যায়নি।";
-    noticesContainer.appendChild(li);
-    if (tickerTrack) {
-      const tickerItem = document.createElement("li");
-      tickerItem.textContent = li.textContent;
-      tickerTrack.appendChild(tickerItem);
-    }
+    showLatestNoticeMessage("নোটিশ লোড করা যায়নি।");
   }
 }
 

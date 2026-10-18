@@ -38,14 +38,19 @@ function calculateTeacherExperience(joiningDate) {
 function renderTeacherList() {
   const grid = document.getElementById('teacherGrid');
   if (!grid) return;
-  grid.innerHTML = teachers.map(teacher => `
-    <article class="teacher-card${teacher.id === 'teacher-03' ? ' teacher-name-small' : ''}">
-      <img src="${escapeHtml(teacher.photo)}" alt="${escapeHtml(teacher.name)}" loading="lazy">
-      <div class="teacher-card-content">
-        <h2><a href="teacher-profile.html?id=${encodeURIComponent(teacher.id)}">${escapeHtml(teacher.name)}</a></h2>
-        <p>${escapeHtml(teacher.designation)}</p>
-        ${teacher.subject ? `<span>${escapeHtml(teacher.subject)}</span>` : ''}
-      </div>
+  const orderedTeachers = [...teachers].sort((a, b) =>
+    Number(b.id === 'teacher-01') - Number(a.id === 'teacher-01')
+  );
+  grid.innerHTML = orderedTeachers.map(teacher => `
+    <article class="teacher-card${teacher.id === 'teacher-01' ? ' principal-card' : ''}${teacher.id === 'teacher-03' ? ' teacher-name-small' : ''}">
+      <a class="teacher-card-link" href="teacher-profile.html?id=${encodeURIComponent(teacher.id)}" aria-label="${escapeHtml(teacher.name)} — প্রোফাইল দেখুন">
+        <img src="${escapeHtml(teacher.photo)}" alt="${escapeHtml(teacher.name)}" loading="lazy">
+        <div class="teacher-card-content">
+          <h2>${escapeHtml(teacher.name)}</h2>
+          <p>${escapeHtml(teacher.designation)}</p>
+          ${teacher.subject ? `<span>${escapeHtml(teacher.subject)}</span>` : ''}
+        </div>
+      </a>
     </article>`).join('');
 }
 

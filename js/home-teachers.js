@@ -10,8 +10,17 @@
     "'": "&#039;"
   })[char]);
 
-  grid.innerHTML = teachers.slice(0, 10).map(teacher => `
-    <article class="teacher-card${teacher.id === 'teacher-03' ? ' teacher-name-small' : ''}">
+  const orderedTeachers = [...teachers].sort((a, b) =>
+    Number(b.id === 'teacher-01') - Number(a.id === 'teacher-01')
+  );
+  const previewTeachers = orderedTeachers.slice(0, 10);
+  const kamruzzaman = orderedTeachers.find(teacher => teacher.id === 'teacher-11');
+  if (kamruzzaman && !previewTeachers.some(teacher => teacher.id === kamruzzaman.id)) {
+    previewTeachers.push(kamruzzaman);
+  }
+
+  grid.innerHTML = previewTeachers.map(teacher => `
+    <article class="teacher-card${teacher.id === 'teacher-01' ? ' principal-card' : ''}${teacher.id === 'teacher-03' ? ' teacher-name-small' : ''}">
       <a class="teacher-preview-card-link" href="teacher-profile.html?id=${encodeURIComponent(teacher.id)}">
         <img src="${escapeHtml(teacher.photo)}" alt="${escapeHtml(teacher.name)}" loading="lazy">
         <div class="teacher-card-content">

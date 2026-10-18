@@ -21,8 +21,8 @@ textarea {
 
 body {
   margin: 0;
-  background: #f0f5f1;
-  color: #26352b;
+  background: #f6f8fb;
+  color: #26354b;
 }
 
 .login-container {
@@ -50,13 +50,13 @@ body {
 h1 {
   margin: 12px 0;
   text-align: center;
-  color: #187342;
+  color: #183d63;
   font-size: 29px;
 }
 
 .subtitle {
   text-align: center;
-  color: #68756b;
+  color: #657184;
   font-size: 17px;
   line-height: 1.7;
   margin-bottom: 28px;
@@ -71,14 +71,14 @@ label {
 input {
   width: 100%;
   padding: 12px;
-  border: 1px solid #ccd6ce;
+  border: 1px solid #dce3ec;
   border-radius: 7px;
   font-size: 19px;
 }
 
 input:focus {
-  outline: 2px solid #23834d;
-  border-color: #23834d;
+  outline: 2px solid #285780;
+  border-color: #285780;
 }
 
 button {
@@ -87,7 +87,7 @@ button {
   padding: 13px;
   border: none;
   border-radius: 7px;
-  background: #187342;
+  background: #183d63;
   color: #fff;
   font-size: 19px;
   font-weight: 600;
@@ -95,7 +95,7 @@ button {
 }
 
 button:hover {
-  background: #105b32;
+  background: #102b49;
 }
 
 button:disabled {
@@ -112,7 +112,7 @@ button:disabled {
   display: block;
   margin-top: 22px;
   text-align: center;
-  color: #187342;
+  color: #183d63;
   text-decoration: none;
 }
 
@@ -127,7 +127,7 @@ button:disabled {
 }
 
 .dashboard-header {
-  background: #187342;
+  background: #183d63;
   color: white;
   padding: 22px max(20px, calc((100% - 1100px) / 2));
   display: flex;
@@ -153,7 +153,7 @@ button:disabled {
   min-width: 95px;
   margin: 0;
   background: white;
-  color: #187342;
+  color: #183d63;
 }
 
 .dashboard-container {
@@ -173,7 +173,7 @@ button:disabled {
 
 .welcome-card h2,
 .dashboard-section h2 {
-  color: #187342;
+  color: #183d63;
   margin-top: 0;
 }
 
@@ -185,7 +185,7 @@ button:disabled {
 }
 
 .dashboard-card {
-  color: #26352b;
+  color: #26354b;
   text-decoration: none;
   border: 1px solid #e1e9e3;
   transition: transform 0.2s, box-shadow 0.2s;
@@ -201,7 +201,7 @@ button:disabled {
 }
 
 .dashboard-card h3 {
-  color: #187342;
+  color: #183d63;
   margin-bottom: 8px;
 }
 
@@ -232,7 +232,7 @@ button:disabled {
 }
 
 #noticeForm label {
-  color: #26352b;
+  color: #26354b;
   font-weight: 600;
 }
 
@@ -288,7 +288,7 @@ button:disabled {
 }
 
 .notice-item h4 {
-  color: #187342;
+  color: #183d63;
   margin: 0 0 8px;
 }
 
@@ -301,6 +301,48 @@ button:disabled {
 .notice-pdf-link {
   display: inline-block;
   margin: 8px 0;
-  color: #187342;
+  color: #183d63;
   overflow-wrap: anywhere;
+}
+
+/* Match the public site with a restrained navy and gold admin palette. */
+body {
+  background: #f3f1eb;
+  color: #26354b;
+}
+h1,
+.welcome-card h2,
+.dashboard-section h2,
+.dashboard-card h3,
+.notice-item h4 {
+  color: #26354b;
+}
+input:focus,
+#noticeForm input[type="text"]:focus,
+#noticeForm input[type="url"]:focus,
+#noticeForm textarea:focus {
+  outline: 2px solid #b99b55;
+  border-color: #b99b55;
+}
+button,
+.dashboard-header {
+  background: #26354b;
+}
+button:hover {
+  background: #18283d;
+}
+.dashboard-header button:hover {
+  background: #f0eadb;
+  color: #18283d;
+}
+.back-link,
+.dashboard-header button,
+.notice-pdf-link {
+  color: #26354b;
+}
+.dashboard-card {
+  border-color: #ded3b5;
+}
+.notice-item {
+  border-color: #e4dcc8;
 }

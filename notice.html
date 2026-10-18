@@ -17,18 +17,18 @@
         .all-notices-section {
             padding: 35px 0 50px;
             min-height: 400px;
-            background: #f7faf8;
+            background: #f6f8fb;
         }
 
         .all-notices-heading {
             margin-bottom: 24px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #198754;
+            border-bottom: 2px solid #183d63;
         }
 
         .all-notices-heading h2 {
             margin: 0 0 8px;
-            color: #198754;
+            color: #183d63;
             font-size: 29px;
         }
 
@@ -46,8 +46,8 @@
         .all-notice-item {
             padding: 18px 20px;
             background: #fff;
-            border: 1px solid #e1e9e3;
-            border-left: 4px solid #198754;
+            border: 1px solid #e0e6ed;
+            border-left: 4px solid #183d63;
             border-radius: 6px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
@@ -55,13 +55,13 @@
         .all-notice-date {
             display: block;
             margin-bottom: 5px;
-            color: #68776d;
+            color: #657184;
             font-size: 17px;
         }
 
         .all-notice-title {
             margin: 0 0 10px;
-            color: #176b43;
+            color: #183d63;
             font-size: 22px;
             line-height: 1.6;
         }
@@ -77,7 +77,7 @@
         .all-notice-pdf {
             display: inline-block;
             margin-top: 4px;
-            color: #198754;
+            color: #183d63;
             font-weight: 600;
             text-decoration: none;
         }
@@ -89,7 +89,7 @@
         .all-notices-status {
             padding: 22px;
             background: #fff;
-            border: 1px solid #e1e9e3;
+            border: 1px solid #e0e6ed;
             border-radius: 6px;
             text-align: center;
         }
@@ -97,7 +97,7 @@
         .notice-back-link {
             display: inline-block;
             margin-top: 25px;
-            color: #198754;
+            color: #183d63;
             font-weight: 600;
             text-decoration: none;
         }
@@ -128,7 +128,7 @@
     width: 100%;
     overflow-x: auto;
     background: #fff;
-    border: 1px solid #dce7df;
+    border: 1px solid #dce3ec;
     border-radius: 6px;
 }
 
@@ -141,36 +141,36 @@
 .notice-table th,
 .notice-table td {
     padding: 13px 15px;
-    border: 1px solid #e1e8e3;
+    border: 1px solid #e0e6ed;
     text-align: left;
     vertical-align: middle;
 }
 
 .notice-table th {
-    background: #198754;
+    background: #183d63;
     color: #fff;
     font-weight: 600;
     white-space: nowrap;
 }
 
 .notice-table tbody tr:nth-child(even) {
-    background: #f5f9f6;
+    background: #f5f7fa;
 }
 
 .notice-table tbody tr:hover {
-    background: #edf6ef;
+    background: #eef3f8;
 }
 
 .notice-table .notice-table-status {
     padding: 25px;
     text-align: center;
-    color: #68776d;
+    color: #657184;
 }
 
 .notice-view-link {
     display: inline-block;
     padding: 5px 12px;
-    background: #198754;
+    background: #183d63;
     color: #fff;
     border-radius: 4px;
     text-decoration: none;
@@ -178,7 +178,7 @@
 }
 
 .notice-view-link:hover {
-    background: #146c43;
+    background: #285780;
     color: #fff;
 }
 
@@ -315,13 +315,12 @@
             <tr>
                 <th>তারিখ</th>
                 <th>শিরোনাম</th>
-                <th>ফাইলের ধরন</th>
                 <th>দেখুন</th>
             </tr>
         </thead>
         <tbody id="allNoticesList">
             <tr>
-                <td colspan="4" class="notice-table-status">
+                <td colspan="3" class="notice-table-status">
                     নোটিশ লোড হচ্ছে...
                 </td>
             </tr>
@@ -428,7 +427,7 @@
         const row = document.createElement("tr");
         const cell = document.createElement("td");
 
-        cell.colSpan = 4;
+        cell.colSpan = 3;
         cell.className = "notice-table-status";
         cell.textContent = message;
 
@@ -448,44 +447,21 @@
     }).format(timestamp.toDate());
 }
 
-    function getFileInfo(url) {
+    function getNoticeUrl(url) {
         if (!url) {
-            return { type: "সংযুক্ত ফাইল নেই", url: "" };
+            return "";
         }
 
         try {
             const parsedUrl = new URL(url);
 
             if (parsedUrl.protocol !== "https:") {
-                return { type: "অবৈধ লিংক", url: "" };
+                return "";
             }
-
-            const host = parsedUrl.hostname.toLowerCase();
-            const path = parsedUrl.pathname.toLowerCase();
-
-            if (host.includes("drive.google.com") ||
-                host.includes("docs.google.com")) {
-                return { type: "Google Drive / PDF", url: parsedUrl.href };
-            }
-
-            if (path.endsWith(".pdf")) {
-                return { type: "PDF", url: parsedUrl.href };
-            }
-
-            if (path.endsWith(".doc") || path.endsWith(".docx")) {
-                return { type: "Word", url: parsedUrl.href };
-            }
-
-            if (path.endsWith(".jpg") ||
-                path.endsWith(".jpeg") ||
-                path.endsWith(".png")) {
-                return { type: "ছবি", url: parsedUrl.href };
-            }
-
-            return { type: "লিংক", url: parsedUrl.href };
+            return parsedUrl.href;
 
         } catch {
-            return { type: "অবৈধ লিংক", url: "" };
+            return "";
         }
     }
 
@@ -533,18 +509,15 @@
                 const titleCell = document.createElement("td");
                 titleCell.textContent = notice.title || "শিরোনাম নেই";
 
-                const fileCell = document.createElement("td");
-                const fileInfo = getFileInfo(notice.pdfUrl?.trim());
-
-                fileCell.textContent = fileInfo.type;
+                const fileUrl = getNoticeUrl(notice.pdfUrl?.trim());
 
                 const actionCell = document.createElement("td");
 
-                if (fileInfo.url) {
+                if (fileUrl) {
                     const link = document.createElement("a");
 
                     link.className = "notice-view-link";
-                    link.href = fileInfo.url;
+                    link.href = fileUrl;
                     link.target = "_blank";
                     link.rel = "noopener noreferrer";
                     link.textContent = "দেখুন";
@@ -556,7 +529,6 @@
 
                 row.appendChild(dateCell);
                 row.appendChild(titleCell);
-                row.appendChild(fileCell);
                 row.appendChild(actionCell);
 
                 tableBody.appendChild(row);
