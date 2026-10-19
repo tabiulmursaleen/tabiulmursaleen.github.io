@@ -6,10 +6,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>সকল নোটিশ | তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</title>
+    <title>শিক্ষার্থী তালিকা | তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</title>
 
     <meta name="description"
-          content="তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজের সকল প্রকাশিত নোটিশ।">
+          content="তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজের প্রকাশিত শিক্ষার্থী তালিকা।">
 
     <link rel="stylesheet" href="css/style.css">
 
@@ -190,6 +190,37 @@
     }
 }
 
+        .student-directory-page{min-height:420px;background:#f6f8fb}
+        .student-directory-hero{padding:24px 18px;text-align:center;color:#fff;background:linear-gradient(120deg,#16385c,#285a87,#173b63);border-bottom:3px solid #d0aa4f}
+        .student-directory-hero h1{margin:0 0 4px;color:#fff;font-size:clamp(27px,3.2vw,34px)}
+        .student-directory-hero p{margin:0;color:rgba(255,255,255,.94);font-size:18px}
+        .student-directory-content{padding:32px 0 48px}
+        .student-directory-toolbar{margin-bottom:22px;padding:20px;background:#fff;border:1px solid #ded3b5;border-radius:14px;box-shadow:0 5px 18px rgba(24,61,99,.07)}
+        .student-directory-filters{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:12px;align-items:end}
+        .student-directory-filters label{display:grid;gap:6px;color:#183d63;font-weight:700;font-size:15px}
+        .student-directory-filters input,.student-directory-filters select{width:100%;min-height:44px;padding:9px 11px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#25364a;font:inherit}
+        .student-directory-filters input:focus,.student-directory-filters select:focus{outline:3px solid rgba(208,170,79,.25);border-color:#b58a2c}
+        .student-directory-filter-actions{display:flex;gap:8px;align-items:center}
+        .student-directory-filter-actions button{min-height:44px;padding:9px 16px;border:1px solid #183d63;border-radius:8px;background:#183d63;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+        .student-directory-filter-actions button[type=reset]{background:#fff;color:#183d63}
+        .student-directory-count{margin:14px 2px 0;color:#536274;font-weight:600}
+        .student-directory-table-wrap{width:100%;overflow-x:auto;background:#fff;border:1px solid #d9e0e8;border-radius:12px;box-shadow:0 5px 18px rgba(24,61,99,.07)}
+        .student-directory-table{width:100%;min-width:900px;border-collapse:collapse;background:#fff}
+        .student-directory-table th,.student-directory-table td{padding:10px 12px;border-bottom:1px solid #e5eaf0;text-align:center;vertical-align:middle}
+        .student-directory-table th{position:sticky;top:0;background:#183d63;color:#fff;font-size:14px;white-space:nowrap}
+        .student-directory-table tbody tr:nth-child(even){background:#f8fafc}
+        .student-directory-table tbody tr:hover{background:#f4f0e4}
+        .student-directory-table .student-photo-cell{width:72px}
+        .student-directory-table .student-photo-cell img{display:block;width:48px;height:60px;margin:auto;object-fit:cover;object-position:center top;border:1px solid #d8c99f;border-radius:6px;background:#e9edf1}
+        .student-directory-table .student-photo-link{color:#183d63;font-size:13px;font-weight:700}
+        .student-directory-table .student-name-cell{text-align:left;min-width:150px;color:#183d63;font-weight:700}
+        .student-directory-details-link{display:inline-block;padding:7px 12px;border:1px solid #183d63;border-radius:7px;background:#183d63;color:#fff;text-decoration:none;white-space:nowrap;font-size:14px;font-weight:700}
+        .student-directory-details-link:hover{border-color:#b58a2c;background:#b58a2c;color:#172b42}
+        @media(max-width:600px){.student-directory-content{padding:22px 0 35px}.student-directory-toolbar{padding:12px}.student-directory-filters{gap:8px}.student-directory-filters label{font-size:13px}.student-directory-filter-actions button{padding:8px}.student-directory-count{font-size:14px}}
+        .student-directory-status{padding:22px;background:#fff;border-radius:9px;text-align:center;color:#536274}
+        @media(max-width:800px){.student-directory-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.student-directory-filter-actions{grid-column:1/-1}}
+        @media(max-width:480px){.student-directory-content{padding:22px 0 35px}.student-directory-toolbar{padding:14px}.student-directory-filters{gap:10px}.student-directory-filters label{font-size:14px}.student-directory-filter-actions button{flex:1}}
+        .student-directory-filter-actions button{flex:0 0 auto;min-width:92px;min-height:40px;padding:7px 12px;font-size:14px}
     </style>
 </head>
 
@@ -270,7 +301,7 @@
                 <li class="has-submenu">
                     <a href="javascript:void(0)" class="dropdown-toggle">ভর্তি</a>
                     <ul class="submenu">
-                        <li><a href="online-registration.html">অনলাইন রেজিস্ট্রেশন</a></li>
+                        <li><a href="admin.html">অনলাইন রেজিস্ট্রেশন</a></li>
                     </ul>
                 </li>
                 <li><a href="notice.html">নোটিশ</a></li>
@@ -300,7 +331,68 @@
 
 
 
-<br><br><br><br><br><br><br><br>
+<main class="student-directory-page">
+  <section class="student-directory-hero">
+    <div class="container">
+      <h1>Student Directory</h1>
+      <p>Browse published student records</p>
+    </div>
+  </section>
+  <section class="student-directory-content">
+    <div class="container">
+      <p id="studentDirectoryStatus" class="student-directory-status" role="status" aria-live="polite">Loading student records...</p>
+      <div id="studentDirectoryToolbar" class="student-directory-toolbar" hidden>
+        <form id="studentDirectoryFilters" class="student-directory-filters">
+          <label>Academic Year
+            <select id="studentFilterYear"><option value="">All Academic Years</option></select>
+          </label>
+          <label>Branch
+            <select id="studentFilterBranch"><option value="">All Branches</option></select>
+          </label>
+          <label>Class
+            <select id="studentFilterClass"><option value="">All Classes</option></select>
+          </label>
+          <label>Trade
+            <select id="studentFilterTrade"><option value="">All Trades</option></select>
+          </label>
+          <label>Name or Student ID
+            <input id="studentFilterSearch" type="search" placeholder="Enter a name or student ID">
+          </label>
+          <label>Sort By
+            <select id="studentFilterSort">
+              <option value="name">Name</option>
+              <option value="roll">Roll</option>
+              <option value="id">Student ID</option>
+            </select>
+          </label>
+          <div class="student-directory-filter-actions">
+            <button type="submit">Search</button>
+            <button type="reset">Show All</button>
+          </div>
+        </form>
+        <p id="studentDirectoryCount" class="student-directory-count" aria-live="polite"></p>
+      </div>
+      <div class="student-directory-table-wrap">
+        <table class="student-directory-table">
+          <thead>
+            <tr>
+              <th>Photo</th>
+              <th>Name</th>
+              <th>Student ID</th>
+              <th>Academic Year</th>
+              <th>Branch</th>
+              <th>Class</th>
+              <th>Trade</th>
+              <th>Roll</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody id="studentDirectory"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
 
 
 
@@ -375,168 +467,7 @@
     <!-- Existing mobile menu script -->
     <script src="js/script.js"></script>
 
-    <!-- Load all published notices -->
-    
-<script type="module">
-    import { db } from "./js/firebase-config.js";
-
-    import {
-        collection,
-        getDocs,
-        query,
-        where
-    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-
-    const tableBody = document.getElementById("allNoticesList");
-
-    function showMessage(message) {
-        tableBody.replaceChildren();
-
-        const row = document.createElement("tr");
-        const cell = document.createElement("td");
-
-        cell.colSpan = 4;
-        cell.className = "notice-table-status";
-        cell.textContent = message;
-
-        row.appendChild(cell);
-        tableBody.appendChild(row);
-    }
-
-    function formatDate(timestamp) {
-    if (!timestamp || typeof timestamp.toDate !== "function") {
-        return "তারিখ নেই";
-    }
-
-    return new Intl.DateTimeFormat("bn-BD", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric"
-    }).format(timestamp.toDate());
-}
-
-    function getFileInfo(url) {
-        if (!url) {
-            return { type: "সংযুক্ত ফাইল নেই", url: "" };
-        }
-
-        try {
-            const parsedUrl = new URL(url);
-
-            if (parsedUrl.protocol !== "https:") {
-                return { type: "অবৈধ লিংক", url: "" };
-            }
-
-            const host = parsedUrl.hostname.toLowerCase();
-            const path = parsedUrl.pathname.toLowerCase();
-
-            if (host.includes("drive.google.com") ||
-                host.includes("docs.google.com")) {
-                return { type: "Google Drive / PDF", url: parsedUrl.href };
-            }
-
-            if (path.endsWith(".pdf")) {
-                return { type: "PDF", url: parsedUrl.href };
-            }
-
-            if (path.endsWith(".doc") || path.endsWith(".docx")) {
-                return { type: "Word", url: parsedUrl.href };
-            }
-
-            if (path.endsWith(".jpg") ||
-                path.endsWith(".jpeg") ||
-                path.endsWith(".png")) {
-                return { type: "ছবি", url: parsedUrl.href };
-            }
-
-            return { type: "লিংক", url: parsedUrl.href };
-
-        } catch {
-            return { type: "অবৈধ লিংক", url: "" };
-        }
-    }
-
-    async function loadNotices() {
-        try {
-            const noticesQuery = query(
-                collection(db, "notices"),
-                where("published", "==", true)
-            );
-
-            const snapshot = await getDocs(noticesQuery);
-
-            if (snapshot.empty) {
-                showMessage("বর্তমানে কোনো প্রকাশিত নোটিশ নেই।");
-                return;
-            }
-
-            const notices = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-
-            notices.sort((a, b) => {
-                const timeA = a.updatedAt?.toMillis?.()
-                    ?? a.createdAt?.toMillis?.()
-                    ?? 0;
-
-                const timeB = b.updatedAt?.toMillis?.()
-                    ?? b.createdAt?.toMillis?.()
-                    ?? 0;
-
-                return timeB - timeA;
-            });
-
-            tableBody.replaceChildren();
-
-            notices.forEach((notice) => {
-                const row = document.createElement("tr");
-
-                const dateCell = document.createElement("td");
-                dateCell.textContent = formatDate(
-                    notice.updatedAt ?? notice.createdAt
-                );
-
-                const titleCell = document.createElement("td");
-                titleCell.textContent = notice.title || "শিরোনাম নেই";
-
-                const fileCell = document.createElement("td");
-                const fileInfo = getFileInfo(notice.pdfUrl?.trim());
-
-                fileCell.textContent = fileInfo.type;
-
-                const actionCell = document.createElement("td");
-
-                if (fileInfo.url) {
-                    const link = document.createElement("a");
-
-                    link.className = "notice-view-link";
-                    link.href = fileInfo.url;
-                    link.target = "_blank";
-                    link.rel = "noopener noreferrer";
-                    link.textContent = "দেখুন";
-
-                    actionCell.appendChild(link);
-                } else {
-                    actionCell.textContent = "ফাইল নেই";
-                }
-
-                row.appendChild(dateCell);
-                row.appendChild(titleCell);
-                row.appendChild(fileCell);
-                row.appendChild(actionCell);
-
-                tableBody.appendChild(row);
-            });
-
-        } catch (error) {
-            console.error("নোটিশ লোড করার সমস্যা:", error);
-            showMessage("নোটিশ লোড করা যায়নি। পরে আবার চেষ্টা করুন।");
-        }
-    }
-
-    loadNotices();
-</script>
+    <script type="module" src="js/public-students.js?v=20261019-6"></script>
 
 
 </body>

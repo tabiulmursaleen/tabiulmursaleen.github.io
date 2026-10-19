@@ -260,9 +260,8 @@ noticeList.addEventListener("click", async (event) => {
     }
 
     if (action === "delete") {
-      const confirmed = window.confirm(
-        "এই নোটিশটি স্থায়ীভাবে মুছে ফেলতে চান?"
-      );
+      const confirmText = "এই নোটিশটি স্থায়ীভাবে মুছে ফেলতে চান?";
+      const confirmed = window.confirm(window.dashboardTranslate?.(confirmText) || confirmText);
 
       if (!confirmed) return;
 

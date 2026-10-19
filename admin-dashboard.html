@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>অ্যাডমিন ড্যাশবোর্ড | TMNKSC</title>
-  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/admin.css?v=20261019-11">
 </head>
 <body>
 
@@ -14,37 +14,80 @@
       <h1>অ্যাডমিন ড্যাশবোর্ড</h1>
       <p>তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</p>
     </div>
-    <button id="logoutButton" type="button">লগআউট</button>
+    <div class="admin-header-actions">
+      <button id="dashboardLanguageToggle" class="dashboard-language-toggle" type="button" aria-label="Switch dashboard language">English</button>
+      <div class="admin-account">
+        <button id="adminAccountToggle" class="admin-account-toggle" type="button" aria-label="অ্যাডমিন মেনু" aria-expanded="false" aria-controls="adminAccountMenu">
+          <span class="admin-profile" aria-hidden="true">
+            <span id="adminAvatarFallback" class="admin-avatar-fallback">অ</span>
+            <img id="adminAvatar" class="admin-avatar" alt="" hidden>
+          </span>
+          <span class="admin-account-arrow" aria-hidden="true"><svg viewBox="0 0 12 8" focusable="false"><path d="m1.5 1.5 4.5 4.5 4.5-4.5" /></svg></span>
+        </button>
+        <div id="adminAccountMenu" class="admin-account-menu" hidden>
+          <button id="editAdminProfileButton" class="admin-profile-edit" type="button">এডিট প্রোফাইল</button>
+          <button id="logoutButton" type="button">লগআউট</button>
+        </div>
+      </div>
+    </div>
   </header>
+
+  <dialog id="adminProfileDialog" class="profile-dialog">
+    <form id="adminProfileForm" class="profile-dialog-form">
+      <h2>অ্যাডমিন প্রোফাইল সম্পাদনা</h2>
+      <label for="adminDisplayNameInput">নাম</label>
+      <input id="adminDisplayNameInput" type="text" maxlength="80" required>
+      <label for="adminPhotoUrlInput">প্রোফাইল ছবির লিংক</label>
+      <input id="adminPhotoUrlInput" type="url" placeholder="https://drive.google.com/file/d/...">
+      <small>Google Drive-এর ছবি হলে শেয়ার সেটিং “Anyone with the link” করে লিংক দিন।</small>
+      <p id="adminProfileMessage" class="profile-dialog-message" role="status" aria-live="polite"></p>
+      <div class="profile-dialog-actions">
+        <button id="closeAdminProfileButton" class="secondary-button" type="button">বাতিল</button>
+        <button id="saveAdminProfileButton" type="submit">সংরক্ষণ</button>
+      </div>
+    </form>
+  </dialog>
 
   <main class="dashboard-container">
     <section class="welcome-card">
       <h2>স্বাগতম, অ্যাডমিন!</h2>
-      <p id="adminEmail">অ্যাকাউন্ট যাচাই করা হচ্ছে...</p>
     </section>
 
     <section class="dashboard-grid">
-      <a class="dashboard-card" href="#notices">
-        <span class="card-icon">📢</span>
-        <h3>নোটিশ ব্যবস্থাপনা</h3>
-        <p>নোটিশ যোগ, সম্পাদনা ও প্রকাশ করুন।</p>
+      <a class="dashboard-card" href="#students">
+        <div class="dashboard-card-heading"><span class="card-icon">🎓</span>
+        <h3>শিক্ষার্থী নিবন্ধন</h3></div>
       </a>
 
-      <a class="dashboard-card" href="#routines">
-        <span class="card-icon">📅</span>
-        <h3>রুটিন ব্যবস্থাপনা</h3>
-        <p>ক্লাস ও পরীক্ষার রুটিন পরিচালনা করুন।</p>
+      <a class="dashboard-card" href="#fees">
+        <div class="dashboard-card-heading"><span class="card-icon">💳</span>
+        <h3>বেতন ব্যবস্থাপনা</h3></div>
       </a>
 
       <a class="dashboard-card" href="#results">
-        <span class="card-icon">📊</span>
-        <h3>ফলাফল ব্যবস্থাপনা</h3>
-        <p>পরীক্ষার ফলাফল পরিচালনা করুন।</p>
+        <div class="dashboard-card-heading"><span class="card-icon">📊</span>
+        <h3>ফলাফল ব্যবস্থাপনা</h3></div>
       </a>
+
+      <a class="dashboard-card" href="#notices">
+        <div class="dashboard-card-heading"><span class="card-icon">📢</span>
+        <h3>নোটিশ ব্যবস্থাপনা</h3></div>
+      </a>
+
+      <a class="dashboard-card" href="#routines">
+        <div class="dashboard-card-heading"><span class="card-icon">📅</span>
+        <h3>রুটিন ব্যবস্থাপনা</h3></div>
+      </a>
+
+      <a class="dashboard-card" href="#admit-cards">
+        <div class="dashboard-card-heading"><span class="card-icon">🎫</span>
+        <h3>এডমিট কার্ড ম্যানেজমেন্ট</h3></div>
+      </a>
+
     </section>
 
     
-<section id="notices" class="dashboard-section">
+<section id="notices" class="dashboard-section" hidden>
   <h2>নোটিশ ব্যবস্থাপনা</h2>
 
   <form id="noticeForm">
@@ -97,20 +140,222 @@
 </section>
 
 
-    <section id="routines" class="dashboard-section">
+    <section id="routines" class="dashboard-section" hidden>
       <h2>রুটিন ব্যবস্থাপনা</h2>
-      <p>এখানে রুটিনের তথ্য ও ফাইল পরিচালনার ব্যবস্থা যুক্ত হবে।</p>
+      <p class="section-help">স্কুল ও কলেজ শাখার রুটিন আলাদাভাবে সম্পাদনা করুন। শিক্ষক সংকেতের পাশে সম্পূর্ণ নাম ও ছবির লিংক যোগ করা যাবে। প্রকাশিত রুটিন সাইটে দেখা যাবে।</p>
+      <div class="routine-admin-controls">
+        <label>শাখা
+          <select id="adminRoutineBranch">
+            <option value="school">স্কুল শাখা</option>
+            <option value="college">কলেজ শাখা</option>
+          </select>
+        </label>
+        <label>শিক্ষাবর্ষ
+          <input id="adminRoutineYear" type="text" maxlength="12" required>
+        </label>
+        <label>কার্যকর হওয়ার তারিখ
+          <input id="adminRoutineEffectiveDate" type="date" required>
+        </label>
+        <label class="check-label"><input id="adminRoutinePublished" type="checkbox"> ওয়েবসাইটে প্রকাশ করুন</label>
+      </div>
+
+      <h3>শিক্ষকের সংকেত ও পরিচিতি</h3>
+      <div class="data-table-wrap routine-admin-teachers-wrap">
+        <table class="data-table routine-admin-teachers-table">
+          <thead><tr><th>সংকেত</th><th>শিক্ষকের নাম</th><th>ছবির পাথ (ঐচ্ছিক)</th><th>কাজ</th></tr></thead>
+          <tbody id="adminRoutineTeachers"></tbody>
+        </table>
+      </div>
+      <button id="addRoutineTeacher" class="secondary-button" type="button">+ শিক্ষক যোগ করুন</button>
+
+      <h3>ক্লাস রুটিন</h3>
+      <p class="field-help">প্রতিটি ঘরে বিষয় এবং প্রয়োজনে পরের লাইনে শিক্ষক সংকেত লিখুন। যেমন: গণিত, পরের লাইনে JH।</p>
+      <div id="adminRoutineEditor" class="data-table-wrap routine-admin-editor" aria-live="polite"></div>
+      <div class="routine-admin-save-row">
+        <button id="saveRoutineButton" type="button">রুটিন সংরক্ষণ</button>
+        <p id="adminRoutineMessage" class="module-message" role="status" aria-live="polite"></p>
+      </div>
     </section>
 
-    <section id="results" class="dashboard-section">
+    <section id="admit-cards" class="dashboard-section" hidden>
+      <h2>এডমিট কার্ড ম্যানেজমেন্ট</h2>
+      <p>এই বিভাগে শিক্ষার্থী নির্বাচন করে এডমিট কার্ড তৈরি ও প্রিন্টের ব্যবস্থা যুক্ত হবে।</p>
+    </section>
+
+    <section id="students" class="dashboard-section" hidden>
+      <h2>শিক্ষার্থী নিবন্ধন</h2>
+      <p class="section-help">ওয়েবসাইটে দেখাতে প্রকাশের ঘরটি নির্বাচন করুন। JPG ছবি Google Drive-এ আপলোড করে Viewer শেয়ার লিংক দিন; ছবিটি ৫০০ কেবির নিচে রাখুন।</p>
+
+      <form id="studentForm" class="admin-form">
+        <div class="form-grid">
+          <label class="full-width">শিক্ষার্থীর নাম <span>*</span>
+            <input id="studentName" type="text" required maxlength="120" placeholder="জন্মনিবন্ধন অনুযায়ী">
+          </label>
+          <label>পিতার নাম <span>*</span>
+            <input id="studentFatherName" type="text" required maxlength="120" autocomplete="off" placeholder="জন্মনিবন্ধন অনুযায়ী">
+          </label>
+          <label>মাতার নাম <span>*</span>
+            <input id="studentMotherName" type="text" required maxlength="120" autocomplete="off" placeholder="জন্মনিবন্ধন অনুযায়ী">
+          </label>
+          <p id="legacyParentNameNotice" class="field-help full-width" hidden></p>
+          <div class="full-width student-fields-row student-personal-fields">
+            <label>লিঙ্গ <span>*</span>
+              <select id="studentGender" required>
+                <option value="">নির্বাচন করুন</option>
+                <option value="ছাত্র">ছাত্র</option>
+                <option value="ছাত্রী">ছাত্রী</option>
+              </select>
+            </label>
+            <label>জন্মতারিখ <span>*</span>
+              <input id="studentDob" type="date" required>
+            </label>
+          </div>
+          <div class="full-width student-fields-row student-course-fields">
+            <label>শাখা <span>*</span>
+              <select id="studentBranch" required>
+                <option value="">শাখা নির্বাচন করুন</option>
+                <option value="স্কুল">স্কুল</option>
+                <option value="কলেজ">কলেজ</option>
+              </select>
+            </label>
+            <label>শ্রেণি <span>*</span>
+              <select id="studentClass" required>
+                <option value="">শ্রেণি নির্বাচন করুন</option>
+                <option value="ষষ্ঠ">ষষ্ঠ</option>
+                <option value="সপ্তম">সপ্তম</option>
+                <option value="অষ্টম">অষ্টম</option>
+                <option value="নবম">নবম</option>
+                <option value="দশম">দশম</option>
+                <option value="একাদশ">একাদশ</option>
+                <option value="দ্বাদশ">দ্বাদশ</option>
+              </select>
+            </label>
+            <label>ট্রেড
+              <select id="studentTrade">
+                <option value="">ট্রেড নির্বাচন করুন</option>
+                <option value="আইটি সাপোর্ট এন্ড আইওটি বেসিকস">আইটি সাপোর্ট এন্ড আইওটি বেসিকস</option>
+                <option value="অ্যাপারেল ম্যানুফ্যাকচারিং বেসিকস">অ্যাপারেল ম্যানুফ্যাকচারিং বেসিকস</option>
+                <option value="জেনারেল মেকানিক্স">জেনারেল মেকানিক্স</option>
+                <option value="জেনারেল ইলেক্ট্রনিক্স">জেনারেল ইলেক্ট্রনিক্স</option>
+                <option value="এগ্রো বেসড ফুড">এগ্রো বেসড ফুড</option>
+                <option value="কম্পিউটারাইজড একাউন্টিং সিস্টেম">কম্পিউটারাইজড একাউন্টিং সিস্টেম</option>
+                <option value="ডিজিটাল টেকনোলজি ইন বিজনেস">ডিজিটাল টেকনোলজি ইন বিজনেস</option>
+              </select>
+            </label>
+          </div>
+          <div class="full-width student-fields-row student-admission-fields">
+            <label>শিক্ষাবর্ষ <span>*</span>
+              <input id="studentAcademicYear" type="number" min="2000" max="2100" required inputmode="numeric">
+            </label>
+            <label>ভর্তির তারিখ <span>*</span>
+              <input id="studentAdmissionDate" type="date" required>
+            </label>
+          </div>
+          <div class="full-width student-fields-row student-contact-fields">
+            <label>অভিভাবকের মোবাইল <span>*</span>
+              <input id="studentGuardianPhone" type="tel" required pattern="[0-9০-৯]{11}" maxlength="11" inputmode="numeric" placeholder="017XXXXXXXX">
+            </label>
+            <label>জরুরি যোগাযোগের নম্বর <span>*</span>
+              <input id="studentEmergencyPhone" type="tel" required pattern="[0-9০-৯]{11}" maxlength="11" inputmode="numeric" placeholder="017XXXXXXXX">
+            </label>
+          </div>
+          <div class="full-width student-fields-row student-address-fields">
+            <label>গ্রাম <span>*</span>
+              <input id="studentVillage" type="text" required maxlength="120" autocomplete="address-level3">
+            </label>
+            <label>উপজেলা <span>*</span>
+              <input id="studentUpazila" type="text" required maxlength="120" autocomplete="address-level2">
+            </label>
+            <label>জেলা <span>*</span>
+              <input id="studentDistrict" type="text" required maxlength="120" autocomplete="address-level1">
+            </label>
+          </div>
+          <p id="legacyAddressNotice" class="field-help full-width" hidden></p>
+          <label class="full-width">ছবির Google Drive লিংক <span>*</span>
+            <input id="studentPhotoUrl" type="url" required maxlength="1000" inputmode="url" placeholder="https://drive.google.com/file/d/..." aria-describedby="studentPhotoHelp">
+            <small id="studentPhotoHelp" class="field-help">Drive-এ JPG ছবি আপলোড করে “Anyone with the link — Viewer” করুন। ৫০০ কেবির নিচে রাখুন।</small>
+          </label>
+          <label>রোল নম্বর
+            <input id="studentRoll" type="text" readonly placeholder="সাবমিটের পর তৈরি হবে">
+            <small class="field-help">সাবমিটের পর স্বয়ংক্রিয়ভাবে তৈরি হবে।</small>
+          </label>
+          <label>শিক্ষার্থী আইডি
+            <input id="studentCode" type="text" readonly aria-describedby="studentCodeHelp" placeholder="সেভের পর তৈরি হবে">
+            <small id="studentCodeHelp" class="field-help">সাবমিটের পর স্বয়ংক্রিয়ভাবে তৈরি হবে।</small>
+          </label>
+          <section id="boardRegistrationSection" class="full-width board-registration-panel" aria-labelledby="boardRegistrationHeading">
+            <label class="board-registration-toggle">
+              <input id="boardRegistrationCompleted" type="checkbox">
+              <span id="boardRegistrationHeading">বোর্ড রেজিস্ট্রেশন তথ্য</span>
+            </label>
+            <div id="boardRegistrationFields" class="form-grid" hidden>
+              <label>বোর্ড রোল
+                <input id="studentBoardRoll" type="text" inputmode="numeric" maxlength="20">
+              </label>
+              <label>বোর্ড রেজি. নম্বর
+                <input id="studentBoardRegistrationNumber" type="text" inputmode="numeric" maxlength="30">
+              </label>
+            </div>
+          </section>
+        </div>
+        <label class="check-label"><input id="studentPublished" type="checkbox"> শিক্ষার্থী তালিকায় প্রকাশ করুন (নাম, আইডি, শিক্ষাবর্ষ, শাখা, শ্রেণি, ট্রেড, রোল ও ছবি প্রকাশ হবে)</label>
+        <div class="form-actions">
+          <button id="saveStudentButton" type="submit">শিক্ষার্থী সংরক্ষণ</button>
+          <button id="cancelStudentEdit" type="button" class="secondary-button" hidden>সম্পাদনা বাতিল</button>
+        </div>
+      </form>
+      <p id="studentMessage" class="module-message" role="status" aria-live="polite"></p>
+      <h3>নিবন্ধিত শিক্ষার্থী</h3>
+      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>আইডি</th><th>নাম</th><th>শাখা / শ্রেণি</th><th>রোল</th><th>ওয়েবসাইটে</th><th>কাজ</th></tr></thead><tbody id="studentRows"><tr><td colspan="6">তথ্য লোড হচ্ছে...</td></tr></tbody></table></div>
+    </section>
+
+    <section id="fees" class="dashboard-section" hidden>
+      <h2>বেতন ও ফি আদায়</h2>
+      <p class="section-help">প্রতিটি জমা আলাদা লেনদেন হিসেবে রেকর্ড হবে। সংরক্ষিত লেনদেন তালিকায় দেখা যাবে।</p>
+      <form id="feeForm" class="admin-form">
+        <div class="form-grid">
+          <label>শিক্ষার্থী <span>*</span><select id="feeStudentCode" required><option value="">শিক্ষার্থী নির্বাচন করুন</option></select></label>
+          <label>ফি-এর ধরন <span>*</span><select id="feeType" required><option value="">নির্বাচন করুন</option><option value="মাসিক বেতন">মাসিক বেতন</option><option value="পরীক্ষার ফি">পরীক্ষার ফি</option><option value="ভর্তি ফি">ভর্তি ফি</option><option value="অন্যান্য">অন্যান্য</option></select></label>
+          <label>মাস (প্রযোজ্য হলে)<input id="feeMonth" type="month"></label>
+          <label>পরিমাণ (টাকা) <span>*</span><input id="feeAmount" type="number" min="1" step="0.01" required inputmode="decimal"></label>
+          <label>জমার তারিখ <span>*</span><input id="feeDate" type="date" required></label>
+          <label>পরিশোধের মাধ্যম<select id="feeMethod"><option value="নগদ">নগদ</option><option value="মোবাইল ব্যাংকিং">মোবাইল ব্যাংকিং</option><option value="ব্যাংক">ব্যাংক</option><option value="অন্যান্য">অন্যান্য</option></select></label>
+          <label>রসিদ নম্বর<input id="feeReceipt" type="text" maxlength="50"></label>
+          <label class="full-width">মন্তব্য<input id="feeNote" type="text" maxlength="250"></label>
+        </div>
+        <button id="saveFeeButton" type="submit">জমা সংরক্ষণ</button>
+      </form>
+      <p id="feeMessage" class="module-message" role="status" aria-live="polite"></p>
+      <h3>সাম্প্রতিক জমা</h3>
+      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>তারিখ</th><th>শিক্ষার্থী</th><th>ফি</th><th>মাস</th><th>টাকা</th><th>রসিদ</th></tr></thead><tbody id="feeRows"><tr><td colspan="6">তথ্য লোড হচ্ছে...</td></tr></tbody></table></div>
+    </section>
+
+    <section id="results" class="dashboard-section" hidden>
       <h2>ফলাফল ব্যবস্থাপনা</h2>
-      <p>এখানে ফলাফল যোগ ও পরিচালনার ব্যবস্থা যুক্ত হবে।</p>
+      <p class="section-help">শিক্ষার্থী নির্বাচন করে পরীক্ষার বিষয়ভিত্তিক পূর্ণমান ও প্রাপ্ত নম্বর দিন। প্রকাশ করলে ফলাফল পাতায় দেখা যাবে।</p>
+      <form id="resultForm" class="admin-form">
+        <div class="form-grid">
+          <label>শিক্ষার্থী <span>*</span><select id="resultStudentCode" required><option value="">শিক্ষার্থী নির্বাচন করুন</option></select></label>
+          <label>পরীক্ষার নাম <span>*</span><input id="resultExam" type="text" required maxlength="100" placeholder="যেমন: অর্ধবার্ষিক পরীক্ষা"></label>
+          <label>শিক্ষাবর্ষ <span>*</span><input id="resultYear" type="number" min="2000" max="2100" required></label>
+        </div>
+        <div class="subject-entry-heading"><h3>বিষয়ভিত্তিক নম্বর</h3><button id="addSubjectButton" type="button" class="secondary-button">+ বিষয় যোগ</button></div>
+        <div id="resultSubjects" class="subject-rows"></div>
+        <label class="check-label"><input id="resultPublished" type="checkbox"> ওয়েবসাইটে ফলাফল প্রকাশ করুন</label>
+        <button id="saveResultButton" type="submit">ফলাফল সংরক্ষণ</button>
+      </form>
+      <p id="resultMessage" class="module-message" role="status" aria-live="polite"></p>
+      <h3>সংরক্ষিত ফলাফল</h3>
+      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>পরীক্ষা</th><th>শিক্ষাবর্ষ</th><th>শিক্ষার্থী</th><th>মোট নম্বর</th><th>ওয়েবসাইটে</th><th>কাজ</th></tr></thead><tbody id="resultRows"><tr><td colspan="6">তথ্য লোড হচ্ছে...</td></tr></tbody></table></div>
     </section>
 
     <p id="dashboardMessage" role="status" aria-live="polite"></p>
   </main>
 
+  <script type="module" src="js/dashboard-language.js?v=20261019-7"></script>
   <script type="module" src="js/admin-dashboard.js"></script>
   <script type="module" src="js/admin-notices.js"></script>
+  <script type="module" src="js/admin-students.js?v=20261019-7"></script>
+  <script type="module" src="js/admin-routines.js?v=20261019-1"></script>
 </body>
 </html>

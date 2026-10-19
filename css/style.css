@@ -2511,7 +2511,7 @@ section{
 
 .routine-page{
     background:#f5f7fa;
-    padding:55px 0 70px;
+    padding:28px 0 36px;
 }
 
 
@@ -2519,18 +2519,11 @@ section{
 
 .routine-header{
     text-align:center;
-    margin-bottom:35px;
-}
-
-.routine-header .page-kicker{
-    margin:0 0 5px;
-    color:var(--primary);
-    font-size:18px;
-    font-weight:600;
+    margin-bottom:16px;
 }
 
 .routine-header h1{
-    margin:0 0 8px;
+    margin:0 0 4px;
     color:var(--primary-dark);
     font-size:35px;
     text-shadow:1px 2px 3px rgba(0,0,0,.12);
@@ -2539,7 +2532,7 @@ section{
 .routine-header p:last-child{
     margin:0;
     color:#666;
-    font-size:19px;
+    font-size:16px;
 }
 
 
@@ -2744,6 +2737,170 @@ section{
 .routine-pdf-note a {
     color: var(--primary-dark);
     font-weight: 600;
+}
+
+/* Published, editable school and college class routines */
+.routine-branch-tabs {
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    margin:0 auto 22px;
+}
+.routine-branch-tab {
+    width:auto;
+    min-width:150px;
+    margin:0;
+    padding:11px 22px;
+    border:1px solid #c8d2de;
+    border-radius:9px;
+    background:#fff;
+    color:#26354b;
+    font:inherit;
+    font-weight:700;
+    cursor:pointer;
+}
+.routine-branch-tab:hover,
+.routine-branch-tab.is-active {
+    border-color:#b99b55;
+    background:#26354b;
+    color:#fff;
+}
+.public-routine-status {
+    max-width:900px;
+    margin:0 auto 20px;
+    padding:18px;
+    border:1px solid #ded3b5;
+    border-radius:10px;
+    background:#fff;
+    color:#536274;
+    text-align:center;
+}
+.routine-card {
+    border:1px solid #ded3b5;
+}
+.routine-card-header {
+    border-bottom:3px solid #d0aa4f;
+    background:linear-gradient(115deg,#f9f7f0,#fff);
+}
+.published-routine-table-wrap {
+    max-height:78vh;
+    overflow:auto;
+    overscroll-behavior:contain;
+}
+.published-routine-table {
+    width:100%;
+    min-width:1320px;
+    border-collapse:separate;
+    border-spacing:0;
+    background:#fff;
+}
+.published-routine-table th,
+.published-routine-table td {
+    min-width:126px;
+    padding:10px 9px;
+    border-right:1px solid #e1e6ec;
+    border-bottom:1px solid #e1e6ec;
+    text-align:center;
+    vertical-align:middle;
+}
+.published-routine-table th {
+    position:sticky;
+    z-index:2;
+    top:0;
+    background:#26354b;
+    color:#fff;
+    font-size:14px;
+    line-height:1.45;
+}
+.published-routine-table th:first-child,
+.published-routine-table td.routine-day-cell {
+    position:sticky;
+    left:0;
+    z-index:1;
+    min-width:105px;
+    background:#f6f2e7;
+    color:#26354b;
+    font-weight:700;
+}
+.published-routine-table th:first-child {
+    z-index:3;
+    background:#26354b;
+    color:#fff;
+}
+.published-routine-table th:nth-child(2),
+.published-routine-table td:nth-child(2) {
+    min-width:76px;
+}
+.published-routine-table td.routine-class-cell {
+    position:sticky;
+    left:105px;
+    z-index:1;
+    background:#fff;
+}
+.published-routine-table tbody tr:nth-child(even) td.routine-class-cell {
+    background:#f8fafc;
+}
+.published-routine-table th:nth-child(2) {
+    background:#334760;
+}
+.published-routine-table tbody tr:nth-child(even) td:not(:first-child) {
+    background:#f8fafc;
+}
+.published-routine-table tbody tr:hover td {
+    background:#f5f0e3;
+}
+.published-routine-table tbody tr:hover td.routine-day-cell,
+.published-routine-table tbody tr:hover td.routine-class-cell {
+    background:#eee6d1;
+}
+.published-routine-table .routine-class-cell {
+    color:#183d63;
+    font-weight:700;
+}
+.routine-subject {
+    display:block;
+    color:#26354b;
+    font-weight:700;
+}
+.routine-teacher-line {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    margin-top:7px;
+    color:#59687a;
+    font-size:12px;
+    line-height:1.35;
+}
+.routine-teacher-photo {
+    width:25px;
+    height:25px;
+    flex:0 0 25px;
+    border:1px solid #d0aa4f;
+    border-radius:50%;
+    object-fit:cover;
+    object-position:center top;
+}
+.routine-cell-note {
+    display:block;
+    margin-top:5px;
+    color:#59687a;
+    font-size:12px;
+    line-height:1.4;
+}
+.published-routine-table .routine-empty-cell {
+    background:#fafbfd;
+}
+@media(max-width:768px) {
+    .routine-page { padding:20px 0 28px; }
+    .routine-header { margin-bottom:12px; }
+    .routine-branch-tabs { gap:8px; }
+    .routine-branch-tab { min-width:0; flex:1; padding:10px 12px; }
+    .routine-card-header { align-items:center; padding:15px; }
+    .published-routine-table-wrap { max-height:72vh; }
+    .published-routine-table { min-width:1160px; }
+    .published-routine-table th,
+    .published-routine-table td { min-width:110px; padding:8px 7px; }
 }
 
 @media (max-width: 600px) {
@@ -3105,6 +3262,281 @@ section{
 }
 .navbar #mainMenu > li > a:hover,
 .navbar #mainMenu > li > a.active{background:linear-gradient(135deg,#285780,#183d63)}
+
+/* Compact published timetable cells so more rows fit on screen. */
+.published-routine-table {
+    min-width:1080px;
+}
+.published-routine-table th,
+.published-routine-table td {
+    min-width:100px;
+    padding:6px 5px;
+    line-height:1.25;
+}
+.published-routine-table th:first-child,
+.published-routine-table td.routine-day-cell {
+    min-width:105px;
+}
+.published-routine-table th:nth-child(2),
+.published-routine-table td:nth-child(2) {
+    min-width:60px;
+}
+.routine-subject {
+    font-size:13px;
+    line-height:1.2;
+}
+.routine-teacher-line {
+    gap:4px;
+    margin-top:3px;
+    font-size:11px;
+    line-height:1.2;
+    white-space:nowrap;
+}
+.routine-teacher-photo {
+    width:20px;
+    height:20px;
+    flex-basis:20px;
+}
+.routine-cell-note {
+    margin-top:3px;
+    font-size:11px;
+    line-height:1.25;
+}
+.published-routine-table td.routine-highlight-cell {
+    border:1px solid rgba(185,155,85,.68);
+    box-shadow:inset 0 0 0 1px rgba(185,155,85,.12);
+}
+/* Light day tints plus a slightly deeper shade on alternating rows improve tracking. */
+.published-routine-table tbody tr[data-day-index="0"] td:not(.routine-day-cell) { background:#f4f8fc; }
+.published-routine-table tbody tr[data-day-index="1"] td:not(.routine-day-cell) { background:#f1f8f4; }
+.published-routine-table tbody tr[data-day-index="2"] td:not(.routine-day-cell) { background:#fbf7ec; }
+.published-routine-table tbody tr[data-day-index="3"] td:not(.routine-day-cell) { background:#f5f3fa; }
+.published-routine-table tbody tr[data-day-index="4"] td:not(.routine-day-cell) { background:#fcf3f1; }
+.published-routine-table tbody tr:nth-child(even)[data-day-index="0"] td:not(.routine-day-cell) { background:#eaf1f8; }
+.published-routine-table tbody tr:nth-child(even)[data-day-index="1"] td:not(.routine-day-cell) { background:#e6f1e9; }
+.published-routine-table tbody tr:nth-child(even)[data-day-index="2"] td:not(.routine-day-cell) { background:#f4ecd5; }
+.published-routine-table tbody tr:nth-child(even)[data-day-index="3"] td:not(.routine-day-cell) { background:#ece8f5; }
+.published-routine-table tbody tr:nth-child(even)[data-day-index="4"] td:not(.routine-day-cell) { background:#f6e7e3; }
+.published-routine-table td.routine-day-cell[data-day-index="0"] { background:#e4edf7; }
+.published-routine-table td.routine-day-cell[data-day-index="1"] { background:#e1efe5; }
+.published-routine-table td.routine-day-cell[data-day-index="2"] { background:#f1e8cb; }
+.published-routine-table td.routine-day-cell[data-day-index="3"] { background:#e9e4f2; }
+.published-routine-table td.routine-day-cell[data-day-index="4"] { background:#f3e2dd; }
+.published-routine-table tbody tr[data-day-index] td.routine-highlight-cell { border-color:rgba(185,155,85,.68); }
+.published-routine-table tbody tr:hover td.routine-highlight-cell { background:inherit; }
+.published-routine-table tbody tr:hover td:not(.routine-highlight-cell) { background:#e8edf3; }
+.published-routine-table tbody tr:hover td.routine-day-cell { background:#dce5ef; }
+.routine-print-actions {
+    display:flex;
+    justify-content:center;
+    margin:12px auto 0;
+}
+.routine-print-button {
+    width:auto;
+    margin:0;
+    padding:8px 14px;
+    border:1px solid #b99b55;
+    border-radius:8px;
+    background:#26354b;
+    color:#fff;
+    font:inherit;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+}
+.routine-print-button:hover {
+    background:#334760;
+}
+@page {
+    size:A4 landscape;
+    margin:7mm;
+}
+@media print {
+    html, body {
+        width:100%;
+        min-width:0;
+        margin:0!important;
+        padding:0!important;
+        background:#fff!important;
+        color:#111!important;
+    }
+    body * {
+        visibility:hidden!important;
+    }
+    .routine-page,
+    .routine-page * {
+        visibility:visible!important;
+    }
+    .routine-page {
+        position:absolute!important;
+        inset:0 auto auto 0!important;
+        width:100%!important;
+        margin:0!important;
+        padding:0!important;
+        background:#fff!important;
+    }
+    .routine-page > .container {
+        width:100%!important;
+        max-width:none!important;
+        margin:0!important;
+        padding:0!important;
+    }
+    .routine-header {
+        margin:0 0 3mm!important;
+        padding:0!important;
+        text-align:center!important;
+    }
+    .routine-header > p:last-child,
+    .routine-branch-tabs,
+    .routine-print-actions,
+    #publicRoutineStatus {
+        display:none!important;
+    }
+    .routine-header h1 {
+        margin:0!important;
+        font-size:15pt!important;
+        line-height:1.2!important;
+    }
+    #publicRoutineContent {
+        display:block!important;
+        width:100%!important;
+        max-height:none!important;
+        overflow:visible!important;
+        border:0!important;
+        box-shadow:none!important;
+    }
+    .routine-card-header {
+        padding:1.5mm 0!important;
+        border-bottom:1px solid #b99b55!important;
+        background:#fff!important;
+        text-align:center!important;
+    }
+    .routine-card-header h2 {
+        margin:0!important;
+        font-size:11pt!important;
+        line-height:1.2!important;
+    }
+    .routine-card-header p {
+        margin:1mm 0 0!important;
+        font-size:7.5pt!important;
+    }
+    .published-routine-table-wrap {
+        width:100%!important;
+        max-height:none!important;
+        overflow:visible!important;
+    }
+    .published-routine-table {
+        width:100%!important;
+        min-width:0!important;
+        table-layout:fixed!important;
+        border-collapse:collapse!important;
+        font-family:inherit!important;
+        page-break-inside:auto!important;
+    }
+    .published-routine-table th,
+    .published-routine-table td {
+        position:static!important;
+        min-width:0!important;
+        padding:1.1mm .6mm!important;
+        border:0.25mm solid #9da7b2!important;
+        font-size:6.5pt!important;
+        line-height:1.05!important;
+        overflow-wrap:anywhere!important;
+        break-inside:avoid!important;
+    }
+    .published-routine-table th {
+        background:#26354b!important;
+        color:#fff!important;
+        font-size:7pt!important;
+    }
+    .published-routine-table tbody tr[data-day-index] td,
+    .published-routine-table tbody tr:nth-child(even)[data-day-index] td,
+    .published-routine-table td.routine-day-cell[data-day-index] {
+        print-color-adjust:exact;
+        -webkit-print-color-adjust:exact;
+    }
+    .published-routine-table th:first-child,
+    .published-routine-table td.routine-day-cell {
+        width:17mm!important;
+        min-width:0!important;
+    }
+    .published-routine-table th:nth-child(2),
+    .published-routine-table td.routine-class-cell {
+        left:auto!important;
+        width:13mm!important;
+        min-width:0!important;
+    }
+    .routine-subject {
+        font-size:6.5pt!important;
+        line-height:1.05!important;
+    }
+    .routine-teacher-line {
+        gap:.5mm!important;
+        margin-top:.5mm!important;
+        font-size:5.5pt!important;
+        line-height:1!important;
+    }
+    .routine-teacher-photo {
+        width:3mm!important;
+        height:3mm!important;
+        flex-basis:3mm!important;
+        border-width:.2mm!important;
+    }
+    .routine-cell-note {
+        margin-top:.5mm!important;
+        font-size:5.5pt!important;
+        line-height:1.05!important;
+    }
+    .published-routine-table td.routine-highlight-cell {
+        border:0.4mm solid #b99b55!important;
+        print-color-adjust:exact;
+        -webkit-print-color-adjust:exact;
+    }
+    .published-routine-table th {
+        print-color-adjust:exact;
+        -webkit-print-color-adjust:exact;
+    }
+}
+
+/* Disable motion on teacher and staff cards while keeping their links usable. */
+.teacher-grid .teacher-card,
+.teacher-preview-grid .teacher-card,
+.staff-grid .teacher-card,
+.trade-teacher,
+.teacher-grid .teacher-card:hover,
+.teacher-grid .teacher-card:focus-within,
+.teacher-grid .teacher-card:active,
+.teacher-preview-grid .teacher-card:hover,
+.teacher-preview-grid .teacher-card:focus-within,
+.teacher-preview-grid .teacher-card:active,
+.staff-grid .teacher-card:hover,
+.staff-grid .teacher-card:focus-within,
+.staff-grid .teacher-card:active,
+.trade-teacher:hover,
+.trade-teacher:focus-within,
+.trade-teacher:active{
+    animation:none!important;
+    transition:none!important;
+    transform:none!important;
+    translate:none!important;
+    rotate:none!important;
+    scale:none!important;
+}
+.teacher-grid .teacher-card img,
+.teacher-preview-grid .teacher-card img,
+.staff-grid .teacher-card img,
+.trade-teacher img,
+.teacher-grid .teacher-card:hover img,
+.teacher-preview-grid .teacher-card:hover img,
+.staff-grid .teacher-card:hover img,
+.trade-teacher:hover img{
+    animation:none!important;
+    transition:none!important;
+    transform:none!important;
+    translate:none!important;
+    rotate:none!important;
+    scale:none!important;
+}
 
 /* Apply the current navy, blue, and gold palette to notice-style pages. */
 .all-notices-section{background:#f6f8fb!important}

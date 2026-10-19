@@ -6,10 +6,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>সকল নোটিশ | তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</title>
+    <title>একাডেমিক ফলাফল | তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</title>
 
     <meta name="description"
-          content="তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজের সকল প্রকাশিত নোটিশ।">
+          content="তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজের প্রকাশিত একাডেমিক ফলাফল দেখুন।">
 
     <link rel="stylesheet" href="css/style.css">
 
@@ -190,6 +190,24 @@
     }
 }
 
+        .public-results-page{min-height:420px;background:#f6f8fb}
+        .public-results-hero{padding:24px 18px;text-align:center;color:#fff;background:linear-gradient(120deg,#16385c,#285a87,#173b63);border-bottom:3px solid #d0aa4f}
+        .public-results-hero h1{margin:0 0 4px;color:#fff;font-size:clamp(27px,3.2vw,34px)}
+        .public-results-hero p{margin:0;color:rgba(255,255,255,.94);font-size:18px}
+        .public-results-content{width:min(900px,calc(100% - 32px));margin:30px auto 48px}
+        .public-results-search{display:grid;grid-template-columns:1fr auto;align-items:end;gap:12px;padding:20px;background:#fff;border:1px solid #ded3b5;border-radius:10px}
+        .public-results-search label{display:grid;gap:6px;color:#26354b;font-weight:700}
+        .public-results-search input{width:100%;padding:11px;border:1px solid #d5dce4;border-radius:7px;font:inherit}
+        .public-results-search button{margin:0;padding:11px 20px;border:0;border-radius:7px;background:#26354b;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+        .public-results-status{margin:16px 0;padding:18px;background:#fff;border-radius:8px;text-align:center;color:#536274}
+        .public-result-card{margin-top:16px;padding:20px;background:#fff;border:1px solid #ded3b5;border-radius:10px;box-shadow:0 4px 15px rgba(38,53,75,.06)}
+        .public-result-card h2{margin:0 0 8px;color:#183d63;font-size:22px}
+        .public-result-meta{margin:0 0 14px;color:#536274}
+        .public-result-table{width:100%;border-collapse:collapse}
+        .public-result-table th,.public-result-table td{padding:9px 11px;border:1px solid #e4e8ee;text-align:center}
+        .public-result-table th{background:#26354b;color:#fff}
+        .public-result-total{margin:12px 0 0;text-align:right;font-weight:700;color:#183d63}
+        @media(max-width:560px){.public-results-search{grid-template-columns:1fr}.public-results-search button{width:100%}.public-result-card{padding:14px}.public-result-table th,.public-result-table td{padding:8px 6px;font-size:15px}}
     </style>
 </head>
 
@@ -270,7 +288,7 @@
                 <li class="has-submenu">
                     <a href="javascript:void(0)" class="dropdown-toggle">ভর্তি</a>
                     <ul class="submenu">
-                        <li><a href="online-registration.html">অনলাইন রেজিস্ট্রেশন</a></li>
+                        <li><a href="admin.html">অনলাইন রেজিস্ট্রেশন</a></li>
                     </ul>
                 </li>
                 <li><a href="notice.html">নোটিশ</a></li>
@@ -300,7 +318,24 @@
 
 
 
-<br><br><br><br><br><br><br><br>
+<main class="public-results-page">
+  <section class="public-results-hero">
+    <div class="container">
+      <h1>একাডেমিক ফলাফল</h1>
+      <p>শিক্ষার্থী আইডি দিয়ে প্রকাশিত ফলাফল খুঁজুন</p>
+    </div>
+  </section>
+  <section class="public-results-content">
+    <form id="publicResultSearch" class="public-results-search">
+      <label for="publicStudentCode">শিক্ষার্থী আইডি
+        <input id="publicStudentCode" type="text" required maxlength="30" autocomplete="off" placeholder="আপনার শিক্ষার্থী আইডি লিখুন">
+      </label>
+      <button type="submit">ফলাফল দেখুন</button>
+    </form>
+    <p id="publicResultStatus" class="public-results-status" role="status" aria-live="polite">ফলাফল দেখতে শিক্ষার্থী আইডি লিখুন।</p>
+    <div id="publicResultList"></div>
+  </section>
+</main>
 
 
 
@@ -375,168 +410,7 @@
     <!-- Existing mobile menu script -->
     <script src="js/script.js"></script>
 
-    <!-- Load all published notices -->
-    
-<script type="module">
-    import { db } from "./js/firebase-config.js";
-
-    import {
-        collection,
-        getDocs,
-        query,
-        where
-    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-
-    const tableBody = document.getElementById("allNoticesList");
-
-    function showMessage(message) {
-        tableBody.replaceChildren();
-
-        const row = document.createElement("tr");
-        const cell = document.createElement("td");
-
-        cell.colSpan = 4;
-        cell.className = "notice-table-status";
-        cell.textContent = message;
-
-        row.appendChild(cell);
-        tableBody.appendChild(row);
-    }
-
-    function formatDate(timestamp) {
-    if (!timestamp || typeof timestamp.toDate !== "function") {
-        return "তারিখ নেই";
-    }
-
-    return new Intl.DateTimeFormat("bn-BD", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric"
-    }).format(timestamp.toDate());
-}
-
-    function getFileInfo(url) {
-        if (!url) {
-            return { type: "সংযুক্ত ফাইল নেই", url: "" };
-        }
-
-        try {
-            const parsedUrl = new URL(url);
-
-            if (parsedUrl.protocol !== "https:") {
-                return { type: "অবৈধ লিংক", url: "" };
-            }
-
-            const host = parsedUrl.hostname.toLowerCase();
-            const path = parsedUrl.pathname.toLowerCase();
-
-            if (host.includes("drive.google.com") ||
-                host.includes("docs.google.com")) {
-                return { type: "Google Drive / PDF", url: parsedUrl.href };
-            }
-
-            if (path.endsWith(".pdf")) {
-                return { type: "PDF", url: parsedUrl.href };
-            }
-
-            if (path.endsWith(".doc") || path.endsWith(".docx")) {
-                return { type: "Word", url: parsedUrl.href };
-            }
-
-            if (path.endsWith(".jpg") ||
-                path.endsWith(".jpeg") ||
-                path.endsWith(".png")) {
-                return { type: "ছবি", url: parsedUrl.href };
-            }
-
-            return { type: "লিংক", url: parsedUrl.href };
-
-        } catch {
-            return { type: "অবৈধ লিংক", url: "" };
-        }
-    }
-
-    async function loadNotices() {
-        try {
-            const noticesQuery = query(
-                collection(db, "notices"),
-                where("published", "==", true)
-            );
-
-            const snapshot = await getDocs(noticesQuery);
-
-            if (snapshot.empty) {
-                showMessage("বর্তমানে কোনো প্রকাশিত নোটিশ নেই।");
-                return;
-            }
-
-            const notices = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-
-            notices.sort((a, b) => {
-                const timeA = a.updatedAt?.toMillis?.()
-                    ?? a.createdAt?.toMillis?.()
-                    ?? 0;
-
-                const timeB = b.updatedAt?.toMillis?.()
-                    ?? b.createdAt?.toMillis?.()
-                    ?? 0;
-
-                return timeB - timeA;
-            });
-
-            tableBody.replaceChildren();
-
-            notices.forEach((notice) => {
-                const row = document.createElement("tr");
-
-                const dateCell = document.createElement("td");
-                dateCell.textContent = formatDate(
-                    notice.updatedAt ?? notice.createdAt
-                );
-
-                const titleCell = document.createElement("td");
-                titleCell.textContent = notice.title || "শিরোনাম নেই";
-
-                const fileCell = document.createElement("td");
-                const fileInfo = getFileInfo(notice.pdfUrl?.trim());
-
-                fileCell.textContent = fileInfo.type;
-
-                const actionCell = document.createElement("td");
-
-                if (fileInfo.url) {
-                    const link = document.createElement("a");
-
-                    link.className = "notice-view-link";
-                    link.href = fileInfo.url;
-                    link.target = "_blank";
-                    link.rel = "noopener noreferrer";
-                    link.textContent = "দেখুন";
-
-                    actionCell.appendChild(link);
-                } else {
-                    actionCell.textContent = "ফাইল নেই";
-                }
-
-                row.appendChild(dateCell);
-                row.appendChild(titleCell);
-                row.appendChild(fileCell);
-                row.appendChild(actionCell);
-
-                tableBody.appendChild(row);
-            });
-
-        } catch (error) {
-            console.error("নোটিশ লোড করার সমস্যা:", error);
-            showMessage("নোটিশ লোড করা যায়নি। পরে আবার চেষ্টা করুন।");
-        }
-    }
-
-    loadNotices();
-</script>
+<script type="module" src="js/public-results.js"></script>
 
 
 </body>

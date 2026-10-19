@@ -6,12 +6,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>সকল নোটিশ | তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</title>
+    <title>ক্লাস রুটিন | তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</title>
 
     <meta name="description"
-          content="তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজের সকল প্রকাশিত নোটিশ।">
+          content="তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজের স্কুল ও কলেজ শাখার ক্লাস রুটিন।">
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=20261019-routine9">
 
     <style>
         .all-notices-section {
@@ -270,7 +270,7 @@
                 <li class="has-submenu">
                     <a href="javascript:void(0)" class="dropdown-toggle">ভর্তি</a>
                     <ul class="submenu">
-                        <li><a href="online-registration.html">অনলাইন রেজিস্ট্রেশন</a></li>
+                        <li><a href="admin.html">অনলাইন রেজিস্ট্রেশন</a></li>
                     </ul>
                 </li>
                 <li><a href="notice.html">নোটিশ</a></li>
@@ -300,27 +300,33 @@
 
 
 
-<section class="routine-pdf-section">
-    <div class="container">
-        <h2 class="section-title">ক্লাস রুটিন</h2>
+<main class="routine-page">
+  <div class="container">
+    <header class="routine-header">
+      <h1>ক্লাস রুটিন</h1>
+      <p>শিক্ষার্থীদের দৈনিক পাঠসূচি</p>
+    </header>
 
-        <div class="routine-pdf-viewer">
-            <iframe
-                src="files/class-routine.pdf"
-                title="ক্লাস রুটিন PDF"
-                width="100%"
-                height="750"
-                loading="lazy">
-            </iframe>
-        </div>
-
-        <p class="routine-pdf-note">
-            PDF দেখা না গেলে
-            <a href="files/class-routine.pdf" target="_blank"
-               rel="noopener noreferrer">এখানে ক্লিক করুন</a>।
-        </p>
+    <div class="routine-branch-tabs" role="tablist" aria-label="শাখা নির্বাচন">
+      <button type="button" class="routine-branch-tab is-active" data-routine-branch="school" role="tab" aria-selected="true">স্কুল শাখা</button>
+      <button type="button" class="routine-branch-tab" data-routine-branch="college" role="tab" aria-selected="false">কলেজ শাখা</button>
     </div>
-</section>
+
+    <p id="publicRoutineStatus" class="public-routine-status" role="status" aria-live="polite">রুটিন লোড হচ্ছে...</p>
+    <section id="publicRoutineContent" class="routine-card" hidden>
+      <header class="routine-card-header">
+        <div>
+          <h2 id="publicRoutineBranchTitle"></h2>
+          <p id="publicRoutineMeta"></p>
+        </div>
+      </header>
+      <div id="publicRoutineTable" class="published-routine-table-wrap"></div>
+    </section>
+    <div class="routine-print-actions">
+      <button id="printRoutineButton" type="button" class="routine-print-button">🖨 প্রিন্ট / PDF ডাউনলোড</button>
+    </div>
+  </div>
+</main>
 
 
 
@@ -394,6 +400,7 @@
 
     <!-- Existing mobile menu script -->
     <script src="js/script.js"></script>
+    <script type="module" src="js/public-routines.js?v=20261019-8"></script>
 
     <!-- Load all published notices -->
     
