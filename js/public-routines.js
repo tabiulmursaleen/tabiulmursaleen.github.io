@@ -29,13 +29,6 @@ function teacherDetails(routine, branch, code) {
   return { name: name || code, photo };
 }
 
-function shortTeacherName(value) {
-  const name = String(value || "").trim();
-  const withoutHonorific = name.replace(/^(?:(?:মোঃ|মো\.?|মোহাম্মদ|জনাব|মিসেস|মিস)\s*)+/u, "").trim();
-  const mainName = withoutHonorific.split(/\s+/u)[0] || name;
-  return mainName.length < name.length ? `${mainName}…` : mainName;
-}
-
 function appendLesson(cell, rawText, routine, branch) {
   const lines = String(rawText || "").split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
   if (!lines.length) return;
@@ -62,9 +55,9 @@ function appendLesson(cell, rawText, routine, branch) {
       teacherLine.append(image);
     }
     const name = document.createElement("span");
-    name.textContent = shortTeacherName(teacher.name);
+    name.textContent = code;
     name.title = teacher.name;
-    name.setAttribute("aria-label", teacher.name);
+    name.setAttribute("aria-label", `${teacher.name} (${code})`);
     teacherLine.append(name);
     cell.append(teacherLine);
     return;
@@ -93,11 +86,32 @@ function renderRoutine(branch) {
 
   const table = document.createElement("table");
   table.className = "published-routine-table";
+  table.classList.add(`routine-${branch}`);
   const header = table.createTHead().insertRow();
   const periods = routine.periods || [];
-  ["বার", "শ্রেণি", ...periods].forEach((label) => {
+  const specialPeriods = new Map();
+  periods.forEach((label, index) => {
+    const match = String(label).match(/^(সমাবেশ|বিরতি)\s*(.*)$/u);
+    if (match) specialPeriods.set(index, { label: match[1], time: match[2], fullLabel: label });
+  });
+  const regularPeriodCount = periods.length - specialPeriods.size;
+  const mobileTableWidth = 38 + 38 + (specialPeriods.size * 36) + (regularPeriodCount * 72);
+  table.style.setProperty("--routine-mobile-width", `${mobileTableWidth}px`);
+  ["বার", "শ্রেণি", ...periods].forEach((label, columnIndex) => {
     const th = document.createElement("th");
-    th.textContent = label;
+    const special = specialPeriods.get(columnIndex - 2);
+    if (special) {
+      th.className = "routine-special-period-heading";
+      th.setAttribute("aria-label", special.fullLabel);
+      th.textContent = "";
+    } else if (columnIndex < 2) {
+      const axisLabel = document.createElement("span");
+      axisLabel.className = "routine-axis-label";
+      axisLabel.textContent = label;
+      th.append(axisLabel);
+    } else {
+      th.textContent = label;
+    }
     header.append(th);
   });
 
@@ -106,17 +120,38 @@ function renderRoutine(branch) {
     (day.classes || []).forEach((classRow, classIndex) => {
       const row = body.insertRow();
       row.dataset.dayIndex = String(dayIndex % 5);
+      if (classIndex === 0) row.classList.add("routine-day-start");
+      if (classIndex === day.classes.length - 1) row.classList.add("routine-day-end");
       if (classIndex === 0) {
         const dayCell = row.insertCell();
         dayCell.rowSpan = day.classes.length;
-        dayCell.className = "routine-day-cell";
+        dayCell.className = "routine-day-cell routine-day-group-cell";
         dayCell.dataset.dayIndex = String(dayIndex % 5);
-        dayCell.textContent = day.name;
+        const dayLabel = document.createElement("span");
+        dayLabel.className = "routine-day-label";
+        dayLabel.textContent = day.name;
+        dayCell.append(dayLabel);
       }
       const classCell = row.insertCell();
       classCell.className = "routine-class-cell";
-      classCell.textContent = classRow.name;
+      const classLabel = document.createElement("span");
+      classLabel.className = "routine-class-label";
+      classLabel.textContent = classRow.name;
+      classCell.append(classLabel);
       periods.forEach((_, periodIndex) => {
+        const special = specialPeriods.get(periodIndex);
+        if (special) {
+          if (classIndex !== 0) return;
+          const specialCell = row.insertCell();
+          specialCell.rowSpan = day.classes.length;
+          specialCell.className = "routine-special-period-cell routine-day-group-cell";
+          specialCell.setAttribute("aria-label", `${special.label} ${special.time}`.trim());
+          const specialLabel = document.createElement("span");
+          specialLabel.className = "routine-special-period-label";
+          specialLabel.textContent = [special.label, special.time].filter(Boolean).join(" · ");
+          specialCell.append(specialLabel);
+          return;
+        }
         const cell = row.insertCell();
         const lesson = classRow.lessons?.[periodIndex] || "";
         if (lesson) {

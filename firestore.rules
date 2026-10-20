@@ -19,6 +19,12 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+    // Exam schedules are public only after the admin publishes them.
+    match /examRoutines/{routineId} {
+      allow read: if isAdmin() || resource.data.published == true;
+      allow create, update, delete: if isAdmin();
+    }
+
     // Student personal and guardian information stays admin-only.
     match /students/{studentCode} {
       allow read, create, update, delete: if isAdmin();
@@ -36,6 +42,11 @@ service cloud.firestore {
     }
 
     match /studentResults/{resultId} {
+      allow read, create, update, delete: if isAdmin();
+    }
+
+    // Per-student in-progress marks are private and can only be managed by the admin.
+    match /studentResultDrafts/{resultId} {
       allow read, create, update, delete: if isAdmin();
     }
 

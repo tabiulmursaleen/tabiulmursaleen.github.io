@@ -13,6 +13,27 @@ const pairs = [
   ["ফলাফল ব্যবস্থাপনা", "Result Management"], ["বিষয়ভিত্তিক নম্বর ও প্রকাশিত ফলাফল পরিচালনা করুন।", "Manage subject marks and published results."],
   ["নোটিশ ব্যবস্থাপনা", "Notice Management"], ["নোটিশ যোগ, সম্পাদনা ও প্রকাশ করুন।", "Add, edit, and publish notices."],
   ["রুটিন ব্যবস্থাপনা", "Routine Management"], ["ক্লাস ও পরীক্ষার রুটিন পরিচালনা করুন।", "Manage class and exam routines."],
+  ["পরীক্ষার রুটিন", "Exam Routine"], ["পরীক্ষার রুটিন ব্যবস্থাপনা", "Exam Routine Management"],
+  ["প্রতিটি পরীক্ষা আলাদাভাবে তৈরি করুন। প্রতিষ্ঠানের নাম, ঠিকানা ও EIIN ওয়েবসাইটে স্বয়ংক্রিয়ভাবে দেখাবে।", "Create each exam schedule separately. The institution name, address, and EIIN appear automatically on the website."],
+  ["শ্রেণি নির্বাচন করুন", "Select a class"], ["পরীক্ষার নাম", "Exam Name"], ["পরীক্ষা শুরুর সময়", "Exam Start Time"],
+  ["যেমন: অর্ধবার্ষিক পরীক্ষা", "For example: Half-Yearly Examination"], ["পরীক্ষার সময়সূচি", "Exam Schedule"],
+  ["+ বিষয় যোগ করুন", "+ Add Subject"], ["তারিখ", "Date"], ["বিষয়ের নাম", "Subject Name"], ["বিষয় কোড", "Subject Code"],
+  ["রুটিন সংরক্ষণ ও প্রকাশ", "Save and Publish Routine"], ["পরিবর্তন সংরক্ষণ", "Save Changes"],
+  ["সংরক্ষিত পরীক্ষার রুটিন", "Saved Exam Routines"], ["প্রকাশ", "Publication"], ["কাজ", "Actions"],
+  ["প্রকাশিত", "Published"], ["অপ্রকাশিত", "Unpublished"], ["সম্পাদনা", "Edit"],
+  ["এখনো কোনো পরীক্ষার রুটিন সংরক্ষণ করা হয়নি।", "No exam schedules have been saved yet."],
+  ["রুটিন সম্পাদনা করুন, তারপর সংরক্ষণ চাপুন।", "Edit the schedule, then select Save."],
+  ["অন্তত একটি বিষয়ের সারি রাখতে হবে।", "At least one subject row is required."],
+  ["প্রতিটি সারিতে তারিখ, বিষয় ও বিষয় কোড পূরণ করুন।", "Enter a date, subject, and subject code in every row."],
+  ["পরীক্ষার রুটিন সংরক্ষণ হচ্ছে...", "Saving exam routine..."],
+  ["পরীক্ষার রুটিন সংরক্ষিত ও প্রকাশিত হয়েছে।", "Exam routine saved and published."],
+  ["পরীক্ষার রুটিন সংরক্ষিত হয়েছে; প্রকাশ করতে প্রকাশের ঘরটি নির্বাচন করুন।", "Exam routine saved. Select Publish on Website to make it public."],
+  ["পরীক্ষার রুটিন সংরক্ষণ হয়নি। Firestore Rules ও সংযোগ পরীক্ষা করুন।", "Could not save the exam routine. Check Firestore Rules and connection."],
+  ["পরীক্ষার রুটিন লোড হচ্ছে...", "Loading exam routines..."],
+  ["পরীক্ষার রুটিন লোড করা যায়নি। Firestore access rules পরীক্ষা করুন।", "Could not load exam routines. Check Firestore access rules."],
+  ["এই পরীক্ষার রুটিনটি মুছে ফেলতে চান?", "Delete this exam routine?"],
+  ["রুটিন মুছে ফেলা হয়েছে।", "Routine deleted."],
+  ["রুটিন মুছতে সমস্যা হয়েছে। Firestore Rules পরীক্ষা করুন।", "Could not delete the routine. Check Firestore Rules."],
   ["স্কুল ও কলেজ শাখার রুটিন আলাদাভাবে সম্পাদনা করুন। শিক্ষক সংকেতের পাশে সম্পূর্ণ নাম ও ছবির লিংক যোগ করা যাবে। প্রকাশিত রুটিন সাইটে দেখা যাবে।", "Edit the school and college timetables separately. Add each teacher’s full name and photo URL beside their initials. Published routines appear on the website."],
   ["শিক্ষকের সংকেত ও পরিচিতি", "Teacher Codes and Profiles"], ["শাখা", "Branch"], ["স্কুল শাখা", "School Branch"], ["কলেজ শাখা", "College Branch"],
   ["কার্যকর হওয়ার তারিখ", "Effective Date"], ["ওয়েবসাইটে প্রকাশ করুন", "Publish on Website"],
@@ -46,6 +67,16 @@ const pairs = [
   ["শিক্ষার্থীর নাম", "Student Name"], ["শাখা", "Branch"],
   ["শাখা নির্বাচন করুন", "Select a branch"], ["স্কুল", "School"], ["কলেজ", "College"],
   ["বোর্ড রেজিস্ট্রেশন তথ্য", "Board Registration Details"], ["বোর্ডের তথ্য দিন", "Enter Board Details"], ["বোর্ড রোল", "Board Roll"], ["বোর্ড রেজি. নম্বর", "Board Registration No."],
+  ["শিক্ষার্থীর নাম (ইংরেজি)", "Student Name (English)"], ["শিক্ষার্থীর নাম (বাংলা)", "Student Name (Bangla)"],
+  ["পিতার নাম (ইংরেজি)", "Father's Name (English)"], ["পিতার নাম (বাংলা)", "Father's Name (Bangla)"],
+  ["মাতার নাম (ইংরেজি)", "Mother's Name (English)"], ["মাতার নাম (বাংলা)", "Mother's Name (Bangla)"], ["বাংলা বানান", "Bangla spelling"],
+  ["ইংরেজিতে লিখুন", "Enter in English"], ["বাংলায় লিখুন", "Enter in Bangla"],
+  ["ইংরেজি অক্ষরে লিখুন।", "Enter using English letters."], ["বাংলা অক্ষরে লিখুন।", "Enter using Bangla letters."],
+  ["জন্মনিবন্ধনের বানান অনুযায়ী ইংরেজি অক্ষরে লিখুন।", "Enter in English using the spelling on the birth registration certificate."],
+  ["জন্মনিবন্ধনের বানান অনুযায়ী বাংলা অক্ষরে লিখুন।", "Enter in Bangla using the spelling on the birth registration certificate."],
+  ["পূর্ববর্তী বোর্ড/সমমানের পরীক্ষা", "Previous Board/Equivalent Examination"], ["পরীক্ষা নির্বাচন করুন (প্রযোজ্য না হলে ফাঁকা রাখুন)", "Select an exam (leave blank if not applicable)"],
+  ["প্রাথমিক শিক্ষা সমাপনী (PSC)", "Primary Education Completion (PSC)"], ["ইবতেদায়ী সমাপনী", "Ebtedayee Completion"], ["জুনিয়র স্কুল সার্টিফিকেট (JSC)", "Junior School Certificate (JSC)"], ["জুনিয়র দাখিল সার্টিফিকেট (JDC)", "Junior Dakhil Certificate (JDC)"], ["এসএসসি (SSC)", "SSC"], ["দাখিল", "Dakhil"], ["এসএসসি (ভোকেশনাল)", "SSC (Vocational)"], ["অন্যান্য সমমানের পরীক্ষা", "Other Equivalent Examination"],
+  ["রোল নম্বর", "Roll Number"], ["জিপিএ", "GPA"], ["রেজিস্ট্রেশন নম্বর", "Registration Number"], ["সেশন", "Session"], ["পাশের সন", "Passing Year"], ["যেমন: ২০২২-২০২৩", "Example: 2022-2023"],
   ["শ্রেণি", "Class"], ["শ্রেণি নির্বাচন করুন", "Select a class"], ["ট্রেড", "Trade"],
   ["প্রতিষ্ঠানের ট্রেডের নাম লিখুন", "Enter or select an institutional trade"], ["রোল নম্বর", "Roll Number"],
   ["জন্মতারিখ", "Date of Birth"], ["লিঙ্গ", "Gender"], ["নির্বাচন করুন", "Select"], ["ছাত্র", "Male"], ["ছাত্রী", "Female"], ["অন্যান্য", "Other"], ["ভর্তির তারিখ", "Admission Date"], ["পিতার নাম", "Father's Name"], ["মাতার নাম", "Mother's Name"],
@@ -57,17 +88,57 @@ const pairs = [
   ["আইডি", "ID"], ["নাম", "Name"], ["শাখা / শ্রেণি", "Branch / Class"], ["রোল", "Roll"], ["ওয়েবসাইটে", "On Website"], ["কাজ", "Actions"],
   ["বেতন ও ফি আদায়", "Tuition and Fee Collection"], ["প্রতিটি জমা আলাদা লেনদেন হিসেবে রেকর্ড হবে। সংরক্ষিত লেনদেন তালিকায় দেখা যাবে।", "Each payment is saved as a separate transaction and appears in the records below."],
   ["শিক্ষার্থী নির্বাচন করুন", "Select a student"], ["ফি-এর ধরন", "Fee Type"], ["নির্বাচন করুন", "Select"],
-  ["মাসিক বেতন", "Monthly Tuition"], ["পরীক্ষার ফি", "Exam Fee"], ["ভর্তি ফি", "Admission Fee"], ["অন্যান্য", "Other"],
+  ["মাসিক বেতন", "Monthly Tuition"], ["পরীক্ষার ফি", "Exam Fee"], ["ভর্তি ফি", "Admission Fee"], ["বোর্ড রেজিস্ট্রেশন ফি", "Board Registration Fee"], ["লেট ফাইন (টাকা)", "Late Fine (BDT)"], ["অন্যান্য", "Other"],
   ["মাস (প্রযোজ্য হলে)", "Month (if applicable)"], ["পরিমাণ (টাকা)", "Amount (BDT)"], ["জমার তারিখ", "Payment Date"],
   ["পরিশোধের মাধ্যম", "Payment Method"], ["নগদ", "Cash"], ["মোবাইল ব্যাংকিং", "Mobile Banking"], ["ব্যাংক", "Bank"],
   ["রসিদ নম্বর", "Receipt Number"], ["মন্তব্য", "Notes"], ["জমা সংরক্ষণ", "Save Payment"], ["সাম্প্রতিক জমা", "Recent Payments"],
   ["তারিখ", "Date"], ["শিক্ষার্থী", "Student"], ["ফি", "Fee"], ["মাস", "Month"], ["টাকা", "Amount"], ["রসিদ", "Receipt"],
   ["বিষয়ভিত্তিক নম্বর", "Subject Marks"], ["পরীক্ষার নাম", "Exam Name"], ["শিক্ষাবর্ষ", "Academic Year"],
+  ["শ্রেণি, পরীক্ষা ও শিক্ষাবর্ষ নির্বাচন করে বেতন পরিশোধ যাচাই করুন। নির্বাচিত মাস পর্যন্ত প্রতিটি মাসের বেতন জমা থাকলেই শিক্ষার্থী প্রবেশপত্রের জন্য যোগ্য হবে।", "Choose a class, exam, and academic year to check tuition payments. Students qualify only when every monthly payment through the selected month is recorded."],
+  ["বেতন পরিশোধিত আছে যে মাস পর্যন্ত", "Tuition Paid Through"], ["মাস নির্বাচন করুন", "Select a month"],
+  ["জানুয়ারি", "January"], ["ফেব্রুয়ারি", "February"], ["মার্চ", "March"], ["এপ্রিল", "April"], ["মে", "May"], ["জুন", "June"],
+  ["জুলাই", "July"], ["আগস্ট", "August"], ["সেপ্টেম্বর", "September"], ["অক্টোবর", "October"], ["নভেম্বর", "November"], ["ডিসেম্বর", "December"],
+  ["বেতন যাচাই করে শিক্ষার্থী দেখুন", "Check fees and list students"], ["সব যোগ্য শিক্ষার্থী নির্বাচন", "Select all eligible students"],
+  ["প্রবেশপত্র তৈরি করুন", "Generate Admit Cards"], ["প্রিন্ট / PDF সংরক্ষণ", "Print / Save PDF"], ["নির্বাচন", "Select"], ["ছবি", "Photo"], ["বেতন যাচাই", "Fee Status"],
+  ["শিক্ষার্থীর নাম", "Student Name"], ["শিক্ষার্থী আইডি", "Student ID"], ["পরীক্ষার প্রবেশপত্র", "Examination Admit Card"],
+  ["পরীক্ষা", "Examination"], ["বেতন পরিশোধিত", "Tuition Paid"], ["প্রতিষ্ঠান প্রধানের স্বাক্ষর", "Head of Institution’s Signature"], ["প্রতিষ্ঠানের সীল", "Institution Seal"],
+  ["যোগ্য", "Eligible"], ["বকেয়া", "Due"],
+  ["শ্রেণি, পরীক্ষা, শিক্ষাবর্ষ ও বেতনের শেষ মাস নির্বাচন করুন।", "Select the class, exam, academic year, and fee cutoff month."],
+  ["এই শ্রেণিতে কোনো শিক্ষার্থী পাওয়া যায়নি।", "No students were found in this class."],
+  ["প্রবেশপত্র তৈরির জন্য যোগ্য শিক্ষার্থী নির্বাচন করুন।", "Select eligible students to generate admit cards."],
+  ["প্রতিষ্ঠানের লোগো", "Institution logo"],
+  ["আইডি / রোল", "ID / Roll"], ["যোগ্য শিক্ষার্থী", "Eligible Students"], ["পরীক্ষার প্রবেশপত্র", "Examination Admit Card"],
+  ["টেঙ্গুরী, কেন্দুয়া, নেত্রকোণা", "Tenguri, Kendua, Netrokona"],
+  ["পরীক্ষা নির্বাচন করুন", "Select an exam"], ["অর্ধবার্ষিক", "Half-Yearly"], ["নির্বাচনী", "Selection Exam"], ["বার্ষিক", "Annual"], ["প্রাক-নির্বাচনী", "Pre-Selection"],
+  ["শ্রেণি নির্বাচন করে বিষয় বাছুন, তাত্ত্বিক ও ব্যবহারিক পূর্ণমান দিন, তারপর রোল অনুযায়ী নম্বর লিখুন। প্রকাশ করলে ফলাফল পাতায় দেখা যাবে।", "Select a class and subjects, set theory and practical full marks, then enter marks by roll. Published results appear on the results page."],
+  ["বিষয় নির্বাচন ও পূর্ণমান", "Select Subjects and Full Marks"], ["শ্রেণি নির্বাচন করলে বিষয়গুলো দেখাবে।", "Subjects will appear after selecting a class."],
+  ["বিষয় নির্বাচন করলে বিষয় কোড নিজে থেকে বসবে।", "Selecting a subject will fill its subject code automatically."], ["এই শ্রেণির বিষয় তালিকা এখনো যোগ করা হয়নি।", "The subject list for this class has not been added yet."],
+  ["এই শ্রেণির রুটিনে কোনো বিষয় পাওয়া যায়নি।", "No subjects were found in this class timetable."],
+  ["তাত্ত্বিক পূর্ণমান", "Theory Full Marks"], ["ব্যবহারিক পূর্ণমান", "Practical Full Marks"],
+  ["রোলের ধরন", "Roll Type"], ["রোল নির্বাচন করুন", "Select a roll type"], ["বোর্ড রোল", "Board Roll"], ["শ্রেণি রোল", "Class Roll"],
+  ["বিষয়", "Subject"], ["বিষয় নির্বাচন করুন", "Select a subject"], ["+ বিষয় যোগ করুন", "+ Add Subject"], ["সরান", "Remove"],
+  ["রোলসহ ছক তৈরি করুন", "Create Roll Mark Sheet"], ["রোল অনুযায়ী নম্বর", "Marks by Roll"], ["বিষয় / নম্বরের ধরন", "Subject / Mark Type"], ["তাত্ত্বিক", "Theory"], ["ব্যবহারিক", "Practical"],
+  ["এই শ্রেণির শিক্ষার্থীদের বোর্ড রোল যোগ করা নেই। আগে শিক্ষার্থী নিবন্ধনে বোর্ড রোল দিন।", "Board rolls are missing for students in this class. Add them in Student Registration first."],
+  ["শ্রেণি, বিষয় ও রোলের ধরন নির্বাচন করুন।", "Select a class, subjects, and roll type."], ["শ্রেণি, পরীক্ষা, বিষয় ও রোলের ছক তৈরি করুন।", "Select the class, exam, subjects, and create the roll sheet."],
+  ["শ্রেণি নির্বাচন করুন।", "Select a class."], ["বোর্ড রোল অথবা শ্রেণি রোল নির্বাচন করুন।", "Select Board Roll or Class Roll."], ["কমপক্ষে একটি বিষয় নির্বাচন করুন।", "Select at least one subject."],
+  ["এই শ্রেণিতে কোনো নিবন্ধিত শিক্ষার্থী পাওয়া যায়নি। শিক্ষার্থীর শ্রেণির তথ্য মিলিয়ে দেখুন।", "No registered students were found in this class. Check the class information in student records."],
+  ["প্রতিটি বিষয়ের পূর্ণমান দিন এবং প্রাপ্ত নম্বর পূর্ণমানের মধ্যে রাখুন।", "Enter full marks for each subject and keep obtained marks within the full marks."],
+  ["শ্রেণির ফলাফল সংরক্ষণ হচ্ছে...", "Saving class results..."], ["শ্রেণির ফলাফল সংরক্ষণ হয়েছে।", "Class results saved."],
+  ["ফলাফল সংরক্ষণ হয়নি। Firestore access rules পরীক্ষা করুন।", "Could not save results. Check Firestore access rules."],
+  ["প্রকাশিত ফলে ব্যবহারিক নম্বর দেখান", "Show practical marks in published results"], ["এই শিক্ষার্থীর নম্বর সেভ", "Save this student's marks"],
+  ["এই শিক্ষার্থীর প্রতিটি বিষয়ের তাত্ত্বিক ও ব্যবহারিক নম্বর পূর্ণমানের মধ্যে দিন।", "Enter this student's theory and practical marks within the full marks for each subject."],
+  ["নম্বরের খসড়া সেভ হয়নি। Firestore access rules পরীক্ষা করুন।", "Could not save the marks draft. Check Firestore access rules."],
   ["+ বিষয় যোগ", "+ Add Subject"], ["ওয়েবসাইটে ফলাফল প্রকাশ করুন", "Publish results on the website"],
   ["ফলাফল সংরক্ষণ", "Save Results"], ["সংরক্ষিত ফলাফল", "Saved Results"], ["পরীক্ষা", "Exam"], ["মোট নম্বর", "Total Marks"],
   ["প্রকাশিত", "Published"], ["গোপন", "Hidden"], ["সম্পাদনা", "Edit"], ["মুছুন", "Delete"], ["সরান", "Remove"],
   ["পূর্ণমান", "Full Marks"], ["প্রাপ্ত নম্বর", "Marks Obtained"],
-  ["বিষয়ের নাম", "Subject Name"],
+  ["বিষয়ের নাম", "Subject Name"], ["বিষয় কোড", "Subject Code"],
+  ["আইটি সাপোর্ট এন্ড আইওটি বেসিকস ২", "IT Support and IoT Basics 2"], ["জেনারেল ইলেকট্রনিক্স 2", "General Electronics 2"], ["ইঞ্জিনিয়ারিং ড্রইং", "Engineering Drawing"], ["কম্পিউটার অ্যাপ্লিকেশন 1", "Computer Application 1"],
+  ["বাংলা 2", "Bangla 2"], ["ইংরেজি 2", "English 2"], ["গণিত 2", "Mathematics 2"], ["বাওবি 2", "Bangladesh and World Identity 2"], ["পদার্থ 2", "Physics 2"], ["রসায়ন 2", "Chemistry 2"],
+  ["ইসলাম শিক্ষা 2", "Islamic Studies 2"], ["হিন্দু ধর্ম শিক্ষা 2", "Hindu Religious Studies 2"], ["খ্রিস্ট ধর্ম শিক্ষা 2", "Christian Religious Studies 2"], ["কৃষিশিক্ষা 2", "Agriculture 2"],
+  ["এগ্রো বেসড ফুড 3", "Agro-Based Food 3"], ["এপারেল 3", "Apparel 3"], ["জেনারেল মেকানিক্স 3", "General Mechanics 3"], ["আইটি সাপোর্ট এন্ড আইওটি বেসিকস ৩", "IT Support and IoT Basics 3"], ["জেনারেল ইলেকট্রনিক্স 3", "General Electronics 3"],
+  ["এগ্রো বেসড ফুড 4", "Agro-Based Food 4"], ["এপারেল 4", "Apparel 4"], ["জেনারেল মেকানিক্স 4", "General Mechanics 4"], ["আইটি সাপোর্ট এন্ড আইওটি বেসিকস ৪", "IT Support and IoT Basics 4"], ["জেনারেল ইলেকট্রনিক্স 4", "General Electronics 4"],
+  ["আত্মকর্মসংস্থান ও ব্যবসায় উদ্যোগ", "Self-Employment and Business Initiative"], ["কম্পিউটার অ্যাপ্লিকেশন 2", "Computer Application 2"],
   ["তথ্য লোড হচ্ছে...", "Loading data..."], ["শিক্ষার্থীর তথ্য লোড হচ্ছে...", "Loading student records..."],
   ["এখনো কোনো শিক্ষার্থী নিবন্ধিত হয়নি।", "No students have been registered yet."], ["এখনো কোনো জমার তথ্য নেই।", "No payments have been recorded yet."],
   ["এখনো কোনো ফলাফল সংরক্ষণ করা হয়নি।", "No results have been saved yet."], ["এখনো কোনো নোটিশ নেই।", "There are no notices yet."],
@@ -139,6 +210,10 @@ function translateValue(value, language) {
   let translated = dictionary.get(core);
 
   if (!translated && language === "en") {
+    const resultGrid = core.match(/^(.+) জন শিক্ষার্থীর জন্য নম্বরের ছক তৈরি হয়েছে।$/);
+    if (resultGrid) translated = `Mark sheet prepared for ${resultGrid[1]} students.`;
+    const savedDraft = core.match(/^(.+) — নম্বরের খসড়া সেভ হয়েছে। পরে একই পরীক্ষা তৈরি করলে নম্বর ফিরে আসবে।$/);
+    if (!translated && savedDraft) translated = `${savedDraft[1]} — Marks draft saved. Reopen the same class, exam, and year to restore the marks.`;
     const loadError = core.match(/^(শিক্ষার্থী|বেতন|ফলাফল) তথ্য লোড হয়নি। Firebase error: (.+)$/);
     if (loadError) {
       const section = { "শিক্ষার্থী": "Student", "বেতন": "Fee", "ফলাফল": "Result" }[loadError[1]];
@@ -151,6 +226,10 @@ function translateValue(value, language) {
     const match = core.match(/^নতুন শিক্ষার্থী নিবন্ধিত হয়েছে। শিক্ষার্থী আইডি: (.+)$/);
     if (!translated && match) translated = `New student registered. Student ID: ${match[1]}`;
   } else if (!translated && language === "bn") {
+    const resultGrid = core.match(/^Mark sheet prepared for (.+) students\.$/);
+    if (resultGrid) translated = `${resultGrid[1]} জন শিক্ষার্থীর জন্য নম্বরের ছক তৈরি হয়েছে।`;
+    const savedDraft = core.match(/^(.+) — Marks draft saved\. Reopen the same class, exam, and year to restore the marks\.$/);
+    if (savedDraft) translated = `${savedDraft[1]} — নম্বরের খসড়া সেভ হয়েছে। পরে একই পরীক্ষা তৈরি করলে নম্বর ফিরে আসবে।`;
     const loadError = core.match(/^(Student|Fee|Result) data could not load\. Firebase error: (.+)$/);
     if (loadError) {
       const section = { Student: "শিক্ষার্থী", Fee: "বেতন", Result: "ফলাফল" }[loadError[1]];

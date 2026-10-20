@@ -2782,6 +2782,10 @@ section{
     border-bottom:3px solid #d0aa4f;
     background:linear-gradient(115deg,#f9f7f0,#fff);
 }
+#publicRoutineContent .routine-card-header { justify-content:center; text-align:center; }
+#publicRoutineContent .routine-card-header > div { width:100%; text-align:center; }
+#publicRoutineContent .routine-card-header h2,
+#publicRoutineContent .routine-card-header p { text-align:center; }
 .published-routine-table-wrap {
     max-height:78vh;
     overflow:auto;
@@ -2798,8 +2802,8 @@ section{
 .published-routine-table td {
     min-width:126px;
     padding:10px 9px;
-    border-right:1px solid #e1e6ec;
-    border-bottom:1px solid #e1e6ec;
+    border-right:1px solid #d6dde5;
+    border-bottom:1px solid #d6dde5;
     text-align:center;
     vertical-align:middle;
 }
@@ -2811,6 +2815,7 @@ section{
     color:#fff;
     font-size:14px;
     line-height:1.45;
+    border-top:1px solid #d6dde5;
 }
 .published-routine-table th:first-child,
 .published-routine-table td.routine-day-cell {
@@ -3263,6 +3268,31 @@ section{
 .navbar #mainMenu > li > a:hover,
 .navbar #mainMenu > li > a.active{background:linear-gradient(135deg,#285780,#183d63)}
 
+/* Show the establishment year beside the address on desktop and below EIIN on phones. */
+.logo-area p::after {
+    content:"  ·  প্রতিষ্ঠাঃ ২০১২ খ্রি.";
+    display:inline;
+    margin-left:5px;
+    color:#536274;
+    font-size:.92em;
+    font-weight:600;
+    white-space:nowrap;
+}
+.logo-stack::after { content:none; }
+@media(max-width:768px) {
+    .logo-area p::after { content:none; }
+    .logo-stack::after {
+        content:"প্রতিষ্ঠাঃ ২০১২ খ্রি.";
+        display:block;
+        margin-top:0;
+        color:#26354b;
+        font-size:11px;
+        font-weight:700;
+        line-height:1.15;
+        white-space:nowrap;
+    }
+}
+
 /* Compact published timetable cells so more rows fit on screen. */
 .published-routine-table {
     min-width:1080px;
@@ -3303,8 +3333,8 @@ section{
     line-height:1.25;
 }
 .published-routine-table td.routine-highlight-cell {
-    border:1px solid rgba(185,155,85,.68);
-    box-shadow:inset 0 0 0 1px rgba(185,155,85,.12);
+    outline:1px solid rgba(185,155,85,.72);
+    outline-offset:-1px;
 }
 /* Light day tints plus a slightly deeper shade on alternating rows improve tracking. */
 .published-routine-table tbody tr[data-day-index="0"] td:not(.routine-day-cell) { background:#f4f8fc; }
@@ -3326,6 +3356,89 @@ section{
 .published-routine-table tbody tr:hover td.routine-highlight-cell { background:inherit; }
 .published-routine-table tbody tr:hover td:not(.routine-highlight-cell) { background:#e8edf3; }
 .published-routine-table tbody tr:hover td.routine-day-cell { background:#dce5ef; }
+.published-routine-table tbody tr.routine-day-start td { border-top:2px solid #8996a5!important; }
+.published-routine-table tbody tr.routine-day-end td,
+.published-routine-table tbody td.routine-day-group-cell { border-bottom:2px solid #8996a5!important; }
+.published-routine-table tbody tr.routine-day-start td.routine-day-cell { border-left:2px solid #8996a5!important; }
+.published-routine-table tbody tr td:last-child { border-right:2px solid #8996a5!important; }
+.published-routine-table th.routine-special-period-heading,
+.published-routine-table td.routine-special-period-cell {
+    width:48px;
+    min-width:48px;
+    max-width:48px;
+    padding:3px 1px;
+    text-align:center;
+    vertical-align:middle;
+}
+.published-routine-table td.routine-special-period-cell { position:relative; }
+.routine-special-period-label {
+    position:absolute;
+    top:50%;
+    left:50%;
+    display:block;
+    white-space:nowrap;
+    font-size:14px;
+    line-height:1.15;
+    font-weight:700;
+    transform:translate(-50%,-50%) rotate(-90deg);
+    transform-origin:center;
+}
+.published-routine-table.routine-college .routine-special-period-label {
+    font-size:12px;
+}
+@media screen and (max-width:768px) {
+    .published-routine-table {
+        width:var(--routine-mobile-width);
+        min-width:0;
+        table-layout:fixed;
+    }
+    .published-routine-table th:first-child,
+    .published-routine-table td.routine-day-cell {
+        width:38px;
+        min-width:38px;
+        max-width:38px;
+        padding:3px 1px;
+        font-size:11px;
+    }
+    .published-routine-table th:nth-child(2),
+    .published-routine-table td.routine-class-cell {
+        width:38px;
+        min-width:38px;
+        max-width:38px;
+        padding:3px 1px;
+        font-size:11px;
+    }
+    .published-routine-table th.routine-special-period-heading,
+    .published-routine-table td.routine-special-period-cell {
+        width:36px;
+        min-width:36px;
+        max-width:36px;
+        padding:2px 0;
+    }
+    .published-routine-table td.routine-class-cell {
+        left:38px;
+    }
+    .published-routine-table thead th:first-child,
+    .published-routine-table thead th:nth-child(2) {
+        height:48px;
+    }
+    .routine-axis-label,
+    .routine-day-label,
+    .routine-class-label {
+        display:inline-block;
+        white-space:nowrap;
+        transform:rotate(-90deg);
+        transform-origin:center;
+    }
+    .published-routine-table th:not(:first-child):not(:nth-child(2)):not(.routine-special-period-heading),
+    .published-routine-table td:not(.routine-day-cell):not(.routine-class-cell):not(.routine-special-period-cell) {
+        width:72px;
+        min-width:72px;
+        max-width:72px;
+        padding:4px 3px;
+        overflow-wrap:anywhere;
+    }
+}
 .routine-print-actions {
     display:flex;
     justify-content:center;
@@ -3348,10 +3461,13 @@ section{
     background:#334760;
 }
 @page {
-    size:A4 landscape;
-    margin:7mm;
+    size:A4 portrait;
+    margin:6mm;
 }
 @media print {
+    body > *:not(.routine-page) {
+        display:none!important;
+    }
     html, body {
         width:100%;
         min-width:0;
@@ -3382,9 +3498,20 @@ section{
         padding:0!important;
     }
     .routine-header {
-        margin:0 0 3mm!important;
+        margin:0!important;
         padding:0!important;
         text-align:center!important;
+        line-height:1!important;
+    }
+    .routine-header::before {
+        display:block;
+        margin:0!important;
+        color:#102b49;
+        content:"তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ";
+        font-size:26pt!important;
+        font-weight:700;
+        line-height:1!important;
+        padding:0!important;
     }
     .routine-header > p:last-child,
     .routine-branch-tabs,
@@ -3393,37 +3520,45 @@ section{
         display:none!important;
     }
     .routine-header h1 {
-        margin:0!important;
-        font-size:15pt!important;
-        line-height:1.2!important;
+        display:none!important;
     }
     #publicRoutineContent {
         display:block!important;
         width:100%!important;
+        margin:0!important;
+        padding:0!important;
         max-height:none!important;
         overflow:visible!important;
         border:0!important;
         box-shadow:none!important;
     }
     .routine-card-header {
-        padding:1.5mm 0!important;
+        min-height:0!important;
+        margin:0!important;
+        padding:0!important;
         border-bottom:1px solid #b99b55!important;
         background:#fff!important;
         text-align:center!important;
     }
     .routine-card-header h2 {
         margin:0!important;
-        font-size:11pt!important;
+        font-size:9pt!important;
         line-height:1.2!important;
     }
     .routine-card-header p {
-        margin:1mm 0 0!important;
-        font-size:7.5pt!important;
+        margin:.5mm 0 0!important;
+        font-size:7pt!important;
     }
     .published-routine-table-wrap {
         width:100%!important;
+        margin:0!important;
+        padding:0!important;
         max-height:none!important;
         overflow:visible!important;
+    }
+    #publicRoutineTable.published-routine-table-wrap {
+        zoom:.94!important;
+        width:100%!important;
     }
     .published-routine-table {
         width:100%!important;
@@ -3437,17 +3572,17 @@ section{
     .published-routine-table td {
         position:static!important;
         min-width:0!important;
-        padding:1.1mm .6mm!important;
+        padding:.7mm .4mm!important;
         border:0.25mm solid #9da7b2!important;
-        font-size:6.5pt!important;
-        line-height:1.05!important;
+        font-size:8pt!important;
+        line-height:1.08!important;
         overflow-wrap:anywhere!important;
         break-inside:avoid!important;
     }
     .published-routine-table th {
         background:#26354b!important;
         color:#fff!important;
-        font-size:7pt!important;
+        font-size:8pt!important;
     }
     .published-routine-table tbody tr[data-day-index] td,
     .published-routine-table tbody tr:nth-child(even)[data-day-index] td,
@@ -3457,35 +3592,50 @@ section{
     }
     .published-routine-table th:first-child,
     .published-routine-table td.routine-day-cell {
-        width:17mm!important;
+        width:14mm!important;
         min-width:0!important;
     }
     .published-routine-table th:nth-child(2),
     .published-routine-table td.routine-class-cell {
         left:auto!important;
-        width:13mm!important;
+        width:10mm!important;
         min-width:0!important;
     }
+    .published-routine-table th.routine-special-period-heading,
+    .published-routine-table td.routine-special-period-cell {
+        width:7mm!important;
+        min-width:0!important;
+        max-width:none!important;
+        padding:.5mm!important;
+    }
+    .published-routine-table td.routine-special-period-cell { position:relative!important; }
+    .routine-special-period-label { font-size:8pt!important; }
+    .published-routine-table th:not(:first-child):not(:nth-child(2)):not(.routine-special-period-heading),
+    .published-routine-table td:not(.routine-day-cell):not(.routine-class-cell):not(.routine-special-period-cell) {
+        width:22mm!important;
+        min-width:0!important;
+        max-width:none!important;
+    }
     .routine-subject {
-        font-size:6.5pt!important;
-        line-height:1.05!important;
+        font-size:8pt!important;
+        line-height:1.08!important;
     }
     .routine-teacher-line {
         gap:.5mm!important;
         margin-top:.5mm!important;
-        font-size:5.5pt!important;
-        line-height:1!important;
+        font-size:7pt!important;
+        line-height:1.05!important;
     }
     .routine-teacher-photo {
-        width:3mm!important;
-        height:3mm!important;
-        flex-basis:3mm!important;
+        width:3.5mm!important;
+        height:3.5mm!important;
+        flex-basis:3.5mm!important;
         border-width:.2mm!important;
     }
     .routine-cell-note {
         margin-top:.5mm!important;
-        font-size:5.5pt!important;
-        line-height:1.05!important;
+        font-size:7pt!important;
+        line-height:1.08!important;
     }
     .published-routine-table td.routine-highlight-cell {
         border:0.4mm solid #b99b55!important;
@@ -3496,6 +3646,109 @@ section{
         print-color-adjust:exact;
         -webkit-print-color-adjust:exact;
     }
+}
+
+/* Exam routines reuse the class timetable's navy and gold visual language. */
+.exam-routine-page { min-height:360px; padding:30px 0 44px; }
+.exam-routine-page .routine-header h1 { color:#183d63; }
+.exam-routine-public-list { display:grid; gap:14px; }
+.exam-routine-public-item {
+    display:block;
+    padding:17px 20px;
+    border:1px solid #d9e0e8;
+    border-left:4px solid #b99b55;
+    border-radius:10px;
+    background:linear-gradient(135deg,#fff,#f7f9fc);
+    box-shadow:0 4px 14px rgba(38,53,75,.08);
+    color:#26354b;
+    text-decoration:none;
+    transition:transform .18s ease,box-shadow .18s ease;
+}
+.exam-routine-public-item:hover { transform:translateY(-2px); box-shadow:0 7px 18px rgba(38,53,75,.13); }
+.exam-routine-public-item h2 { margin:7px 0 3px; color:#183d63; font-size:22px; }
+.exam-routine-public-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.exam-routine-class,.exam-routine-latest { display:inline-flex; align-items:center; min-height:27px; padding:3px 10px; border-radius:999px; font-size:14px; font-weight:700; }
+.exam-routine-class { background:#e9eef5; color:#26354b; }
+.exam-routine-latest { background:#f4ecd5; color:#735a1c; }
+.exam-routine-summary { margin:0 0 8px; color:#5b6878; }
+.exam-routine-open { color:#183d63; font-size:14px; font-weight:700; }
+.exam-routine-detail { margin-top:0; }
+.exam-routine-card-header { padding:15px!important; justify-content:center!important; text-align:center!important; }
+.exam-routine-card-header > div { width:100%; text-align:center; }
+.exam-routine-card-header h2 { margin:8px 0 2px!important; color:#183d63; font-size:20px!important; }
+.exam-routine-card-header p { margin:2px 0!important; }
+.exam-institution-name { color:#183d63!important; font-size:30px!important; font-weight:800; line-height:1.25; }
+.exam-institution-address,.exam-institution-eiin { color:#536274; font-weight:600; }
+.exam-routine-start { color:#26354b; font-weight:700; }
+.exam-routine-table { min-width:0!important; }
+.exam-routine-table th,.exam-routine-table td { text-align:center!important; }
+.exam-routine-table tbody td { font-size:20px!important; }
+.exam-routine-table th:first-child,.exam-routine-table td:first-child { width:24%; }
+.exam-routine-table th:nth-child(2),.exam-routine-table td:nth-child(2) { width:18%; }
+.exam-routine-table th:nth-child(3),.exam-routine-table td:nth-child(3) { width:38%; }
+.exam-routine-table th:nth-child(4),.exam-routine-table td:nth-child(4) { width:20%; }
+.exam-routine-table tbody tr:nth-child(even) { background:#f4f7fa; }
+.exam-routine-actions { gap:12px; align-items:center; }
+.exam-routine-actions .back-to-list { margin:0; }
+.routine-signature { display:none; }
+@media(max-width:600px) {
+    .exam-routine-page { padding:20px 0 32px; }
+    .exam-routine-public-item { padding:14px; }
+    .exam-routine-public-item h2 { font-size:19px; }
+    .exam-routine-summary { font-size:15px; }
+    .exam-routine-card-header { padding:12px!important; }
+    .exam-routine-card-header h2 { font-size:20px!important; }
+    .exam-institution-name { font-size:24px!important; }
+    .exam-routine-table th,.exam-routine-table td { padding:7px 4px!important; font-size:14px!important; }
+    .exam-routine-table tbody td { font-size:18px!important; }
+    .exam-routine-actions { justify-content:center; flex-wrap:wrap; }
+}
+@media print {
+    .exam-routine-page .routine-header,
+    .exam-routine-page #examRoutineListView,
+    .exam-routine-page .exam-routine-actions .back-to-list { display:none!important; }
+    .exam-routine-detail { margin:0!important; padding:0!important; }
+    .exam-routine-card-header { padding:1mm 0!important; }
+    .exam-routine-card-header h2 { margin:1mm 0!important; font-size:11pt!important; }
+    .routine-card-header p.exam-institution-name { font-size:26pt!important; line-height:1.2!important; }
+    .exam-institution-address,.exam-institution-eiin,.exam-routine-start { font-size:9pt!important; }
+    .exam-routine-card-header { justify-content:center!important; text-align:center!important; }
+    .exam-routine-card-header > div { width:100%!important; text-align:center!important; }
+    .exam-routine-card-header p,.exam-routine-card-header h2 { text-align:center!important; }
+    .exam-routine-table { page-break-inside:auto!important; }
+    .exam-routine-table th,.exam-routine-table td { padding:1.5mm!important; font-size:10pt!important; }
+    .exam-routine-table tbody td { font-size:12pt!important; }
+    table.published-routine-table.exam-routine-table th:first-child,
+    table.published-routine-table.exam-routine-table td:first-child { width:24%!important; }
+    table.published-routine-table.exam-routine-table th:nth-child(2),
+    table.published-routine-table.exam-routine-table td:nth-child(2) { width:18%!important; }
+    table.published-routine-table.exam-routine-table th:nth-child(3),
+    table.published-routine-table.exam-routine-table td:nth-child(3) { width:38%!important; }
+    table.published-routine-table.exam-routine-table th:nth-child(4),
+    table.published-routine-table.exam-routine-table td:nth-child(4) { width:20%!important; }
+}
+.routine-signature {
+    display:flex!important;
+    justify-content:flex-end;
+    margin:4mm 2mm 0 0;
+    color:#26354b;
+    break-inside:avoid;
+}
+.routine-signature-block {
+    display:flex;
+    width:52mm;
+    min-height:27mm;
+    flex-direction:column;
+    justify-content:flex-end;
+    text-align:center;
+}
+.routine-signature-line {
+    padding-top:1.5mm;
+    border-top:0.3mm solid #26354b;
+    font-size:9pt;
+    font-weight:700;
+    line-height:1.35;
+    white-space:pre-line;
 }
 
 /* Disable motion on teacher and staff cards while keeping their links usable. */
