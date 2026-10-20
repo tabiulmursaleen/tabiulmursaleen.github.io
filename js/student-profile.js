@@ -4,6 +4,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 import { db } from "./firebase-config.js";
+import { studentPlaceholderForName } from "./student-placeholder.js?v=20261020-1";
 
 const profile = document.getElementById("studentProfile");
 const status = document.getElementById("studentProfileStatus");
@@ -90,11 +91,11 @@ function showNotFound() {
 }
 
 function displayPhoto(photoUrl, name) {
+  const placeholderPhoto = studentPlaceholderForName(name);
   if (!photoUrl) {
-    const placeholder = document.createElement("div");
-    placeholder.className = "student-profile-photo-link";
-    placeholder.textContent = "No photo available";
-    photo.replaceWith(placeholder);
+    photo.dataset.placeholder = "true";
+    photo.alt = "Default student illustration";
+    photo.src = placeholderPhoto;
     return;
   }
 
@@ -103,18 +104,15 @@ function displayPhoto(photoUrl, name) {
   photo.alt = `${sentenceCaseName(name)} — Photo`;
   photo.src = urls[current] || "";
   photo.addEventListener("error", () => {
+    if (photo.dataset.placeholder === "true") return;
     current += 1;
     if (current < urls.length) {
       photo.src = urls[current];
       return;
     }
-    const link = document.createElement("a");
-    link.className = "student-profile-photo-link";
-    link.href = driveViewerUrl(photoUrl);
-    link.target = photoUrl ? "_blank" : "";
-    link.rel = "noopener noreferrer";
-    link.textContent = "Open photo in Google Drive";
-    photo.replaceWith(link);
+    photo.dataset.placeholder = "true";
+    photo.alt = `${sentenceCaseName(name)} — Default student illustration`;
+    photo.src = placeholderPhoto;
   });
 }
 

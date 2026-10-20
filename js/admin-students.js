@@ -3,9 +3,11 @@ import {
   doc,
   getDoc,
   getDocs,
+  query,
   runTransaction,
   serverTimestamp,
   setDoc,
+  where,
   writeBatch
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
@@ -15,7 +17,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 import { auth, db } from "./firebase-config.js";
-import { getAcademicSubjects } from "./academic-subjects.js?v=20261020-3";
+import { getAcademicSubjects } from "./academic-subjects.js?v=20261020-6";
+import { studentPlaceholderForName } from "./student-placeholder.js?v=20261020-1";
 
 const ADMIN_UID = "wWuBEmlsaofgjAaQi7bfblsX6L62";
 const studentsCollection = "students";
@@ -29,6 +32,11 @@ const studentForm = document.getElementById("studentForm");
 const feeForm = document.getElementById("feeForm");
 const resultForm = document.getElementById("resultForm");
 const studentRows = document.getElementById("studentRows");
+const studentImportFile = document.getElementById("studentImportFile");
+const studentImportButton = document.getElementById("studentImportButton");
+const studentImportMessage = document.getElementById("studentImportMessage");
+const studentPublishImportedButton = document.getElementById("studentPublishImportedButton");
+const studentPublishImportedMessage = document.getElementById("studentPublishImportedMessage");
 const feeRows = document.getElementById("feeRows");
 const resultRows = document.getElementById("resultRows");
 const feeStudentSelect = document.getElementById("feeStudentCode");
@@ -158,6 +166,7 @@ function renderStudents() {
     const actions = cell(row, "");
     actions.className = "table-actions-cell";
     actions.append(actionButton("সম্পাদনা", "edit-student", student.studentCode));
+    actions.append(actionButton("মুছুন", "delete-student", student.studentCode, "danger-action"));
   }
   refreshStudentSelects();
 }
@@ -177,6 +186,7 @@ async function loadStudents() {
 
 function resetStudentForm() {
   studentForm.reset();
+  setStudentFormRequirements();
   byId("studentAdmissionDate").value = localDateString();
   byId("studentAcademicYear").value = String(new Date().getFullYear());
   editingStudentCode = null;
@@ -191,6 +201,24 @@ function resetStudentForm() {
   byId("studentPhotoUrl").value = "";
   updateBoardRegistrationOptions();
   updatePreviousExamOptions();
+}
+
+function setStudentFormRequirements(student = null) {
+  const requiredFields = [
+    ["studentName", "name"], ["studentNameBn", "nameBn"],
+    ["studentFatherName", "fatherName"], ["studentFatherNameBn", "fatherNameBn"],
+    ["studentMotherName", "motherName"], ["studentMotherNameBn", "motherNameBn"],
+    ["studentGender", "gender"], ["studentDob", "dob"],
+    ["studentAdmissionDate", "admissionDate"], ["studentGuardianPhone", "guardianPhone"],
+    ["studentEmergencyPhone", "emergencyPhone"], ["studentVillage", "village"],
+    ["studentUpazila", "upazila"], ["studentDistrict", "district"], ["studentPhotoUrl", "photoUrl"]
+  ];
+  requiredFields.forEach(([id, key]) => {
+    byId(id).required = student ? Boolean(student[key]) : true;
+  });
+  byId("studentBranch").required = true;
+  byId("studentClass").required = true;
+  byId("studentAcademicYear").required = true;
 }
 
 byId("studentAdmissionDate").value = localDateString();
@@ -297,16 +325,14 @@ function makeStudentCode({ className, trade, roll }) {
 }
 
 function nextStudentRoll({ session, className, trade }) {
-  const normalizedTrade = trade.trim().replace(/\s+/g, " ").toLocaleLowerCase();
   const classCode = getClassCode(className);
   const usedRolls = students
     .filter((student) => String(student.session || "") === session
-      && getClassCode(student.className || "") === classCode
-      && String(student.trade || "").trim().replace(/\s+/g, " ").toLocaleLowerCase() === normalizedTrade)
+      && getClassCode(student.className || "") === classCode)
     .map((student) => Number(normalizeDigits(String(student.roll || ""))))
     .filter((roll) => Number.isInteger(roll) && roll > 0);
   const roll = Math.max(0, ...usedRolls) + 1;
-  if (roll > 9999) throw new Error("এই শ্রেণি ও ট্রেডের জন্য আর রোল তৈরি করা যাচ্ছে না।");
+  if (roll > 9999) throw new Error("এই শ্রেণির জন্য আর রোল তৈরি করা যাচ্ছে না।");
   return String(roll).padStart(3, "0");
 }
 
@@ -338,11 +364,17 @@ studentForm.addEventListener("submit", async (event) => {
   }
 
   const publicDirectoryId = existing?.publicDirectoryId || crypto.randomUUID();
-  let photoUrl;
-  try {
-    photoUrl = normalizeStudentPhotoUrl(byId("studentPhotoUrl").value);
-  } catch (error) {
-    message("studentMessage", error.message, true);
+  let photoUrl = existing?.photoUrl || "";
+  const photoInput = byId("studentPhotoUrl").value.trim();
+  if (photoInput) {
+    try {
+      photoUrl = normalizeStudentPhotoUrl(photoInput);
+    } catch (error) {
+      message("studentMessage", error.message, true);
+      return;
+    }
+  } else if (!existing) {
+    message("studentMessage", "নতুন শিক্ষার্থীর ছবির Google Drive লিংক দিন।", true);
     return;
   }
   const data = {
@@ -354,6 +386,10 @@ studentForm.addEventListener("submit", async (event) => {
     branch,
     className,
     trade: byId("studentTrade").value.trim(),
+    studentType: byId("studentType").value,
+    studentSourceSession: byId("studentSourceSession").value.trim(),
+    subjectCodes: byId("studentSubjectCodes").value.trim(),
+    sourceTradeName: byId("studentSourceTradeName").value.trim(),
     roll,
     dob: byId("studentDob").value,
     gender: byId("studentGender").value,
@@ -446,6 +482,200 @@ studentForm.addEventListener("submit", async (event) => {
   }
 });
 
+studentImportButton.addEventListener("click", async () => {
+  if (!currentAdmin || busy) return;
+  const file = studentImportFile.files?.[0];
+  if (!file) {
+    message("studentImportMessage", "আমদানি করার JSON ফাইল নির্বাচন করুন।", true);
+    return;
+  }
+
+  studentImportButton.disabled = true;
+  busy = true;
+  let savedCount = 0;
+  try {
+    const payload = JSON.parse(await file.text());
+    if (payload.schemaVersion !== 1 || !Array.isArray(payload.records) || !payload.records.length) {
+      throw new Error("ফাইলের ধরন সঠিক নয় বা এতে শিক্ষার্থীর তথ্য নেই।");
+    }
+    const importKeys = payload.records.map((record) => record.sourceImportKey);
+    if (importKeys.some((key) => !key) || new Set(importKeys).size !== importKeys.length) {
+      throw new Error("ফাইলে উৎস-রেফারেন্স নেই বা একই রেফারেন্স একাধিকবার আছে।");
+    }
+
+    const currentSnapshot = await getDocs(collection(db, studentsCollection));
+    const currentStudents = currentSnapshot.docs.map((item) => ({ studentCode: item.id, ...item.data() }));
+    students = currentStudents;
+    const existingImportKeys = new Set(currentStudents.map((student) => student.sourceImportKey).filter(Boolean));
+    const pending = payload.records.filter((record) => !existingImportKeys.has(record.sourceImportKey));
+    const skipped = payload.records.length - pending.length;
+    if (!pending.length) {
+      message("studentImportMessage", `এই ফাইলের সব ${bn(payload.records.length)}টি রেকর্ড আগে থেকেই ডাটাবেজে আছে।`);
+      renderStudents();
+      return;
+    }
+
+    const importSession = String(new Date().getFullYear());
+    const classRolls = new Map();
+    const usedIds = new Set(currentStudents.map((student) => student.studentCode));
+    currentStudents.forEach((student) => {
+      if (String(student.session || "") !== importSession) return;
+      const classCode = getClassCode(student.className || "");
+      const roll = Number(normalizeDigits(String(student.roll || "")));
+      if (classCode && Number.isInteger(roll) && roll > 0) {
+        classRolls.set(classCode, Math.max(classRolls.get(classCode) || 0, roll));
+      }
+    });
+
+    const importedAt = serverTimestamp();
+    const prepared = pending.map((record) => {
+      const classCode = getClassCode(String(record.className || ""));
+      const trade = String(record.trade || "").trim();
+      if (!classCode || !tradeIdCodes.has(trade.toLocaleLowerCase()) || !record.name || !record.fatherName || !record.motherName) {
+        throw new Error(`ফাইলে শ্রেণি, ট্রেড বা নামের তথ্য অসম্পূর্ণ আছে (উৎস: ${record.sourceImportKey})।`);
+      }
+      const nextRoll = (classRolls.get(classCode) || 0) + 1;
+      if (nextRoll > 9999) throw new Error(`শ্রেণি ${record.className}-এ আর রোল তৈরি করা যাচ্ছে না।`);
+      classRolls.set(classCode, nextRoll);
+      const roll = String(nextRoll).padStart(3, "0");
+      const studentCode = makeStudentCode({ className: record.className, trade, roll });
+      if (usedIds.has(studentCode)) throw new Error(`তৈরি হওয়া আইডি আগে থেকেই আছে: ${studentCode}`);
+      usedIds.add(studentCode);
+      return {
+        studentCode,
+        session: importSession,
+        publicDirectoryId: crypto.randomUUID(),
+        sourceImportKey: record.sourceImportKey,
+        sourceSheet: String(record.sourceSheet || ""),
+        sourceTradeName: String(record.sourceTradeName || ""),
+        studentSourceSession: String(record.sourceSession || ""),
+        studentType: String(record.studentType || ""),
+        subjectCodes: String(record.subjectCodes || ""),
+        name: String(record.name).trim(),
+        nameBn: "",
+        branch: String(record.branch),
+        className: String(record.className),
+        trade,
+        roll,
+        dob: "",
+        gender: "",
+        admissionDate: "",
+        academicYear: Number(new Date().getFullYear()),
+        fatherName: String(record.fatherName).trim(),
+        fatherNameBn: "",
+        motherName: String(record.motherName).trim(),
+        motherNameBn: "",
+        guardianName: "",
+        guardianPhone: "",
+        emergencyPhone: "",
+        village: "",
+        upazila: "",
+        district: "",
+        address: "",
+        boardRegistrationCompleted: Boolean(record.boardRoll || record.boardRegistrationNumber),
+        boardRoll: String(record.boardRoll || ""),
+        boardRegistrationNumber: String(record.boardRegistrationNumber || ""),
+        previousExam: "",
+        previousExamRoll: "",
+        previousExamGpa: "",
+        previousExamRegistrationNumber: "",
+        previousExamSession: "",
+        previousExamPassingYear: "",
+        photoUrl: "",
+        published: false,
+        createdAt: importedAt,
+        createdBy: currentAdmin.uid,
+        updatedAt: importedAt
+      };
+    });
+
+    if (!window.confirm(`${bn(prepared.length)}টি নতুন শিক্ষার্থী রেকর্ড ডাটাবেজে যোগ হবে। কোনো তথ্য ওয়েবসাইটে প্রকাশ করা হবে না। চালিয়ে যাবেন?`)) {
+      message("studentImportMessage", "আমদানি বাতিল করা হয়েছে।");
+      return;
+    }
+
+    for (let start = 0; start < prepared.length; start += 80) {
+      const chunk = prepared.slice(start, start + 80);
+      await runTransaction(db, async (transaction) => {
+        const refs = chunk.map((student) => doc(db, studentsCollection, student.studentCode));
+        const snapshots = await Promise.all(refs.map((ref) => transaction.get(ref)));
+        const collision = snapshots.find((snapshot) => snapshot.exists());
+        if (collision) throw new Error(`আইডি আগে থেকেই ডাটাবেজে আছে: ${collision.id}`);
+        chunk.forEach((student, index) => transaction.set(refs[index], student));
+      });
+      savedCount += chunk.length;
+      message("studentImportMessage", `${bn(savedCount)} / ${bn(prepared.length)}টি রেকর্ড যোগ হয়েছে...`);
+    }
+
+    await loadStudents();
+    message("studentImportMessage", `${bn(savedCount)}টি রেকর্ড ডাটাবেজে যোগ হয়েছে। ${bn(skipped)}টি আগে থেকেই ছিল। রোল ও আইডি শ্রেণি অনুযায়ী তৈরি হয়েছে; সব রেকর্ড অপ্রকাশিত রাখা হয়েছে।`);
+  } catch (error) {
+    console.error("শিক্ষার্থী আমদানির সমস্যা:", error);
+    message("studentImportMessage", `${bn(savedCount)}টি রেকর্ড যোগ হয়েছে; বাকিগুলো সম্পন্ন হয়নি। ${error.message || "ডাটাবেজে সংরক্ষণ করা যায়নি।"}`, true);
+  } finally {
+    busy = false;
+    studentImportButton.disabled = false;
+  }
+});
+
+studentPublishImportedButton.addEventListener("click", async () => {
+  if (!currentAdmin || busy) return;
+  const importedStudents = students.filter((student) => student.sourceImportKey);
+  const unpublishedStudents = importedStudents.filter((student) => student.published !== true);
+  if (!unpublishedStudents.length) {
+    message("studentPublishImportedMessage", importedStudents.length
+      ? "আমদানি করা সব শিক্ষার্থী ইতিমধ্যে প্রকাশিত আছে।"
+      : "আমদানি করা কোনো শিক্ষার্থী পাওয়া যায়নি।", !importedStudents.length);
+    return;
+  }
+
+  const approved = window.confirm(
+    `${bn(unpublishedStudents.length)} জন আমদানি করা শিক্ষার্থীর নাম, আইডি, শিক্ষাবর্ষ, শাখা, শ্রেণি, ট্রেড, রোল ও ছবির অবস্থা প্রকাশিত হবে। পিতা-মাতা, জন্মতারিখ, যোগাযোগ ও বোর্ডের ব্যক্তিগত তথ্য প্রকাশ হবে না। এখন প্রকাশ করবেন?`
+  );
+  if (!approved) return;
+
+  busy = true;
+  studentPublishImportedButton.disabled = true;
+  let publishedCount = 0;
+  try {
+    for (let start = 0; start < unpublishedStudents.length; start += 200) {
+      const chunk = unpublishedStudents.slice(start, start + 200);
+      const batch = writeBatch(db);
+      chunk.forEach((student) => {
+        if (!student.publicDirectoryId) {
+          throw new Error(`প্রকাশিত তালিকার আইডি নেই: ${student.studentCode}`);
+        }
+        const updatedAt = serverTimestamp();
+        batch.set(doc(db, studentsCollection, student.studentCode), { published: true, updatedAt }, { merge: true });
+        batch.set(doc(db, publicStudentsCollection, student.publicDirectoryId), {
+          name: student.name || "",
+          studentCode: student.studentCode,
+          session: student.session || "",
+          academicYear: student.academicYear || student.session || "",
+          branch: student.branch || "",
+          className: student.className || "",
+          trade: student.trade || "",
+          roll: student.roll || "",
+          photoUrl: student.photoUrl || "",
+          published: true,
+          updatedAt
+        }, { merge: true });
+      });
+      await batch.commit();
+      publishedCount += chunk.length;
+      message("studentPublishImportedMessage", `${bn(publishedCount)} / ${bn(unpublishedStudents.length)} জন প্রকাশিত হয়েছে...`);
+    }
+    await loadStudents();
+    message("studentPublishImportedMessage", `${bn(publishedCount)} জন আমদানি করা শিক্ষার্থী ওয়েবসাইটে প্রকাশিত হয়েছে।`);
+  } catch (error) {
+    console.error("আমদানি করা শিক্ষার্থীদের প্রকাশে সমস্যা:", error);
+    message("studentPublishImportedMessage", `${bn(publishedCount)} জন প্রকাশিত হয়েছে; বাকিগুলো হয়নি। ${error.message || "প্রকাশ করা যায়নি।"}`, true);
+  } finally {
+    busy = false;
+    studentPublishImportedButton.disabled = false;
+  }
+});
+
 studentForm.addEventListener("input", (event) => {
   if (editingStudentCode || ["studentRoll", "studentCode"].includes(event.target.id)) return;
   byId("studentRoll").value = "";
@@ -453,10 +683,15 @@ studentForm.addEventListener("input", (event) => {
 });
 
 studentRows.addEventListener("click", (event) => {
-  const button = event.target.closest("button[data-action='edit-student']");
+  const button = event.target.closest("button[data-action]");
   if (!button) return;
   const student = students.find((item) => item.studentCode === button.dataset.id);
   if (!student) return;
+  if (button.dataset.action === "delete-student") {
+    deleteStudentAndRelatedRecords(student);
+    return;
+  }
+  if (button.dataset.action !== "edit-student") return;
 
   editingStudentCode = student.studentCode;
   byId("studentCode").value = student.studentCode;
@@ -480,6 +715,10 @@ studentRows.addEventListener("click", (event) => {
   byId("studentPreviousExamPassingYear").value = student.previousExamPassingYear || "";
   updatePreviousExamOptions();
   byId("studentTrade").value = student.trade || "";
+  byId("studentType").value = student.studentType || "";
+  byId("studentSourceSession").value = student.studentSourceSession || "";
+  byId("studentSubjectCodes").value = student.subjectCodes || "";
+  byId("studentSourceTradeName").value = student.sourceTradeName || "";
   byId("studentRoll").value = student.roll || "";
   byId("studentDob").value = student.dob || "";
   byId("studentGender").value = student.gender || "";
@@ -512,10 +751,58 @@ studentRows.addEventListener("click", (event) => {
     legacyAddressNotice.textContent = "";
   }
   byId("studentPublished").checked = student.published === true;
+  setStudentFormRequirements(student);
   byId("saveStudentButton").textContent = "পরিবর্তন সংরক্ষণ";
   byId("cancelStudentEdit").hidden = false;
   studentForm.scrollIntoView({ behavior: "smooth", block: "start" });
 });
+
+async function deleteStudentAndRelatedRecords(student) {
+  if (!currentAdmin || busy) return;
+  const approved = window.confirm(
+    `${student.name} (${student.studentCode})-এর শিক্ষার্থী প্রোফাইল, প্রকাশিত তালিকা, ফি, ফলাফল ও সংরক্ষিত ড্রাফট স্থায়ীভাবে মুছে যাবে। চালিয়ে যাবেন?`
+  );
+  if (!approved) return;
+
+  busy = true;
+  try {
+    message("studentMessage", `${student.name}-এর সংশ্লিষ্ট তথ্য খোঁজা হচ্ছে...`);
+    const relatedCollections = [
+      feesCollection,
+      resultsCollection,
+      resultDraftsCollection,
+      publicResultsCollection,
+      publicStudentsCollection
+    ];
+    const relatedSnapshots = await Promise.all(relatedCollections.map((name) =>
+      getDocs(query(collection(db, name), where("studentCode", "==", student.studentCode)))
+    ));
+
+    const refs = new Map();
+    const addRef = (reference) => refs.set(reference.path, reference);
+    addRef(doc(db, studentsCollection, student.studentCode));
+    if (student.publicDirectoryId) addRef(doc(db, publicStudentsCollection, student.publicDirectoryId));
+    relatedSnapshots.forEach((snapshot) => snapshot.docs.forEach((item) => addRef(item.ref)));
+
+    const allRefs = [...refs.values()];
+    let removedCount = 0;
+    for (let start = 0; start < allRefs.length; start += 450) {
+      const batch = writeBatch(db);
+      allRefs.slice(start, start + 450).forEach((reference) => batch.delete(reference));
+      await batch.commit();
+      removedCount += Math.min(450, allRefs.length - start);
+    }
+
+    if (editingStudentCode === student.studentCode) resetStudentForm();
+    await Promise.all([loadStudents(), loadFees(), loadResults()]);
+    message("studentMessage", `${student.name} (${student.studentCode})-এর ${bn(removedCount)}টি সংশ্লিষ্ট রেকর্ড মুছে ফেলা হয়েছে।`);
+  } catch (error) {
+    console.error("শিক্ষার্থী ও সংশ্লিষ্ট তথ্য মুছতে সমস্যা:", error);
+    message("studentMessage", error.message || "সংশ্লিষ্ট রেকর্ড মুছে ফেলা যায়নি।", true);
+  } finally {
+    busy = false;
+  }
+}
 
 byId("cancelStudentEdit").addEventListener("click", resetStudentForm);
 
@@ -669,15 +956,20 @@ function checkAdmitEligibility() {
     checkbox.disabled = !eligibility.eligible;
     checkboxCell.append(checkbox);
     const photoCell = row.insertCell();
-    if (student.photoUrl) {
-      const image = document.createElement("img");
-      image.className = "admit-student-thumbnail";
-      image.src = student.photoUrl;
-      image.alt = "";
-      photoCell.append(image);
-    } else {
-      photoCell.textContent = "—";
-    }
+    const thumbnail = document.createElement("img");
+    thumbnail.className = "admit-student-thumbnail";
+    const placeholderPhoto = studentPlaceholderForName(student.name, student.gender);
+    thumbnail.src = student.photoUrl ? admitPhotoUrl(student.photoUrl) : placeholderPhoto;
+    thumbnail.alt = student.photoUrl ? "" : "Student illustration";
+    thumbnail.addEventListener("error", () => {
+      if (student.photoUrl && thumbnail.src !== student.photoUrl) {
+        thumbnail.src = student.photoUrl;
+      } else if (thumbnail.dataset.placeholder !== "true") {
+        thumbnail.dataset.placeholder = "true";
+        thumbnail.src = placeholderPhoto;
+      }
+    });
+    photoCell.append(thumbnail);
     cell(row, isEnglish ? (student.name || student.nameBn) : (student.nameBn || student.name));
     cell(row, `${student.studentCode} / ${normalizeDigits(String(student.roll || "—"))}`);
     cell(row, eligibility.eligible
@@ -737,16 +1029,26 @@ function buildAdmitCard(student, exam, year, throughMonth) {
 
   const details = document.createElement("div");
   details.className = "admit-card-body";
-  const photo = document.createElement(student.photoUrl ? "img" : "div");
-  photo.className = student.photoUrl ? "admit-card-photo" : "admit-card-photo admit-photo-placeholder";
+  const photo = document.createElement("img");
+  photo.className = "admit-card-photo";
+  const placeholderPhoto = studentPlaceholderForName(student.name, student.gender);
   if (student.photoUrl) {
     photo.src = admitPhotoUrl(student.photoUrl);
     photo.alt = "";
     photo.addEventListener("error", () => {
-      if (photo.src !== student.photoUrl) photo.src = student.photoUrl;
-    }, { once: true });
+      if (photo.dataset.placeholder === "true") return;
+      if (photo.src !== student.photoUrl) {
+        photo.src = student.photoUrl;
+      } else {
+        photo.dataset.placeholder = "true";
+        photo.alt = t("শিক্ষার্থীর নমুনা ছবি");
+        photo.src = placeholderPhoto;
+      }
+    });
   } else {
-    photo.textContent = t("ছবি");
+    photo.dataset.placeholder = "true";
+    photo.src = placeholderPhoto;
+    photo.alt = t("শিক্ষার্থীর নমুনা ছবি");
   }
   details.append(photo);
   const list = document.createElement("dl");
@@ -959,35 +1261,48 @@ function renderResultMatrix(prefillRecords = []) {
   }
   const table = document.createElement("table");
   table.className = "data-table result-marks-table";
-  const header = table.createTHead().insertRow();
-  const firstHeader = document.createElement("th");
-  firstHeader.textContent = "বিষয় / নম্বরের ধরন";
-  header.append(firstHeader);
-  classList.forEach((student) => {
+  table.classList.add("result-marks-compact");
+  const t = (value) => window.dashboardTranslate?.(value) || value;
+  const thead = table.createTHead();
+  const subjectHeader = thead.insertRow();
+  const rollHeader = document.createElement("th");
+  rollHeader.rowSpan = 2;
+  rollHeader.textContent = t("রোল");
+  subjectHeader.append(rollHeader);
+  subjects.forEach((subject) => {
     const th = document.createElement("th");
-    const title = document.createElement("div");
-    title.textContent = `${student[rollType] || "—"} — ${student.name || ""}`;
-    const saveDraft = document.createElement("button");
-    saveDraft.type = "button";
-    saveDraft.className = "secondary-button result-student-draft-save";
-    saveDraft.dataset.draftStudentCode = student.studentCode;
-    saveDraft.textContent = "এই শিক্ষার্থীর নম্বর সেভ";
-    th.append(title, saveDraft);
-    header.append(th);
+    th.colSpan = Number(subject.practicalFullMarks) > 0 ? 2 : 1;
+    th.textContent = `${t(subject.name)} · ${subject.code}`;
+    subjectHeader.append(th);
+  });
+  const componentHeader = thead.insertRow();
+  subjects.forEach((subject) => {
+    const parts = [["তাত্ত্বিক", subject.theoryFullMarks]];
+    if (Number(subject.practicalFullMarks) > 0) parts.push(["ব্যবহারিক", subject.practicalFullMarks]);
+    parts.forEach(([label, maximum]) => {
+      const th = document.createElement("th");
+      th.textContent = `${t(label)} · ${bn(maximum)}`;
+      componentHeader.append(th);
+    });
   });
   const body = table.createTBody();
-  subjects.forEach((subject) => {
-    [["theory", "তাত্ত্বিক", subject.theoryFullMarks], ["practical", "ব্যবহারিক", subject.practicalFullMarks]].forEach(([component, label, maximum]) => {
-      const row = body.insertRow();
-      const subjectCell = row.insertCell();
-      const subjectName = document.createElement("span");
-      subjectName.textContent = subject.name;
-      const codeAndSeparator = document.createTextNode(` (${subject.code}) · `);
-      const componentName = document.createElement("span");
-      componentName.textContent = label;
-      const maximumLabel = document.createTextNode(` (${bn(maximum)})`);
-      subjectCell.append(subjectName, codeAndSeparator, componentName, maximumLabel);
-      classList.forEach((student) => {
+  const exam = byId("resultExam").value;
+  const year = Number(byId("resultYear").value);
+  const savedRecords = [...prefillRecords, ...resultDraftRecords.filter((record) =>
+    record.exam === exam && Number(record.year) === year
+  )];
+  classList.forEach((student) => {
+    const row = body.insertRow();
+    row.dataset.studentCode = student.studentCode;
+    const rollCell = row.insertCell();
+    rollCell.className = "result-roll-cell";
+    rollCell.textContent = normalizeDigits(String(student[rollType] || "—"));
+    subjects.forEach((subject) => {
+      const saved = savedRecords.find((record) => record.studentCode === student.studentCode)
+        ?.subjects?.find((item) => item.name === subject.name || item.code === subject.code);
+      const parts = [["theory", subject.theoryFullMarks]];
+      if (Number(subject.practicalFullMarks) > 0) parts.push(["practical", subject.practicalFullMarks]);
+      parts.forEach(([component, maximum]) => {
         const cell = row.insertCell();
         const input = document.createElement("input");
         input.type = "number";
@@ -995,20 +1310,15 @@ function renderResultMatrix(prefillRecords = []) {
         input.max = String(maximum);
         input.step = "0.01";
         input.required = true;
+        input.inputMode = "decimal";
         input.className = "result-mark-input";
-        input.setAttribute("aria-label", `${student.name} ${subject.name} ${label}`);
+        input.setAttribute("aria-label", `${t("রোল")} ${student[rollType] || "—"} · ${t(subject.name)} · ${t(component === "theory" ? "তাত্ত্বিক" : "ব্যবহারিক")}`);
         input.dataset.studentCode = student.studentCode;
         input.dataset.subjectName = subject.name;
         input.dataset.component = component;
-        const exam = byId("resultExam").value;
-        const year = Number(byId("resultYear").value);
-        const saved = [...prefillRecords, ...resultDraftRecords.filter((record) =>
-          record.exam === exam && Number(record.year) === year
-        )].find((record) => record.studentCode === student.studentCode)
-          ?.subjects?.find((item) => item.name === subject.name || item.code === subject.code);
         input.value = saved
           ? (saved[`${component}Marks`] ?? (component === "theory" ? saved.marks : 0))
-          : (Number(maximum) === 0 ? "0" : "");
+          : "";
         cell.append(input);
       });
     });
@@ -1039,10 +1349,13 @@ byId("prepareResultMatrix").addEventListener("click", () => {
 });
 byId("resultRollType").addEventListener("change", () => { byId("resultMatrixWrap").hidden = true; });
 
-resultMatrix.addEventListener("click", async (event) => {
-  const button = event.target.closest("button[data-draft-student-code]");
-  if (!button || busy) return;
-  const studentCode = button.dataset.draftStudentCode;
+const resultDraftSavesInProgress = new Set();
+
+resultMatrix.addEventListener("change", async (event) => {
+  const input = event.target.closest("input.result-mark-input");
+  if (!input) return;
+  const studentCode = input.dataset.studentCode;
+  if (resultDraftSavesInProgress.has(studentCode)) return;
   const className = byId("resultClass").value;
   const rollType = byId("resultRollType").value;
   const exam = byId("resultExam").value;
@@ -1051,15 +1364,11 @@ resultMatrix.addEventListener("click", async (event) => {
   const subjects = selectedResultSubjects();
   const inputs = [...resultMatrix.querySelectorAll(`input.result-mark-input[data-student-code="${CSS.escape(studentCode)}"]`)];
   if (!currentAdmin || !student || !exam || !Number.isInteger(year) || !subjects.length
-    || inputs.length !== subjects.length * 2
-    || inputs.some((input) => input.value === "" || Number(input.value) < 0 || Number(input.value) > Number(input.max))) {
-    message("resultMessage", "এই শিক্ষার্থীর প্রতিটি বিষয়ের তাত্ত্বিক ও ব্যবহারিক নম্বর পূর্ণমানের মধ্যে দিন।", true);
-    return;
-  }
-  button.disabled = true;
+    || inputs.some((field) => field.value === "" || Number(field.value) < 0 || Number(field.value) > Number(field.max))) return;
+  resultDraftSavesInProgress.add(studentCode);
   try {
     const studentSubjects = subjects.map((subject) => {
-      const getMark = (component) => Number(resultMatrix.querySelector(`input[data-student-code="${CSS.escape(studentCode)}"][data-subject-name="${CSS.escape(subject.name)}"][data-component="${component}"]`).value);
+      const getMark = (component) => Number(resultMatrix.querySelector(`input[data-student-code="${CSS.escape(studentCode)}"][data-subject-name="${CSS.escape(subject.name)}"][data-component="${component}"]`)?.value || 0);
       const theoryMarks = getMark("theory");
       const practicalMarks = getMark("practical");
       return { ...subject, theoryMarks, practicalMarks, fullMarks: subject.theoryFullMarks + subject.practicalFullMarks, marks: theoryMarks + practicalMarks };
@@ -1070,12 +1379,12 @@ resultMatrix.addEventListener("click", async (event) => {
     const draft = { studentCode, studentName: student.name, branch: student.branch, className: student.className, roll: student.roll || "", boardRoll: student.boardRoll || "", rollType, exam, year, subjects: studentSubjects, totalMarks, fullMarks, percentage: fullMarks ? Math.round((totalMarks / fullMarks) * 10000) / 100 : 0, showPractical: byId("resultShowPractical").checked, updatedAt: serverTimestamp(), updatedBy: currentAdmin.uid };
     await setDoc(doc(db, resultDraftsCollection, draftId), draft, { merge: true });
     resultDraftRecords = [...resultDraftRecords.filter((record) => record.id !== draftId), { ...draft, id: draftId }];
-    message("resultMessage", `${student.name} — নম্বরের খসড়া সেভ হয়েছে। পরে একই পরীক্ষা তৈরি করলে নম্বর ফিরে আসবে।`);
+    message("resultMessage", "নম্বরের খসড়া স্বয়ংক্রিয়ভাবে সংরক্ষিত হয়েছে।");
   } catch (error) {
     console.error("নম্বরের খসড়া সেভ হয়নি:", error);
     message("resultMessage", "নম্বরের খসড়া সেভ হয়নি। Firestore access rules পরীক্ষা করুন।", true);
   } finally {
-    button.disabled = false;
+    resultDraftSavesInProgress.delete(studentCode);
   }
 });
 
@@ -1128,7 +1437,7 @@ resultForm.addEventListener("submit", async (event) => {
       const batch = writeBatch(db);
       classList.slice(start, start + 250).forEach((student) => {
         const studentSubjects = subjects.map((subject) => {
-          const findMark = (component) => Number(resultMatrix.querySelector(`input[data-student-code="${CSS.escape(student.studentCode)}"][data-subject-name="${CSS.escape(subject.name)}"][data-component="${component}"]`).value);
+          const findMark = (component) => Number(resultMatrix.querySelector(`input[data-student-code="${CSS.escape(student.studentCode)}"][data-subject-name="${CSS.escape(subject.name)}"][data-component="${component}"]`)?.value || 0);
           const theoryMarks = findMark("theory");
           const practicalMarks = findMark("practical");
           return { name: subject.name, code: subject.code, theoryFullMarks: subject.theoryFullMarks, practicalFullMarks: subject.practicalFullMarks, theoryMarks, practicalMarks, fullMarks: subject.theoryFullMarks + subject.practicalFullMarks, marks: theoryMarks + practicalMarks };

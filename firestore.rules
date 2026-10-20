@@ -13,6 +13,24 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+    // Published committee, teacher, and staff profiles are public. Only admins manage them.
+    match /directoryPeople/{personId} {
+      allow read: if isAdmin() || resource.data.published == true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Class learning resources are public only after publication.
+    match /classContents/{contentId} {
+      allow read: if isAdmin() || resource.data.published == true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Gallery media metadata and public links are readable after publication.
+    match /galleryItems/{itemId} {
+      allow read: if isAdmin() || resource.data.published == true;
+      allow create, update, delete: if isAdmin();
+    }
+
     // Class routines contain public timetable data; only admins can change them.
     match /classRoutines/{branchId} {
       allow read: if true;

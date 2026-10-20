@@ -91,3 +91,5 @@ function renderTeacherProfile() {
 
 renderTeacherList();
 renderTeacherProfile();
+window.renderTeacherList = renderTeacherList;
+window.renderTeacherProfile = renderTeacherProfile;

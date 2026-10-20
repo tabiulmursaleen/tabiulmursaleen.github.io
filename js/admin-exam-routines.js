@@ -3,7 +3,7 @@ import {
   collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 import { auth, db } from "./firebase-config.js";
-import { getAcademicSubjects } from "./academic-subjects.js?v=20261020-3";
+import { getAcademicSubjects } from "./academic-subjects.js?v=20261020-6";
 
 const ADMIN_UID = "wWuBEmlsaofgjAaQi7bfblsX6L62";
 const form = document.getElementById("examRoutineForm");
@@ -167,7 +167,12 @@ async function loadRoutines() {
 function editRoutine(routine) {
   editingId = routine.id;
   document.getElementById("examRoutineClass").value = routine.className || "";
-  document.getElementById("examRoutineName").value = routine.examName || "";
+  const examSelect = document.getElementById("examRoutineName");
+  const examName = routine.examName || "";
+  if (examName && ![...examSelect.options].some((option) => option.value === examName)) {
+    examSelect.add(new Option(examName, examName));
+  }
+  examSelect.value = examName;
   document.getElementById("examRoutineStartTime").value = routine.startTime || "";
   document.getElementById("examRoutinePublished").checked = routine.published === true;
   rowsHost.replaceChildren();

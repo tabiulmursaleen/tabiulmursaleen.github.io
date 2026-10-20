@@ -6,6 +6,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 import { db } from "./firebase-config.js";
+import { studentPlaceholderForName } from "./student-placeholder.js?v=20261020-1";
 
 const rows = document.getElementById("studentDirectory");
 const status = document.getElementById("studentDirectoryStatus");
@@ -138,30 +139,31 @@ function renderStudent(student) {
   const photoCell = document.createElement("td");
   photoCell.className = "student-photo-cell";
   const photoUrls = getDrivePhotoUrls(student.photoUrl || "");
+  const placeholderPhoto = studentPlaceholderForName(student.name);
   const image = document.createElement("img");
   let photoUrlIndex = 0;
   image.alt = `${sentenceCaseName(student.name) || "Student"} — Photo`;
   image.loading = "lazy";
   if (!student.photoUrl) {
-    image.alt = "ছবি দেওয়া নেই";
+    image.alt = "Student illustration";
     image.className = "student-photo-missing";
+    image.src = placeholderPhoto;
   } else {
     image.src = photoUrls[photoUrlIndex];
   }
   image.addEventListener("error", () => {
+    if (!student.photoUrl) return;
     photoUrlIndex += 1;
     if (photoUrlIndex < photoUrls.length) {
       image.src = photoUrls[photoUrlIndex];
       return;
     }
-    if (!student.photoUrl) return;
-    const link = document.createElement("a");
-    link.className = "student-photo-link";
-    link.href = getDriveViewerUrl(student.photoUrl);
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = "দেখুন";
-    image.replaceWith(link);
+    if (image.dataset.placeholder !== "true") {
+      image.dataset.placeholder = "true";
+      image.classList.add("student-photo-missing");
+      image.alt = "Student illustration";
+      image.src = placeholderPhoto;
+    }
   });
   photoCell.append(image);
   row.append(photoCell);

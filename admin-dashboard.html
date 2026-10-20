@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>অ্যাডমিন ড্যাশবোর্ড | TMNKSC</title>
-  <link rel="stylesheet" href="css/admin.css?v=20261020-16">
+  <link rel="stylesheet" href="css/admin.css?v=20261020-17">
 </head>
 <body>
 
@@ -82,6 +82,21 @@
       <a class="dashboard-card" href="#admit-cards">
         <div class="dashboard-card-heading"><span class="card-icon">🎫</span>
         <h3>এডমিট কার্ড ম্যানেজমেন্ট</h3></div>
+      </a>
+
+      <a class="dashboard-card" href="#people-management">
+        <div class="dashboard-card-heading"><span class="card-icon">👥</span>
+        <h3>কমিটি, শিক্ষক ও কর্মচারী</h3></div>
+      </a>
+
+      <a class="dashboard-card" href="#class-content-management">
+        <div class="dashboard-card-heading"><span class="card-icon">📚</span>
+        <h3>ক্লাস কন্টেন্ট</h3></div>
+      </a>
+
+      <a class="dashboard-card" href="#gallery-management">
+        <div class="dashboard-card-heading"><span class="card-icon">🖼️</span>
+        <h3>গ্যালারি ব্যবস্থাপনা</h3></div>
       </a>
 
     </section>
@@ -197,7 +212,13 @@
             </select>
           </label>
           <label>পরীক্ষার নাম <span>*</span>
-            <input id="examRoutineName" type="text" maxlength="120" required placeholder="যেমন: অর্ধবার্ষিক পরীক্ষা">
+            <select id="examRoutineName" required>
+              <option value="">পরীক্ষা নির্বাচন করুন</option>
+              <option value="অর্ধবার্ষিক">অর্ধবার্ষিক</option>
+              <option value="নির্বাচনী">নির্বাচনী</option>
+              <option value="বার্ষিক">বার্ষিক</option>
+              <option value="প্রাক-নির্বাচনী">প্রাক-নির্বাচনী</option>
+            </select>
           </label>
           <label>পরীক্ষা শুরুর সময় <span>*</span>
             <input id="examRoutineStartTime" type="time" required>
@@ -379,6 +400,23 @@
               <input id="studentAdmissionDate" type="date" required>
             </label>
           </div>
+          <section class="full-width student-extra-fields">
+            <h3>অতিরিক্ত তথ্য (ঐচ্ছিক)</h3>
+            <div class="form-grid">
+              <label>শিক্ষার্থীর ধরন
+                <select id="studentType"><option value="">নির্বাচন করুন</option><option value="Regular">Regular</option><option value="Irregular">Irregular</option></select>
+              </label>
+              <label>সেশন (পূর্বের/বোর্ড সেশন)
+                <input id="studentSourceSession" type="text" maxlength="20" placeholder="যেমন: ২০২২ বা ২০২২-২০২৩">
+              </label>
+              <label class="full-width">বিষয় কোড
+                <input id="studentSubjectCodes" type="text" maxlength="600" placeholder="যেমন: 21811, 21812, 21813">
+              </label>
+              <label class="full-width">মূল Excel-এর ট্রেডের নাম
+                <input id="studentSourceTradeName" type="text" maxlength="120" placeholder="ঐচ্ছিক">
+              </label>
+            </div>
+          </section>
           <div class="full-width student-fields-row student-contact-fields">
             <label>অভিভাবকের মোবাইল <span>*</span>
               <input id="studentGuardianPhone" type="tel" required pattern="[0-9০-৯]{11}" maxlength="11" inputmode="numeric" placeholder="017XXXXXXXX">
@@ -433,6 +471,17 @@
         </div>
       </form>
       <p id="studentMessage" class="module-message" role="status" aria-live="polite"></p>
+      <section class="student-import-panel">
+        <h3>Excel থেকে শিক্ষার্থী তথ্য আমদানি</h3>
+        <p>প্রস্তুত করা roster JSON নির্বাচন করে শিক্ষার্থী, বোর্ড রোল/রেজিস্ট্রেশন ও অতিরিক্ত তথ্য ডাটাবেজে যোগ করুন। আমদানি হওয়া শিক্ষার্থীরা শুরুতে ওয়েবসাইটে প্রকাশিত হবে না। অনুপস্থিত তথ্য ফাঁকা থাকবে।</p>
+        <label>আমদানি ফাইল (.json)
+          <input id="studentImportFile" type="file" accept=".json,application/json">
+        </label>
+        <button id="studentImportButton" type="button">ডাটাবেজে শিক্ষার্থী আমদানি</button>
+        <p id="studentImportMessage" class="module-message" role="status" aria-live="polite"></p>
+        <button id="studentPublishImportedButton" type="button">আমদানি করা শিক্ষার্থীদের প্রকাশ করুন</button>
+        <p id="studentPublishImportedMessage" class="module-message" role="status" aria-live="polite"></p>
+      </section>
       <h3>নিবন্ধিত শিক্ষার্থী</h3>
       <div class="data-table-wrap"><table class="data-table"><thead><tr><th>আইডি</th><th>নাম</th><th>শাখা / শ্রেণি</th><th>রোল</th><th>ওয়েবসাইটে</th><th>কাজ</th></tr></thead><tbody id="studentRows"><tr><td colspan="6">তথ্য লোড হচ্ছে...</td></tr></tbody></table></div>
     </section>
@@ -491,14 +540,93 @@
       <div class="data-table-wrap"><table class="data-table"><thead><tr><th>পরীক্ষা</th><th>শিক্ষাবর্ষ</th><th>শিক্ষার্থী</th><th>মোট নম্বর</th><th>ওয়েবসাইটে</th><th>কাজ</th></tr></thead><tbody id="resultRows"><tr><td colspan="6">তথ্য লোড হচ্ছে...</td></tr></tbody></table></div>
     </section>
 
+    <section id="people-management" class="dashboard-section" hidden>
+      <h2>ম্যানেজিং কমিটি, শিক্ষকমণ্ডলী ও কর্মচারীবৃন্দ</h2>
+      <p class="section-help">তিনটি আলাদা বিভাগ থেকে পরিচিতি, ছবি ও প্রোফাইলের তথ্য সম্পাদনা করুন। Google Drive-এর ছবি “Anyone with the link” হিসেবে শেয়ার করুন।</p>
+      <div class="management-tabs" role="group" aria-label="পরিচিতির বিভাগ">
+        <button type="button" class="secondary-button people-type-button is-active" data-person-type="committee" aria-pressed="true">ম্যানেজিং কমিটির সম্মানিত সদস্যগণ</button>
+        <button type="button" class="secondary-button people-type-button" data-person-type="teacher" aria-pressed="false">শিক্ষকমণ্ডলী</button>
+        <button type="button" class="secondary-button people-type-button" data-person-type="staff" aria-pressed="false">কর্মচারীবৃন্দ</button>
+      </div>
+      <form id="personForm" class="admin-form management-form">
+        <h3 id="personFormTitle">নতুন কমিটি সদস্য</h3>
+        <input id="personRecordId" type="hidden">
+        <div class="form-grid">
+          <label>নাম <span>*</span><input id="personName" maxlength="120" required></label>
+          <label>পদবি / দায়িত্ব <span>*</span><input id="personDesignation" maxlength="120" required></label>
+          <label class="person-teacher-field">বিষয় / ট্রেড<input id="personSubject" maxlength="120"></label>
+          <label class="person-teacher-field">ইনডেক্স নম্বর<input id="personIndex" maxlength="30"></label>
+          <label class="person-teacher-field">শিক্ষাগত যোগ্যতা<input id="personQualification" maxlength="120"></label>
+          <label class="person-teacher-field">যোগদানের তারিখ<input id="personJoiningDate" type="date"></label>
+          <label>জন্মতারিখ<input id="personDob" type="date"></label>
+          <label>মোবাইল নম্বর<input id="personPhone" type="tel" maxlength="30"></label>
+          <label>ইমেইল<input id="personEmail" type="email" maxlength="120"></label>
+          <label class="full-width">ছবির URL / Google Drive লিংক<input id="personPhoto" type="url" placeholder="https://drive.google.com/file/d/..."></label>
+        </div>
+        <div class="management-form-actions">
+          <button type="submit">তথ্য সংরক্ষণ ও প্রকাশ</button>
+          <button id="personFormReset" type="button" class="secondary-button">নতুন তথ্য</button>
+        </div>
+      </form>
+      <p id="peopleManagementMessage" class="module-message" role="status" aria-live="polite"></p>
+      <h3 id="peopleListTitle">কমিটি সদস্য</h3>
+      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>ছবি</th><th>নাম</th><th>পদবি / দায়িত্ব</th><th>কাজ</th></tr></thead><tbody id="peopleManagementRows"></tbody></table></div>
+    </section>
+
+    <section id="class-content-management" class="dashboard-section" hidden>
+      <h2>ক্লাস কন্টেন্ট ব্যবস্থাপনা</h2>
+      <p class="section-help">Google Drive-এ ফাইলটি “Anyone with the link — Viewer” করে লিংক দিন। শ্রেণি, বিষয় ও শিক্ষক উল্লেখ করে প্রকাশ করুন।</p>
+      <form id="classContentForm" class="admin-form">
+        <input id="classContentId" type="hidden">
+        <div class="form-grid">
+          <label>শাখা <span>*</span><select id="classContentBranch" required><option value="School">স্কুল</option><option value="College">কলেজ</option></select></label>
+          <label>শ্রেণি <span>*</span><select id="classContentClass" required><option value="">শ্রেণি নির্বাচন করুন</option><option>ষষ্ঠ</option><option>সপ্তম</option><option>অষ্টম</option><option>নবম</option><option>দশম</option><option>একাদশ</option><option>দ্বাদশ</option></select></label>
+          <label>বিষয় <span>*</span><input id="classContentSubject" required maxlength="120"></label>
+          <label>শিক্ষকের নাম <span>*</span><input id="classContentTeacher" required maxlength="120" list="contentTeacherOptions"><datalist id="contentTeacherOptions"></datalist></label>
+          <label class="full-width">কন্টেন্টের শিরোনাম <span>*</span><input id="classContentTitle" required maxlength="180"></label>
+          <label class="full-width">বর্ণনা<textarea id="classContentDescription" rows="3" maxlength="1000"></textarea></label>
+          <label class="full-width">Google Drive ফাইল লিংক <span>*</span><input id="classContentUrl" type="url" required placeholder="https://drive.google.com/file/d/..."></label>
+        </div>
+        <label class="check-label"><input id="classContentPublished" type="checkbox" checked> ওয়েবসাইটে প্রকাশ করুন</label>
+        <div class="management-form-actions"><button type="submit">কন্টেন্ট সংরক্ষণ</button><button id="classContentReset" type="button" class="secondary-button">ফাঁকা করুন</button></div>
+      </form>
+      <p id="classContentMessage" class="module-message" role="status" aria-live="polite"></p>
+      <h3>সংরক্ষিত কন্টেন্ট</h3>
+      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>শ্রেণি</th><th>বিষয়</th><th>শিরোনাম</th><th>অবস্থা</th><th>কাজ</th></tr></thead><tbody id="classContentRows"></tbody></table></div>
+    </section>
+
+    <section id="gallery-management" class="dashboard-section" hidden>
+      <h2>গ্যালারি ব্যবস্থাপনা</h2>
+      <p class="section-help">ছবি Google Drive-এ সবার দেখার অনুমতি দিয়ে শেয়ার করুন। ভিডিওর জন্য YouTube লিংক দিন।</p>
+      <div class="management-tabs" role="group" aria-label="গ্যালারির ধরন">
+        <button type="button" class="secondary-button gallery-type-button is-active" data-gallery-type="photo" aria-pressed="true">ছবি</button>
+        <button type="button" class="secondary-button gallery-type-button" data-gallery-type="video" aria-pressed="false">ভিডিও</button>
+      </div>
+      <form id="galleryForm" class="admin-form">
+        <input id="galleryItemId" type="hidden">
+        <div class="form-grid">
+          <label class="full-width" id="galleryUrlLabel">Google Drive ছবির লিংক <span>*</span><input id="galleryUrl" type="url" required placeholder="https://drive.google.com/file/d/..."></label>
+          <label class="full-width">ক্যাপশন<input id="galleryCaption" maxlength="200" placeholder="ছবির সংক্ষিপ্ত বিবরণ"></label>
+        </div>
+        <label class="check-label"><input id="galleryPublished" type="checkbox" checked> ওয়েবসাইটে প্রকাশ করুন</label>
+        <div class="management-form-actions"><button type="submit">গ্যালারিতে সংরক্ষণ</button><button id="galleryReset" type="button" class="secondary-button">ফাঁকা করুন</button></div>
+      </form>
+      <p id="galleryMessage" class="module-message" role="status" aria-live="polite"></p>
+      <h3 id="galleryListTitle">সংরক্ষিত ছবি</h3>
+      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>প্রিভিউ</th><th>ক্যাপশন</th><th>অবস্থা</th><th>কাজ</th></tr></thead><tbody id="galleryRows"></tbody></table></div>
+    </section>
+
     <p id="dashboardMessage" role="status" aria-live="polite"></p>
   </main>
 
-  <script type="module" src="js/dashboard-language.js?v=20261020-15"></script>
+  <script type="module" src="js/dashboard-language.js?v=20261020-18"></script>
   <script type="module" src="js/admin-dashboard.js"></script>
   <script type="module" src="js/admin-notices.js"></script>
-  <script type="module" src="js/admin-students.js?v=20261020-23"></script>
+  <script type="module" src="js/admin-students.js?v=20261020-31"></script>
   <script type="module" src="js/admin-routines.js?v=20261019-1"></script>
-  <script type="module" src="js/admin-exam-routines.js?v=20261020-3"></script>
+  <script type="module" src="js/admin-exam-routines.js?v=20261020-5"></script>
+  <script src="js/teachers-data.js?v=20261020-1"></script>
+  <script src="js/staffs-data.js?v=20261020-1"></script>
+  <script type="module" src="js/admin-community.js?v=20261020-1"></script>
 </body>
 </html>

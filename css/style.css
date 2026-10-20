@@ -3268,6 +3268,74 @@ section{
 .navbar #mainMenu > li > a:hover,
 .navbar #mainMenu > li > a.active{background:linear-gradient(135deg,#285780,#183d63)}
 
+/* Public committee, learning content, and gallery pages */
+.community-page{min-height:420px;background:#f5f7fa;padding:4px 0 54px}
+.gallery-page{padding-top:4px}
+.committee-grid .teacher-card{animation:none!important}
+.committee-grid .committee-photo-placeholder{display:grid;place-items:center;width:100%;aspect-ratio:4/5;color:#60758b;background:#edf1f5;font-size:54px}
+.committee-grid .principal-card .teacher-card-content::before{content:none}
+.committee-grid .committee-phone{display:inline-flex;align-items:center;justify-content:center;gap:7px;margin-top:2px;padding:5px 11px;color:#fff;text-decoration:none;border:1px solid rgba(228,207,145,.58);border-radius:999px;background:rgba(255,255,255,.1);font-size:14px;font-weight:600}
+.committee-grid .committee-phone svg{width:15px;height:15px;fill:#e4cf91;flex:0 0 auto}
+.committee-grid .committee-phone:hover{background:rgba(255,255,255,.2);border-color:#e4cf91}
+.committee-grid .teacher-card-content::after{content:none!important}
+.community-section{max-width:1200px}
+.community-page-heading{text-align:center;margin:0 auto 16px;padding:4px 14px 12px;border-bottom:2px solid #d0aa4f}
+.community-page-heading h1{margin:0 0 6px;color:#183d63;font-size:clamp(25px,3vw,34px)}
+.community-page-heading p{margin:0;color:#536273;font-size:17px}
+.community-people-grid,.class-content-grid,.media-gallery-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.community-person-card,.class-content-card,.media-gallery-card{overflow:hidden;background:#fff;border:1px solid #e0e6ed;border-radius:12px;box-shadow:0 5px 18px rgba(24,61,99,.08)}
+.community-person-card{display:flex;align-items:center;gap:15px;padding:15px;border-top:3px solid #d0aa4f}
+.community-person-card img,.community-person-placeholder{width:86px;height:100px;flex:0 0 86px;object-fit:cover;border-radius:8px;background:#edf1f5}
+.community-person-placeholder{display:grid;place-items:center;font-size:38px;color:#60758b}
+.community-person-card h2,.class-content-card h2{margin:0 0 5px;color:#183d63;font-size:20px;line-height:1.4}
+.community-person-card p{margin:3px 0;color:#536273}
+.class-content-card{padding:18px;border-top:3px solid #d0aa4f;display:flex;flex-direction:column;align-items:flex-start}
+.class-content-list{display:flex;flex-direction:column;gap:10px}
+.class-content-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(170px,220px) auto;align-items:center;gap:18px;padding:14px 18px;background:#fff;border:1px solid #e0e6ed;border-left:4px solid #d0aa4f;border-radius:10px;box-shadow:0 4px 14px rgba(24,61,99,.07)}
+.class-content-row h2{margin:0 0 4px;color:#183d63;font-size:19px;line-height:1.4}
+.class-content-row .content-card-meta{margin-bottom:6px}
+.class-content-row .content-subject{margin:0 0 4px}
+.class-content-row .content-description{margin:0}
+.class-content-row .content-teacher{display:flex;align-items:center;gap:9px;margin:0;font-size:14px}
+.class-content-row .content-teacher img{width:40px;height:48px;flex:0 0 40px;object-fit:cover;object-position:center top;border:1px solid #d0aa4f;border-radius:6px;background:#edf1f5}
+.class-content-row .content-teacher strong{color:#183d63}
+.class-content-row .content-open-link{white-space:nowrap}
+.class-content-table-wrap{width:100%;overflow-x:auto;border:1px solid #d6deea;border-radius:10px;background:#fff;box-shadow:0 4px 14px rgba(24,61,99,.07)}
+.class-content-filters{display:grid;grid-template-columns:minmax(100px,.7fr) minmax(100px,.7fr) minmax(150px,1.2fr) minmax(150px,1.2fr) auto;align-items:end;gap:8px;margin:0 0 14px;padding:10px;background:#fff;border:1px solid #d6deea;border-radius:10px;box-shadow:0 4px 14px rgba(24,61,99,.06)}
+.class-content-filters label{display:flex;flex-direction:column;gap:5px;color:#183d63;font-size:13px;font-weight:700}
+.class-content-filters select,.class-content-filters input{width:100%;min-width:0;min-height:38px;padding:7px 9px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#25364a;font:inherit;font-weight:400}
+.class-content-reset{min-height:38px;padding:7px 12px;border:1px solid #183d63;border-radius:6px;background:#183d63;color:#fff;font:inherit;font-weight:700;white-space:nowrap;cursor:pointer}
+.class-content-reset:hover{background:#285780}
+.class-content-empty{margin:12px 0;padding:16px;text-align:center;color:#536273;background:#fff;border:1px solid #dce3ec;border-radius:8px}
+.class-content-table{width:100%;min-width:900px;border-collapse:collapse;table-layout:auto;color:#25364a;font-size:14px}
+.class-content-table th,.class-content-table td{padding:8px 10px;border:1px solid #dce3ec;text-align:center;vertical-align:middle}
+.class-content-table thead th{background:#183d63;color:#fff;font-weight:700;white-space:nowrap}
+.class-content-table tbody tr:nth-child(even){background:#f3f6fa}
+.class-content-table tbody tr:hover{background:#fff9e9}
+.class-content-table td:nth-child(6){min-width:180px;text-align:left}
+.content-sort-button{padding:2px 0;border:0;background:transparent;color:inherit;font:inherit;font-weight:inherit;cursor:pointer}
+.content-sort-button:hover,.content-sort-button:focus-visible{color:#f3df9e;text-decoration:underline}
+.class-content-teacher{display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.class-content-teacher img{width:27px;height:32px;object-fit:cover;object-position:center top;border:1px solid #d0aa4f;border-radius:50%;background:#edf1f5}
+.class-content-table .content-open-link{min-height:30px;padding:5px 10px;border-radius:6px;font-size:13px;white-space:nowrap}
+.content-card-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.content-card-meta span{padding:4px 9px;border-radius:20px;background:#edf2f7;color:#183d63;font-size:14px;font-weight:700}
+.content-subject{margin:0 0 8px;color:#315f89;font-weight:700}
+.content-description{margin:0 0 12px;color:#536273;line-height:1.7;text-align:justify}
+.content-teacher{margin:auto 0 12px;color:#536273}
+.content-open-link{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:8px 14px;border-radius:7px;background:#183d63;color:#fff;font-weight:700;text-decoration:none}
+.content-open-link:hover{background:#285780;color:#fff}
+.media-gallery-card{margin:0;border-bottom:3px solid #d0aa4f}
+.media-gallery-card>a{display:block}
+.media-gallery-card img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#e9edf2}
+.media-gallery-card>p{margin:0;padding:12px 14px;color:#33465b;line-height:1.55}
+.video-frame{position:relative;aspect-ratio:16/9;background:#0c1825}
+.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.community-status{grid-column:1/-1;margin:0;padding:24px;background:#fff;border:1px solid #e0e6ed;border-radius:10px;text-align:center;color:#536273}
+@media(max-width:850px){.community-people-grid,.media-gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.class-content-row{grid-template-columns:minmax(0,1fr) minmax(145px,190px) auto;gap:12px;padding:12px}}
+@media(max-width:650px){.class-content-filters{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px}.class-content-reset{grid-column:1/-1;justify-self:stretch}}
+@media(max-width:560px){.community-page{padding:4px 0 36px}.community-page-heading{margin-bottom:12px;padding:4px 10px 10px}.community-people-grid,.media-gallery-grid{grid-template-columns:1fr;gap:13px}.community-person-card{padding:12px}.community-person-card img,.community-person-placeholder{width:74px;height:88px;flex-basis:74px}.class-content-row{grid-template-columns:1fr;gap:10px;padding:12px}.class-content-row .content-open-link{justify-self:start}.class-content-row h2{font-size:17px}.class-content-table{min-width:820px;font-size:13px}.class-content-table th,.class-content-table td{padding:7px 8px}}
+
 /* Show the establishment year beside the address on desktop and below EIIN on phones. */
 .logo-area p::after {
     content:"  ·  প্রতিষ্ঠাঃ ২০১২ খ্রি.";
@@ -4225,7 +4293,8 @@ section{
 
 /* Keep the principal first and mark the card with a restrained accent. */
 .teacher-grid .teacher-card.principal-card,
-.teacher-preview-grid .teacher-card.principal-card{
+.teacher-preview-grid .teacher-card.principal-card,
+.committee-grid .teacher-card.principal-card{
     grid-column:1 / -1;
     order:-1;
     justify-self:center;
@@ -4385,12 +4454,14 @@ section{
     .teacher-preview-grid .teacher-card.principal-card{animation:none}
 }
 .teacher-grid .principal-card .teacher-card-content,
-.teacher-preview-grid .principal-card .teacher-card-content{
+.teacher-preview-grid .principal-card .teacher-card-content,
+.committee-grid .principal-card .teacher-card-content{
     background:linear-gradient(145deg,#285780 0%,#183d63 55%,#102b49 100%);
     border-top:2px solid #d0aa4f;
 }
 .teacher-grid .principal-card .teacher-card-content::before,
-.teacher-preview-grid .principal-card .teacher-card-content::before{
+.teacher-preview-grid .principal-card .teacher-card-content::before,
+.committee-grid .principal-card .teacher-card-content::before{
     content:"প্রতিষ্ঠান প্রধান";
     display:inline-block;
     margin-bottom:5px;
@@ -4407,9 +4478,12 @@ section{
 .teacher-grid .principal-card .teacher-card-content h2,
 .teacher-preview-grid .principal-card .teacher-card-content h2,
 .teacher-grid .principal-card .teacher-card-content h2 a,
-.teacher-preview-grid .principal-card .teacher-card-content h2 a{color:#fff}
+.teacher-preview-grid .principal-card .teacher-card-content h2 a,
+.committee-grid .principal-card .teacher-card-content h2{color:#fff}
 .teacher-grid .principal-card .teacher-card-content p,
-.teacher-preview-grid .principal-card .teacher-card-content p{color:#e4cf91}
+.teacher-preview-grid .principal-card .teacher-card-content p,
+.committee-grid .principal-card .teacher-card-content p{color:#e4cf91}
+.committee-grid .principal-card .teacher-card-content::before{content:none;display:none}
 
 /* Ensure all interactive accents follow the navy and gold theme. */
 .teacher-grid .teacher-card:hover,

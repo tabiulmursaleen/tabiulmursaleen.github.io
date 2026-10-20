@@ -248,3 +248,5 @@ const teachers = [
     "photo": "images/teachers/teacher-19.jpg"
   }
 ];
+
+window.teachersData = teachers;

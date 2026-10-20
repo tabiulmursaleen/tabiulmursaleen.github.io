@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" role="img" aria-labelledby="title desc">
+  <title id="title">Student photo placeholder</title>
+  <desc id="desc">Illustration of a schoolboy in uniform holding books</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8f5eb"/><stop offset="1" stop-color="#e7eef5"/></linearGradient>
+    <linearGradient id="uniform" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#244b70"/><stop offset="1" stop-color="#132f4b"/></linearGradient>
+  </defs>
+  <rect width="400" height="500" rx="30" fill="url(#bg)"/>
+  <circle cx="200" cy="190" r="137" fill="#fff" opacity=".7"/>
+  <circle cx="342" cy="72" r="9" fill="#c39a3d" opacity=".8"/><circle cx="59" cy="112" r="6" fill="#477195" opacity=".65"/>
+  <path d="M63 467c9-110 55-163 137-163s128 53 137 163v33H63z" fill="url(#uniform)"/>
+  <path d="m159 310 41 51 41-51-14-20h-54z" fill="#fff"/>
+  <path d="m188 357 12 13 12-13-6 60h-12z" fill="#c39a3d"/>
+  <path d="M119 174c0-70 32-111 81-111s81 41 81 111v66c0 52-34 87-81 87s-81-35-81-87z" fill="#c9815e"/>
+  <path d="M114 194c-7-66 7-128 72-143 58-13 101 24 105 81 2 25-4 45-8 61l-21-53-2-28c-25 24-75 41-141 37z" fill="#263342"/>
+  <path d="M147 223c10-8 22-8 32 0m39 0c10-8 22-8 32 0" fill="none" stroke="#263342" stroke-linecap="round" stroke-width="6"/>
+  <circle cx="164" cy="243" r="5" fill="#263342"/><circle cx="233" cy="243" r="5" fill="#263342"/>
+  <path d="M180 278c11 10 24 10 36 0" fill="none" stroke="#8a4f42" stroke-linecap="round" stroke-width="5"/>
+  <path d="M78 420h103c15 0 27 12 27 27v38H78z" fill="#fff" stroke="#b58a2c" stroke-width="6"/>
+  <path d="M208 447c0-15 12-27 27-27h88v65h-88c-15 0-27-12-27-27z" fill="#f0c866" stroke="#b58a2c" stroke-width="6"/>
+  <path d="M101 441h54m-54 17h66m48-17h53m-53 17h45" stroke="#9baebe" stroke-linecap="round" stroke-width="5"/>
+</svg>

@@ -121,3 +121,5 @@ const staffMembers = [
     photo: "images/staffs/staff-10.jpg"
   }
 ];
+
+window.staffMembersData = staffMembers;

@@ -6,12 +6,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>সকল নোটিশ | তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</title>
+    <title>ক্লাস কন্টেন্ট | তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</title>
 
     <meta name="description"
-          content="তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজের সকল প্রকাশিত নোটিশ।">
+          content="শ্রেণি, বিষয় ও শিক্ষক অনুযায়ী শিক্ষার্থীদের জন্য প্রকাশিত কন্টেন্ট।">
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=20261020-6">
 
     <style>
         .all-notices-section {
@@ -300,7 +300,7 @@
 
 
 
-<br><br><br><br><br><br><br><br>
+<main class="community-page"><section class="container community-section"><header class="community-page-heading"><h1>শিক্ষার্থীদের ক্লাস কন্টেন্ট</h1><p>শ্রেণি, বিষয় ও শিক্ষক অনুযায়ী প্রকাশিত শিক্ষাসামগ্রী দেখুন।</p></header><div id="classContentGrid" class="class-content-list"><p class="community-status">তথ্য লোড হচ্ছে...</p></div></section></main>
 
 
 
@@ -375,168 +375,8 @@
     <!-- Existing mobile menu script -->
     <script src="js/script.js"></script>
 
-    <!-- Load all published notices -->
-    
-<script type="module">
-    import { db } from "./js/firebase-config.js";
-
-    import {
-        collection,
-        getDocs,
-        query,
-        where
-    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-
-    const tableBody = document.getElementById("allNoticesList");
-
-    function showMessage(message) {
-        tableBody.replaceChildren();
-
-        const row = document.createElement("tr");
-        const cell = document.createElement("td");
-
-        cell.colSpan = 4;
-        cell.className = "notice-table-status";
-        cell.textContent = message;
-
-        row.appendChild(cell);
-        tableBody.appendChild(row);
-    }
-
-    function formatDate(timestamp) {
-    if (!timestamp || typeof timestamp.toDate !== "function") {
-        return "তারিখ নেই";
-    }
-
-    return new Intl.DateTimeFormat("bn-BD", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric"
-    }).format(timestamp.toDate());
-}
-
-    function getFileInfo(url) {
-        if (!url) {
-            return { type: "সংযুক্ত ফাইল নেই", url: "" };
-        }
-
-        try {
-            const parsedUrl = new URL(url);
-
-            if (parsedUrl.protocol !== "https:") {
-                return { type: "অবৈধ লিংক", url: "" };
-            }
-
-            const host = parsedUrl.hostname.toLowerCase();
-            const path = parsedUrl.pathname.toLowerCase();
-
-            if (host.includes("drive.google.com") ||
-                host.includes("docs.google.com")) {
-                return { type: "Google Drive / PDF", url: parsedUrl.href };
-            }
-
-            if (path.endsWith(".pdf")) {
-                return { type: "PDF", url: parsedUrl.href };
-            }
-
-            if (path.endsWith(".doc") || path.endsWith(".docx")) {
-                return { type: "Word", url: parsedUrl.href };
-            }
-
-            if (path.endsWith(".jpg") ||
-                path.endsWith(".jpeg") ||
-                path.endsWith(".png")) {
-                return { type: "ছবি", url: parsedUrl.href };
-            }
-
-            return { type: "লিংক", url: parsedUrl.href };
-
-        } catch {
-            return { type: "অবৈধ লিংক", url: "" };
-        }
-    }
-
-    async function loadNotices() {
-        try {
-            const noticesQuery = query(
-                collection(db, "notices"),
-                where("published", "==", true)
-            );
-
-            const snapshot = await getDocs(noticesQuery);
-
-            if (snapshot.empty) {
-                showMessage("বর্তমানে কোনো প্রকাশিত নোটিশ নেই।");
-                return;
-            }
-
-            const notices = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-
-            notices.sort((a, b) => {
-                const timeA = a.updatedAt?.toMillis?.()
-                    ?? a.createdAt?.toMillis?.()
-                    ?? 0;
-
-                const timeB = b.updatedAt?.toMillis?.()
-                    ?? b.createdAt?.toMillis?.()
-                    ?? 0;
-
-                return timeB - timeA;
-            });
-
-            tableBody.replaceChildren();
-
-            notices.forEach((notice) => {
-                const row = document.createElement("tr");
-
-                const dateCell = document.createElement("td");
-                dateCell.textContent = formatDate(
-                    notice.updatedAt ?? notice.createdAt
-                );
-
-                const titleCell = document.createElement("td");
-                titleCell.textContent = notice.title || "শিরোনাম নেই";
-
-                const fileCell = document.createElement("td");
-                const fileInfo = getFileInfo(notice.pdfUrl?.trim());
-
-                fileCell.textContent = fileInfo.type;
-
-                const actionCell = document.createElement("td");
-
-                if (fileInfo.url) {
-                    const link = document.createElement("a");
-
-                    link.className = "notice-view-link";
-                    link.href = fileInfo.url;
-                    link.target = "_blank";
-                    link.rel = "noopener noreferrer";
-                    link.textContent = "দেখুন";
-
-                    actionCell.appendChild(link);
-                } else {
-                    actionCell.textContent = "ফাইল নেই";
-                }
-
-                row.appendChild(dateCell);
-                row.appendChild(titleCell);
-                row.appendChild(fileCell);
-                row.appendChild(actionCell);
-
-                tableBody.appendChild(row);
-            });
-
-        } catch (error) {
-            console.error("নোটিশ লোড করার সমস্যা:", error);
-            showMessage("নোটিশ লোড করা যায়নি। পরে আবার চেষ্টা করুন।");
-        }
-    }
-
-    loadNotices();
-</script>
+    <script src="js/teachers-data.js?v=20261020-1"></script>
+    <script type="module" src="js/public-community.js?v=20261020-5"></script>
 
 
 </body>

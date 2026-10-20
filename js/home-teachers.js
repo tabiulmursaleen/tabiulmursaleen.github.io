@@ -1,4 +1,4 @@
-(function renderHomeTeacherPreview() {
+window.renderHomeTeacherPreview = function renderHomeTeacherPreview() {
   const grid = document.getElementById("teacherPreviewGrid");
   if (!grid || typeof teachers === "undefined") return;
 
@@ -31,4 +31,6 @@
       </a>
     </article>
   `).join("");
-})();
+};
+
+window.renderHomeTeacherPreview();

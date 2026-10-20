@@ -508,8 +508,9 @@ button:disabled {
 }
 
 .result-marks-table {
-  width: max-content;
+  width: 100%;
   min-width: 100%;
+  table-layout: fixed;
 }
 
 .result-marks-table th:first-child,
@@ -517,7 +518,8 @@ button:disabled {
   position: sticky;
   left: 0;
   z-index: 1;
-  min-width: 160px;
+  width: 68px;
+  min-width: 68px;
   background: #f3f6fa;
 }
 
@@ -527,12 +529,34 @@ button:disabled {
   z-index: 2;
 }
 
-.result-student-draft-save {
-  display: block;
-  margin: 0.45rem auto 0;
-  padding: 0.3rem 0.55rem;
-  font-size: 0.78rem;
-  white-space: nowrap;
+.result-marks-compact thead tr:nth-child(2) th {
+  top: 36px;
+}
+
+.result-marks-compact th,
+.result-marks-compact td {
+  padding: 5px 4px;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.result-marks-compact thead th {
+  font-size: 0.82rem;
+  line-height: 1.25;
+}
+
+.result-marks-compact .result-roll-cell {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.result-marks-table input.result-mark-input {
+  box-sizing: border-box;
+  width: min(100%, 68px);
+  min-width: 0;
+  margin: 0 auto;
+  padding: 5px 3px;
+  text-align: center;
 }
 
 .admit-selection-toolbar {
@@ -741,14 +765,26 @@ button:disabled {
   text-align: center;
 }
 
-.result-marks-table input.result-mark-input {
-  width: 88px;
-  min-width: 72px;
-  margin: 0;
-  padding: 7px;
-}
-
 @media (max-width: 700px) {
+  .result-marks-compact th,
+  .result-marks-compact td {
+    padding: 4px 2px;
+  }
+
+  .result-marks-compact thead th {
+    font-size: 0.72rem;
+  }
+
+  .result-marks-table th:first-child,
+  .result-marks-table td:first-child {
+    width: 52px;
+    min-width: 52px;
+  }
+
+  .result-marks-table input.result-mark-input {
+    font-size: 0.88rem;
+  }
+
   .result-subject-setting {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -761,6 +797,49 @@ button:disabled {
   .result-subject-choices {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+.management-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 9px;
+  margin: 16px 0;
+}
+
+.management-tabs button {
+  min-width: 0;
+  flex: 1 1 0;
+  white-space: normal;
+  line-height: 1.25;
+}
+
+.management-tabs .is-active {
+  background: #183d63;
+  border-color: #d0aa4f;
+  color: #fff;
+  box-shadow: inset 0 0 0 2px rgba(208, 170, 79, 0.45);
+}
+
+.management-form {
+  margin: 18px 0;
+  padding: 18px;
+  border: 1px solid #dbe3ed;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.management-form h3 { margin-top: 0; }
+.management-form-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
+.management-thumbnail { width: 48px; height: 58px; object-fit: cover; border-radius: 6px; background: #edf1f5; }
+.data-table .table-actions-cell { white-space: nowrap; }
+.data-table .table-actions-cell .table-action { margin: 2px; }
+.person-teacher-field[hidden] { display: none; }
+
+@media (max-width: 700px) {
+  .management-tabs { gap: 6px; }
+  .management-tabs button { padding: 9px 6px; font-size: 0.88rem; }
+  .management-form { padding: 13px; }
+  #people-management .data-table { min-width: 580px; }
 }
 
 .welcome-card,

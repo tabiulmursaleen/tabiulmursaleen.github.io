@@ -35,6 +35,7 @@ function staffFormatDate(value) {
 }
 
 function staffCalculateExperience(joiningDate) {
+  if (!joiningDate) return "তথ্য দেওয়া নেই";
   const [year, month, day] = joiningDate.split("-").map(Number);
   const today = new Date();
 
@@ -177,3 +178,5 @@ function renderStaffProfile() {
 
 renderStaffList();
 renderStaffProfile();
+window.renderStaffList = renderStaffList;
+window.renderStaffProfile = renderStaffProfile;
