@@ -61,10 +61,10 @@ function fillSelect(select, defaultLabel, values, translate = false) {
 function populateFilters() {
   const years = uniqueSorted(publishedStudents.map((student) => student.academicYear || student.session))
     .sort((a, b) => Number(b) - Number(a));
-  fillSelect(yearFilter, "All Academic Years", years);
-  fillSelect(branchFilter, "All Branches", uniqueSorted(publishedStudents.map((student) => student.branch)), true);
-  fillSelect(classFilter, "All Classes", uniqueSorted(publishedStudents.map((student) => student.className)), true);
-  fillSelect(tradeFilter, "All Trades", uniqueSorted(publishedStudents.map((student) => student.trade)), true);
+  fillSelect(yearFilter, "সব শিক্ষাবর্ষ", years);
+  fillSelect(branchFilter, "সব শাখা", uniqueSorted(publishedStudents.map((student) => student.branch)), true);
+  fillSelect(classFilter, "সব শ্রেণি", uniqueSorted(publishedStudents.map((student) => student.className)), true);
+  fillSelect(tradeFilter, "সব ট্রেড", uniqueSorted(publishedStudents.map((student) => student.trade)), true);
 }
 
 function compareStudents(a, b) {
@@ -142,10 +142,10 @@ function renderStudent(student) {
   const placeholderPhoto = studentPlaceholderForName(student.name);
   const image = document.createElement("img");
   let photoUrlIndex = 0;
-  image.alt = `${sentenceCaseName(student.name) || "Student"} — Photo`;
+  image.alt = `${sentenceCaseName(student.name) || "শিক্ষার্থী"} — ছবি`;
   image.loading = "lazy";
   if (!student.photoUrl) {
-    image.alt = "Student illustration";
+    image.alt = "শিক্ষার্থীর প্রতীকী ছবি";
     image.className = "student-photo-missing";
     image.src = placeholderPhoto;
   } else {
@@ -161,7 +161,7 @@ function renderStudent(student) {
     if (image.dataset.placeholder !== "true") {
       image.dataset.placeholder = "true";
       image.classList.add("student-photo-missing");
-      image.alt = "Student illustration";
+      image.alt = "শিক্ষার্থীর প্রতীকী ছবি";
       image.src = placeholderPhoto;
     }
   });
@@ -170,7 +170,7 @@ function renderStudent(student) {
 
   const nameCell = document.createElement("td");
   nameCell.className = "student-name-cell";
-  nameCell.textContent = sentenceCaseName(student.name) || "Name unavailable";
+  nameCell.textContent = sentenceCaseName(student.name) || "নাম পাওয়া যায়নি";
   row.append(nameCell);
 
   const academicYear = student.academicYear || student.session || "—";
@@ -185,7 +185,7 @@ function renderStudent(student) {
   const detailsLink = document.createElement("a");
   detailsLink.className = "student-directory-details-link";
   detailsLink.href = `student-profile.html?id=${encodeURIComponent(student.directoryId)}`;
-  detailsLink.textContent = "Details";
+  detailsLink.textContent = "বিস্তারিত";
   actionCell.append(detailsLink);
   row.append(actionCell);
   return row;
@@ -197,10 +197,10 @@ function renderDirectory() {
     .sort(compareStudents);
 
   rows.replaceChildren(...matchingStudents.map(renderStudent));
-  count.textContent = `${new Intl.NumberFormat("en").format(matchingStudents.length)} students found.`;
+  count.textContent = `${new Intl.NumberFormat("bn-BD").format(matchingStudents.length)} জন শিক্ষার্থী পাওয়া গেছে।`;
   status.hidden = true;
   if (!matchingStudents.length) {
-    status.textContent = "No published students match these filters.";
+    status.textContent = "এই ফিল্টারে কোনো প্রকাশিত শিক্ষার্থী পাওয়া যায়নি।";
     status.hidden = false;
   }
 }
@@ -217,7 +217,7 @@ async function loadDirectory() {
     }));
 
     if (!publishedStudents.length) {
-      status.textContent = "No student records have been published yet.";
+      status.textContent = "এখনো কোনো শিক্ষার্থীর তথ্য প্রকাশ করা হয়নি।";
       status.hidden = false;
       toolbar.hidden = true;
       return;
@@ -228,7 +228,7 @@ async function loadDirectory() {
     renderDirectory();
   } catch (error) {
     console.error("শিক্ষার্থী তালিকা লোডের সমস্যা:", error);
-    status.textContent = "Could not load the student directory. Check Firestore access rules.";
+    status.textContent = "শিক্ষার্থীদের তথ্য লোড করা যায়নি। ডাটাবেজ সংযোগ পরীক্ষা করুন।";
     status.hidden = false;
     toolbar.hidden = true;
   }

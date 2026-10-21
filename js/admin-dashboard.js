@@ -22,6 +22,8 @@ const dashboardMessage = document.getElementById("dashboardMessage");
 const logoutButton = document.getElementById("logoutButton");
 const welcomeCard = document.querySelector(".welcome-card");
 const dashboardGrid = document.querySelector(".dashboard-grid");
+const dashboardSidebarToggle = document.getElementById("dashboardSidebarToggle");
+const dashboardContainer = document.querySelector(".dashboard-container");
 const dashboardSections = [...document.querySelectorAll(".dashboard-section")];
 let currentAdmin = null;
 const displayNameInput = document.getElementById("adminDisplayNameInput");
@@ -155,7 +157,7 @@ function showDashboardSection(sectionId) {
     .find((card) => card.hash === `#${sectionId}`);
 
   welcomeCard.hidden = true;
-  dashboardGrid.hidden = true;
+  dashboardGrid.hidden = false;
   dashboardMessage.hidden = true;
   dashboardSections.forEach((section) => {
     section.hidden = section !== selectedSection;
@@ -193,6 +195,19 @@ dashboardGrid.addEventListener("click", (event) => {
   if (!card) return;
   event.preventDefault();
   showDashboardSection(card.hash.slice(1));
+});
+
+dashboardGrid.querySelectorAll(".dashboard-card").forEach((item) => {
+  item.title = item.querySelector("h3")?.textContent.trim() || "";
+});
+
+dashboardSidebarToggle.addEventListener("click", () => {
+  const isCollapsed = dashboardGrid.classList.toggle("is-collapsed");
+  dashboardContainer.classList.toggle("is-sidebar-collapsed", isCollapsed);
+  const label = isCollapsed ? "মেনু খুলুন" : "মেনু গুটান";
+  dashboardSidebarToggle.setAttribute("aria-expanded", String(!isCollapsed));
+  dashboardSidebarToggle.setAttribute("aria-label", `সাইড মেনু ${label}`);
+  dashboardSidebarToggle.title = `সাইড মেনু ${label}`;
 });
 
 const initialSectionId = location.hash.slice(1);

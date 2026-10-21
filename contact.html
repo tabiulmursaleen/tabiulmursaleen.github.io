@@ -6,10 +6,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>সকল নোটিশ | তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</title>
+    <title>যোগাযোগ | তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</title>
 
     <meta name="description"
-          content="তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজের সকল প্রকাশিত নোটিশ।">
+          content="তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজের ঠিকানা ও যোগাযোগের তথ্য।">
 
     <link rel="stylesheet" href="css/style.css">
 
@@ -124,6 +124,37 @@
             }
         }
 
+        .contact-page{padding:30px 0 52px;background:linear-gradient(180deg,#f8f7f2 0,#f1f4f8 100%)}
+        .contact-wrap{max-width:1080px}
+        .contact-intro{position:relative;overflow:hidden;margin-bottom:22px;padding:26px 24px 22px;text-align:center;background:radial-gradient(circle at 12% 88%,rgba(208,170,79,.16),transparent 28%),radial-gradient(circle at 90% 12%,rgba(255,255,255,.12),transparent 30%),linear-gradient(130deg,#142f4d 0%,#245581 52%,#17385b 100%);border:1px solid #315d83;border-radius:8px;box-shadow:0 10px 28px rgba(24,61,99,.18)}
+        .contact-intro::before{position:absolute;top:-1px;right:-1px;left:-1px;height:5px;background:linear-gradient(90deg,#183d63 0 72%,#d0aa4f 72%);content:""}
+        .contact-intro h1{margin:0;color:#fff;font-size:clamp(24px,3vw,34px);line-height:1.35;text-shadow:0 2px 12px rgba(0,0,0,.22)}
+        .contact-intro .contact-english-name{margin:6px 0 12px;color:#fff;font-family:Arial,sans-serif;font-size:clamp(17px,2vw,22px);font-weight:700;line-height:1.4;text-shadow:0 2px 12px rgba(0,0,0,.22)}
+        .contact-intro .contact-mpo-badge{display:inline-block;margin:0;padding:6px 15px;color:#173653;background:#f3df9e;border:1px solid #d0aa4f;border-radius:3px;font-size:14px;font-weight:700}
+        .contact-identity{display:flex;justify-content:center;flex-wrap:wrap;gap:0;margin:17px auto 0;color:rgba(255,255,255,.9)}
+        .contact-identity span{padding:0 18px;font-size:15px}
+        .contact-identity span+span{border-left:1px solid #cbd4df}
+        .contact-identity strong{color:#fff}
+        .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#fff;border:1px solid #d9e0e8;border-radius:4px;box-shadow:0 8px 24px rgba(24,61,99,.07)}
+        .contact-panel{min-width:0;padding:22px 26px}
+        .contact-panel h2{margin:0 0 15px;padding:0 0 10px;color:#183d63;border-bottom:2px solid #e5eaf0;font-size:21px;text-align:center}
+        .contact-address-panel{align-self:stretch;background:#fbfaf6;border-right:1px solid #e0e5ec}
+        .contact-address-link{display:inline-flex;align-items:flex-start;gap:10px;color:#183d63;text-decoration:none;font-size:clamp(18px,2vw,22px);font-weight:700;line-height:1.6}
+        .contact-address-link:hover{text-decoration:underline;text-decoration-color:#b28b31;text-underline-offset:4px}
+        .contact-address-link svg{width:21px;height:21px;flex:0 0 auto;margin-top:6px;fill:#b28b31}
+        .contact-postcode{display:block;margin:8px 0 0 31px;color:#5d6b7c;font-size:15px}
+        .contact-postcode strong{color:#183d63}
+        .contact-address-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+        .contact-detail{min-width:0;padding:10px 12px;background:#f6f8fb;border:1px solid #e6ebf1;border-radius:8px}
+        .contact-detail small{display:block;margin-bottom:3px;color:#66758a;font-size:12px}
+        .contact-detail strong{display:block;color:#263a52;font-size:15px;overflow-wrap:anywhere}
+        .contact-method{display:flex;align-items:center;gap:11px;margin:0;padding:12px 2px;color:#183d63;border-bottom:1px solid #e7ebf0;text-decoration:none;font-weight:700}
+        .contact-method:last-child{border-bottom:0}
+        .contact-method:hover{color:#9a7420;background:#fbfaf6}
+        .contact-method svg{width:20px;height:20px;flex:0 0 auto;fill:none;stroke:#b28b31;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+        .contact-method span{overflow-wrap:anywhere}
+        @media(max-width:700px){.contact-page{padding:18px 0 32px}.contact-grid{grid-template-columns:1fr}.contact-intro{padding:22px 15px 18px}.contact-panel{padding:18px}.contact-address-panel{border-right:0;border-bottom:1px solid #e0e5ec}.contact-identity span{padding:0 10px;font-size:14px}}
+
 .notice-table-wrapper {
     width: 100%;
     overflow-x: auto;
@@ -196,22 +227,8 @@
 <body>
 
     <!-- Top Bar -->
-    <header class="top-bar">
-        <div class="container">
-            <div class="top-left">
-            <a class="facebook-top-link" href="https://www.facebook.com/tabiulmursaleen/"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   aria-label="Facebook">
-                    <span class="facebook-icon">f</span>
-                </a><a class="contact-pill phone-number" href="tel:+8801716858193"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.8a2 2 0 0 1-.45 2.11L8.1 9.9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.84.58 2.8.7A2 2 0 0 1 22 16.92z"></path></svg><span>01716-858193</span></a>
-            <a class="contact-pill email-address" href="mailto:tabiulmursaleen58071@gmail.com"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg><span>tabiulmursaleen58071@gmail.com</span></a></div>
 
-            
-        </div>
-    </header>
-
-    <!-- Main Header -->
+<!-- Main Header -->
     <header class="main-header">
         <div class="container">
             <div class="logo-area">
@@ -259,13 +276,7 @@
                 <li><a href="staff.html">কর্মচারীবৃন্দ</a></li>
                 <li><a href="students.html">ছাত্র/ছাত্রী</a></li>
 
-                <li class="has-submenu">
-                    <a href="javascript:void(0)" class="dropdown-toggle">রেজাল্ট</a>
-                    <ul class="submenu">
-                        <li><a href="academic-results.html">একাডেমিক</a></li>
-                        <li><a href="board-results.html">বোর্ড</a></li>
-                    </ul>
-                </li>
+                <li><a href="result.html">রেজাল্ট</a></li>
 
                 <li class="has-submenu">
                     <a href="javascript:void(0)" class="dropdown-toggle">ভর্তি</a>
@@ -300,7 +311,35 @@
 
 
 
-<br><br><br><br><br><br><br><br>
+<main class="contact-page">
+  <div class="container contact-wrap">
+    <section class="contact-intro" aria-labelledby="contactTitle">
+      <h1 id="contactTitle">তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</h1>
+      <p class="contact-english-name">Tabiul Mursaleen Nogor Karigori School &amp; College</p>
+      <p class="contact-mpo-badge">একটি এমপিওভুক্ত স্বতন্ত্র কারিগরি শিক্ষা প্রতিষ্ঠান</p>
+      <div class="contact-identity">
+        <span>BTEB কোড: <strong>58071</strong></span>
+        <span>প্রতিষ্ঠার তারিখ: <strong>01/01/2012</strong></span>
+      </div>
+    </section>
+
+    <div class="contact-grid">
+      <section class="contact-panel contact-address-panel" aria-labelledby="addressTitle">
+        <h2 id="addressTitle">প্রতিষ্ঠানের ঠিকানা</h2>
+        <a class="contact-address-link" href="https://www.google.com/maps/search/?api=1&amp;query=টেঙ্গুরী%2C%20কেন্দুয়া%20পৌরসভা%20%28ওয়ার্ড%20নং%2005%29%2C%20নেত্রকোণা" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.1 7 13 7 13s7-7.9 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg><span>টেঙ্গুরী, কেন্দুয়া পৌরসভা (ওয়ার্ড নং ০৫), নেত্রকোণা</span></a>
+        <span class="contact-postcode">পোস্ট কোড <strong>২৪৮০</strong></span>
+      </section>
+
+      <section class="contact-panel" aria-labelledby="contactInfoTitle">
+        <h2 id="contactInfoTitle">যোগাযোগের তথ্য</h2>
+        <a class="contact-method" href="tel:+8801716858193"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.24 1z"/></svg><span>প্রতিষ্ঠান প্রধান: 01716-858193</span></a>
+        <a class="contact-method" href="tel:+8801919958193"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.24 1z"/></svg><span>প্রতিষ্ঠান প্রধান: 01919-958193</span></a>
+        <a class="contact-method" href="tel:+8801715715591"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.24 1z"/></svg><span>অফিস / ভর্তি: 01715-715591</span></a>
+        <a class="contact-method" href="mailto:tabiulmursaleen58071@gmail.com"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span>tabiulmursaleen58071@gmail.com</span></a>
+      </section>
+    </div>
+  </div>
+</main>
 
 
 
@@ -362,6 +401,10 @@
                target="_blank"
                rel="noopener noreferrer">
             Jamil Hossain
+            </a>
+            <a class="footer-admin-login" href="admin.html" aria-label="এডমিন লগইন">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10V7a5 5 0 0 1 10 0v3"/><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M12 14v3"/></svg>
+                <span>এডমিন লগইন</span>
             </a>
 
         </div>

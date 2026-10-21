@@ -3341,9 +3341,10 @@ section{
     content:"  ·  প্রতিষ্ঠাঃ ২০১২ খ্রি.";
     display:inline;
     margin-left:5px;
-    color:#536274;
+    color:#a8791e;
     font-size:.92em;
     font-weight:600;
+    font-style:italic;
     white-space:nowrap;
 }
 .logo-stack::after { content:none; }
@@ -3353,9 +3354,10 @@ section{
         content:"প্রতিষ্ঠাঃ ২০১২ খ্রি.";
         display:block;
         margin-top:0;
-        color:#26354b;
+        color:#a8791e;
         font-size:11px;
         font-weight:700;
+        font-style:italic;
         line-height:1.15;
         white-space:nowrap;
     }
@@ -4498,3 +4500,27 @@ section{
 .navbar #mainMenu > li > a:hover,
 .navbar #mainMenu > li > a.active{background:linear-gradient(135deg,#285780,#183d63)}
 
+
+/* Compact admin entry beside the footer credit. */
+.footer-admin-login{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin:0 0 0 10px;
+    padding:4px 9px;
+    color:#fff;
+    background:linear-gradient(135deg,#244f77,#17385b);
+    border:1px solid rgba(208,170,79,.75);
+    border-radius:7px;
+    box-shadow:0 3px 10px rgba(5,20,38,.16),inset 0 1px 0 rgba(255,255,255,.12);
+    font-size:12px;
+    font-weight:700;
+    line-height:1.3;
+    text-decoration:none;
+    transition:background .2s ease,border-color .2s ease,transform .2s ease,box-shadow .2s ease;
+}
+.footer-admin-login svg{width:14px;height:14px;flex:0 0 14px;fill:none;stroke:#f0d27b;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.footer-admin-login:hover{color:#fff;background:linear-gradient(135deg,#326995,#1c456c);border-color:#f0d27b;box-shadow:0 5px 14px rgba(5,20,38,.24);transform:translateY(-1px);text-decoration:none}
+.footer-admin-login:focus-visible{outline:2px solid #f0d27b;outline-offset:3px}
+@media(max-width:600px){.copyright-right{flex-wrap:wrap;white-space:normal}.footer-admin-login{margin:8px 0 0}}

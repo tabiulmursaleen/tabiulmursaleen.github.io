@@ -8,7 +8,7 @@ import {
 import { db } from "./firebase-config.js";
 
 const form = document.getElementById("publicResultSearch");
-const codeInput = document.getElementById("publicStudentCode");
+const resultYearSelect = document.getElementById("publicResultYear");
 const resultClassSelect = document.getElementById("publicResultClass");
 const resultRollSelect = document.getElementById("publicResultRoll");
 const status = document.getElementById("publicResultStatus");
@@ -18,7 +18,28 @@ const yearNumber = (value) => new Intl.NumberFormat("bn-BD", { useGrouping: fals
 const meritForm = document.getElementById("meritSearch");
 const meritStatus = document.getElementById("meritStatus");
 const meritResults = document.getElementById("meritResults");
+const resultTabs = [...document.querySelectorAll(".result-tab[data-panel]")];
 let publishedResultsPromise;
+
+function activateResultTab(tabId, updateHash = true) {
+  const selected = resultTabs.find((tab) => tab.id === tabId) || resultTabs[0];
+  if (!selected) return;
+  resultTabs.forEach((tab) => {
+    const active = tab === selected;
+    tab.setAttribute("aria-selected", String(active));
+    tab.tabIndex = active ? 0 : -1;
+    const panel = document.getElementById(tab.dataset.panel);
+    if (panel) panel.hidden = !active;
+  });
+  if (updateHash) history.replaceState(null, "", selected.dataset.hash || "#single");
+}
+
+resultTabs.forEach((tab) => tab.addEventListener("click", () => activateResultTab(tab.id)));
+if (resultTabs.length) {
+  const initialTab = location.hash === "#merit" ? "meritResultTab" : "singleResultTab";
+  activateResultTab(initialTab, false);
+  window.addEventListener("hashchange", () => activateResultTab(location.hash === "#merit" ? "meritResultTab" : "singleResultTab", false));
+}
 
 function loadPublishedResults() {
   if (!publishedResultsPromise) {
@@ -219,11 +240,11 @@ window.addEventListener("afterprint", () => {
 
 if (form) form.addEventListener("submit", async (event) => {
   event.preventDefault();
-  const searchValue = codeInput.value.trim();
-  const selectedStudentCode = resultRollSelect?.value || "";
+  const selectedYear = Number(resultYearSelect?.value || 0);
   const className = resultClassSelect?.value || "";
-  if (!searchValue && !selectedStudentCode) {
-    status.textContent = "শ্রেণি ও রোল নির্বাচন করুন অথবা শিক্ষার্থী আইডি লিখুন।";
+  const selectedStudentCode = resultRollSelect?.value || "";
+  if (!selectedYear || !className || !selectedStudentCode) {
+    status.textContent = "সাল, শ্রেণি ও রোল নির্বাচন করুন।";
     status.hidden = false;
     return;
   }
@@ -235,12 +256,13 @@ if (form) form.addEventListener("submit", async (event) => {
   try {
     const allResults = await loadPublishedResults();
     const matches = allResults
-      .filter((result) => (selectedStudentCode ? result.studentCode === selectedStudentCode : result.studentCode === searchValue)
-        && (!className || result.className === className))
+      .filter((result) => result.studentCode === selectedStudentCode
+        && result.className === className
+        && Number(result.year) === selectedYear)
       .sort((a, b) => (b.year || 0) - (a.year || 0) || (a.exam || "").localeCompare(b.exam || "", "bn"));
 
     if (!matches.length) {
-      status.textContent = "নির্বাচিত শ্রেণি ও আইডি/রোলের কোনো প্রকাশিত ফলাফল পাওয়া যায়নি।";
+      status.textContent = "নির্বাচিত সাল, শ্রেণি ও রোলের কোনো প্রকাশিত ফলাফল পাওয়া যায়নি।";
       return;
     }
 
@@ -260,14 +282,16 @@ if (form) form.addEventListener("submit", async (event) => {
   }
 });
 
-if (resultClassSelect && resultRollSelect) {
-  resultClassSelect.addEventListener("change", async () => {
+if (resultYearSelect && resultClassSelect && resultRollSelect) {
+  const populateResultRolls = async () => {
+    const year = Number(resultYearSelect.value || 0);
     const className = resultClassSelect.value;
-    resultRollSelect.replaceChildren(new Option(className ? "রোল নির্বাচন করুন" : "আগে শ্রেণি নির্বাচন করুন", ""));
-    resultRollSelect.disabled = !className;
-    if (!className) return;
+    const canLoad = Boolean(year && className);
+    resultRollSelect.replaceChildren(new Option(canLoad ? "রোল নির্বাচন করুন" : "আগে সাল ও শ্রেণি নির্বাচন করুন", ""));
+    resultRollSelect.disabled = !canLoad;
+    if (!canLoad) return;
     try {
-      const classResults = (await loadPublishedResults()).filter((result) => result.className === className && result.roll != null && result.studentCode);
+      const classResults = (await loadPublishedResults()).filter((result) => Number(result.year) === year && result.className === className && result.roll != null && result.studentCode);
       const studentsByCode = new Map(classResults.map((result) => [result.studentCode, result]));
       [...studentsByCode.values()]
         .sort((a, b) => Number(a.roll) - Number(b.roll) || String(a.studentName || "").localeCompare(String(b.studentName || ""), "bn"))
@@ -275,10 +299,17 @@ if (resultClassSelect && resultRollSelect) {
           const option = new Option(`${student.roll} · ${student.studentName || student.studentCode}`, student.studentCode);
           resultRollSelect.append(option);
         });
-      if (!studentsByCode.size) resultRollSelect.replaceChildren(new Option("এই শ্রেণির প্রকাশিত ফল নেই", ""));
+      if (!studentsByCode.size) resultRollSelect.replaceChildren(new Option("এই সাল ও শ্রেণির প্রকাশিত ফল নেই", ""));
     } catch (error) {
       console.error("রোল তালিকা লোড হয়নি:", error);
       resultRollSelect.replaceChildren(new Option("রোল তালিকা লোড করা যায়নি", ""));
     }
-  });
+  };
+  resultYearSelect.addEventListener("change", populateResultRolls);
+  resultClassSelect.addEventListener("change", populateResultRolls);
+  loadPublishedResults().then((results) => {
+    const years = [...new Set(results.map((result) => Number(result.year)).filter(Boolean))].sort((a, b) => b - a);
+    years.forEach((year) => resultYearSelect.add(new Option(yearNumber(year), String(year))));
+    if (!years.length) resultYearSelect.add(new Option("প্রকাশিত ফল নেই", ""));
+  }).catch((error) => console.error("প্রকাশিত শিক্ষাবর্ষ লোড হয়নি:", error));
 }

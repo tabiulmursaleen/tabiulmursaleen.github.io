@@ -196,22 +196,8 @@
 <body>
 
     <!-- Top Bar -->
-    <header class="top-bar">
-        <div class="container">
-            <div class="top-left">
-            <a class="facebook-top-link" href="https://www.facebook.com/tabiulmursaleen/"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   aria-label="Facebook">
-                    <span class="facebook-icon">f</span>
-                </a><a class="contact-pill phone-number" href="tel:+8801716858193"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.8a2 2 0 0 1-.45 2.11L8.1 9.9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.84.58 2.8.7A2 2 0 0 1 22 16.92z"></path></svg><span>01716-858193</span></a>
-            <a class="contact-pill email-address" href="mailto:tabiulmursaleen58071@gmail.com"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg><span>tabiulmursaleen58071@gmail.com</span></a></div>
 
-            
-        </div>
-    </header>
-
-    <!-- Main Header -->
+<!-- Main Header -->
     <header class="main-header">
         <div class="container">
             <div class="logo-area">
@@ -259,13 +245,7 @@
                 <li><a href="staff.html">কর্মচারীবৃন্দ</a></li>
                 <li><a href="students.html">ছাত্র/ছাত্রী</a></li>
 
-                <li class="has-submenu">
-                    <a href="javascript:void(0)" class="dropdown-toggle">রেজাল্ট</a>
-                    <ul class="submenu">
-                        <li><a href="academic-results.html">একাডেমিক</a></li>
-                        <li><a href="board-results.html">বোর্ড</a></li>
-                    </ul>
-                </li>
+                <li><a href="result.html">রেজাল্ট</a></li>
 
                 <li class="has-submenu">
                     <a href="javascript:void(0)" class="dropdown-toggle">ভর্তি</a>
@@ -399,14 +379,109 @@
 
   .principal-message blockquote {
     margin: 0;
-    padding: 18px 20px;
+    padding: 16px 18px;
     color: #33465d;
     text-align: justify;
     text-justify: inter-word;
     background: var(--about-pale);
     border-left: 4px solid var(--about-accent);
     border-radius: 7px;
-    font-size: 20px;
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  .principal-message-lead {
+    margin: 0;
+  }
+
+  .principal-message-details {
+    margin-top: 12px;
+  }
+
+  .principal-message-details summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 13px;
+    color: #fff;
+    background: var(--about-navy);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: right;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .principal-message-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .principal-message-details summary::after {
+    content: "+";
+    color: var(--about-accent);
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .principal-message-details[open] > summary {
+    display: none;
+  }
+
+  .principal-message-full {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #d9e1e9;
+  }
+
+  .principal-message-full p {
+    margin: 0 0 11px;
+    font-size: 15px;
+    line-height: 1.8;
+    text-align: justify;
+    text-justify: inter-word;
+  }
+
+  .principal-message-full p:last-child {
+    margin-bottom: 0;
+  }
+
+  .principal-message:has(.principal-message-details[open]) {
+    display: block;
+  }
+
+  .principal-message:has(.principal-message-details[open]) img {
+    float: right;
+    width: 118px;
+    max-width: 118px;
+    aspect-ratio: 4 / 5;
+    margin: 0 0 14px 20px;
+  }
+
+  .principal-message:has(.principal-message-details[open]) > div {
+    clear: both;
+  }
+
+  .principal-message:has(.principal-message-details[open]) .principal-message-lead {
+    display: none;
+  }
+
+  .principal-message:has(.principal-message-details[open])::after {
+    display: block;
+    clear: both;
+    content: "";
+  }
+
+  .principal-message-signoff {
+    clear: both;
+    margin-top: 20px;
+    text-align: right;
+    line-height: 1.7;
+  }
+
+  .principal-message-signoff strong,
+  .principal-message-signoff span {
+    display: block;
   }
 
   .about-history {
@@ -577,6 +652,14 @@
       max-width: 230px;
     }
 
+    .principal-message:has(.principal-message-details[open]) img {
+      float: none;
+      display: block;
+      width: 118px;
+      max-width: 118px;
+      margin: 0 auto 14px;
+    }
+
     .principal-message h3,
     .principal-message .principal-designation {
       text-align: center;
@@ -619,11 +702,23 @@
           <p class="principal-designation">অধ্যক্ষ</p>
 
           <blockquote>
-            “আমাদের লক্ষ্য শিক্ষার্থীদের কারিগরি দক্ষতা, নৈতিকতা ও আধুনিক
-            জ্ঞানে সমৃদ্ধ করে একজন আদর্শ নাগরিক হিসেবে গড়ে তোলা। অর্জিত
-            জ্ঞান ও দক্ষতা কাজে লাগিয়ে তারা যেন আত্মবিশ্বাসের সঙ্গে
-            উচ্চশিক্ষা ও কর্মজীবনে এগিয়ে যেতে পারে, সে জন্য আমরা
-            আন্তরিকভাবে কাজ করছি।”
+            <p class="principal-message-lead">“আমাদের লক্ষ্য শিক্ষার্থীদের কারিগরি দক্ষতা, নৈতিকতা ও আধুনিক জ্ঞানে সমৃদ্ধ করে একজন আদর্শ নাগরিক হিসেবে গড়ে তোলা। অর্জিত জ্ঞান ও দক্ষতা কাজে লাগিয়ে তারা যেন আত্মবিশ্বাসের সঙ্গে উচ্চশিক্ষা ও কর্মজীবনে এগিয়ে যেতে পারে, সে জন্য আমরা আন্তরিকভাবে কাজ করছি।”</p>
+            <details class="principal-message-details">
+              <summary>বিস্তারিত</summary>
+              <div class="principal-message-full">
+                <p>তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজের পক্ষ থেকে শিক্ষার্থী, অভিভাবক ও শুভানুধ্যায়ীদের জানাই আন্তরিক শুভেচ্ছা। ২০১২ সালে প্রতিষ্ঠার পর থেকে আমাদের অঙ্গীকার—এলাকার শিক্ষার্থীদের জন্য এমন শিক্ষার পরিবেশ গড়ে তোলা, যেখানে পাঠ্যজ্ঞান, কারিগরি শিক্ষা, ব্যবহারিক অনুশীলন ও মানবিক মূল্যবোধ পাশাপাশি বিকশিত হয়। কারিগরি শিক্ষা কেবল একটি পেশার জন্য প্রস্তুতি নয়; এটি সমস্যা চিহ্নিত করা, যুক্তি দিয়ে সমাধান খোঁজা, হাতে-কলমে কাজ করা এবং নতুন পরিস্থিতির সঙ্গে মানিয়ে নেওয়ার সক্ষমতা তৈরি করে। তাই শ্রেণিকক্ষের পাঠের সঙ্গে ব্যবহারিক শেখাকে যুক্ত করে শিক্ষার্থীদের বাস্তব জীবনে কাজে লাগে এমন জ্ঞান ও দক্ষতা অর্জনে আমরা উৎসাহিত করি।</p>
+                <p>আমাদের স্কুল ও কলেজ শাখার ট্রেডভিত্তিক শিক্ষা শিক্ষার্থীদের আগ্রহ ও সক্ষমতা আবিষ্কারের সুযোগ দেয়। বিষয়ভিত্তিক ধারণা, যন্ত্রপাতি ও উপকরণের পরিচিতি, কাজের ধাপ অনুসরণ, নিরাপদে কাজ করা এবং কাজের মান যাচাই—এসব অভ্যাস ধীরে ধীরে গড়ে তোলাই আমাদের শিক্ষাপদ্ধতির গুরুত্বপূর্ণ অংশ। দক্ষ শিক্ষক, সহায়ক শিক্ষার পরিবেশ ও আধুনিক ল্যাবরেটরির মাধ্যমে শিক্ষার্থীরা প্রশ্ন করতে, অনুশীলন করতে এবং ভুল থেকে শিখতে পারে। নিয়মিত উপস্থিতি, অধ্যবসায়, শৃঙ্খলা, দায়িত্ববোধ ও দলগত কাজের অভ্যাসের পাশাপাশি সততা, সময়ানুবর্তিতা, যোগাযোগ এবং সহযোগিতার মানসিকতাও গড়ে তুলতে আমরা গুরুত্ব দিই।</p>
+                <p>প্রত্যেক শিক্ষার্থীর শেখার গতি ও আগ্রহ এক নয়। তাই তাদের সম্ভাবনাকে সম্মান করে প্রয়োজনীয় দিকনির্দেশনা দেওয়া, আত্মবিশ্বাস বাড়ানো এবং নিজের লক্ষ্য স্থির করতে সহায়তা করা আমাদের দায়িত্ব। শিক্ষার্থী যেন নিজের কাজ উপস্থাপন করতে পারে, নতুন কিছু শেখার আগ্রহ ধরে রাখে এবং অর্জিত দক্ষতা বাস্তবে প্রয়োগ করতে শেখে—সে জন্য শিক্ষক ও প্রতিষ্ঠানের সম্মিলিত প্রচেষ্টা অব্যাহত রয়েছে। অভিভাবকদের সঙ্গে নিয়মিত যোগাযোগ ও পারস্পরিক সহযোগিতাকেও আমরা শিক্ষার্থীর অগ্রগতির গুরুত্বপূর্ণ অংশ মনে করি; পরিবার, শিক্ষক ও প্রতিষ্ঠানের সমন্বিত সহায়তা তাদের পড়াশোনায় মনোযোগী হতে, দায়িত্বশীল সিদ্ধান্ত নিতে এবং প্রতিকূলতা পেরিয়ে সামনে এগোতে সাহস জোগায়।</p>
+                <p>আমাদের প্রাক্তন শিক্ষার্থীদের অনেকে দেশের বিভিন্ন স্থানে এবং কারিগরি সংশ্লিষ্ট কর্মক্ষেত্রে কাজ করছেন। তাঁদের অগ্রযাত্রা বর্তমান শিক্ষার্থীদের সামনে বাস্তব সম্ভাবনার দৃষ্টান্ত তুলে ধরে। আমরা চাই, প্রত্যেক শিক্ষার্থী অর্জিত জ্ঞান ও দক্ষতার ভিত্তিতে উচ্চশিক্ষা, চাকরি, আত্মকর্মসংস্থান কিংবা নিজের পছন্দের অন্য কোনো পথে আত্মবিশ্বাসের সঙ্গে এগিয়ে যাক। পরিবর্তনশীল কর্মজগতে নতুন প্রযুক্তি ও কাজের পদ্ধতির সঙ্গে পরিচিত থাকা এবং দক্ষতা নিয়মিত উন্নত করা জরুরি; তাই শিক্ষার্থীদের কৌতূহলী, উদ্যোগী ও শেখার প্রতি আগ্রহী হতে উৎসাহিত করি। আমাদের প্রত্যাশা, তারা জ্ঞান, দক্ষতা, নৈতিকতা ও দেশপ্রেমে সমৃদ্ধ হয়ে পরিবার, সমাজ ও দেশের কল্যাণে অবদান রাখবে। এই লক্ষ্য অর্জনে শিক্ষক, অভিভাবক ও এলাকাবাসীর সহযোগিতা নিয়ে আমরা নিষ্ঠা ও আন্তরিকতার সঙ্গে কাজ করে যাব।</p>
+                <div class="principal-message-signoff">
+                  <br>
+                  <span>ধন্যবাদান্তে,</span>
+                  <strong>মোহাম্মদ রফিকুল ইসলাম বায়েজিদ</strong>
+                  <span>অধ্যক্ষ</span>
+                  <span>অত্র শিক্ষা প্রতিষ্ঠান</span>
+                </div>
+              </div>
+            </details>
           </blockquote>
         </div>
       </div>
@@ -758,7 +853,8 @@
 
         <div class="about-cta-links">
           <a href="teachers.html">শিক্ষকমণ্ডলী</a>
-          <a href="javascript:void(0)">ট্রেডসমূহ</a>
+          <a href="school-trades.html">স্কুল শাখার ট্রেড</a>
+          <a href="college-trades.html">কলেজ শাখার ট্রেড</a>
           <a href="contact.html">যোগাযোগ</a>
         </div>
       </div>
@@ -825,6 +921,10 @@
                target="_blank"
                rel="noopener noreferrer">
             Jamil Hossain
+            </a>
+            <a class="footer-admin-login" href="admin.html" aria-label="এডমিন লগইন">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10V7a5 5 0 0 1 10 0v3"/><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M12 14v3"/></svg>
+                <span>এডমিন লগইন</span>
             </a>
 
         </div>

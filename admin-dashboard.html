@@ -51,9 +51,13 @@
   <main class="dashboard-container">
     <section class="welcome-card">
       <h2>স্বাগতম, অ্যাডমিন!</h2>
+      <p>বাম পাশের মেনু থেকে একটি বিভাগ বেছে নিন।</p>
     </section>
 
-    <section class="dashboard-grid">
+    <section class="dashboard-grid" id="dashboardGrid" aria-label="ড্যাশবোর্ড মেনু">
+      <button id="dashboardSidebarToggle" class="dashboard-sidebar-toggle" type="button" aria-expanded="true" aria-label="সাইড মেনু গুটান" title="সাইড মেনু গুটান">
+        <svg class="sidebar-toggle-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m15 4-8 8 8 8"/></svg>
+      </button>
       <a class="dashboard-card" href="#students">
         <div class="dashboard-card-heading"><span class="card-icon">🎓</span>
         <h3>শিক্ষার্থী নিবন্ধন</h3></div>
@@ -61,27 +65,27 @@
 
       <a class="dashboard-card" href="#fees">
         <div class="dashboard-card-heading"><span class="card-icon">💳</span>
-        <h3>বেতন ব্যবস্থাপনা</h3></div>
+        <h3>বেতন</h3></div>
       </a>
 
       <a class="dashboard-card" href="#results">
         <div class="dashboard-card-heading"><span class="card-icon">📊</span>
-        <h3>ফলাফল ব্যবস্থাপনা</h3></div>
+        <h3>ফলাফল</h3></div>
       </a>
 
       <a class="dashboard-card" href="#notices">
         <div class="dashboard-card-heading"><span class="card-icon">📢</span>
-        <h3>নোটিশ ব্যবস্থাপনা</h3></div>
+        <h3>নোটিশ</h3></div>
       </a>
 
       <a class="dashboard-card" href="#routines">
         <div class="dashboard-card-heading"><span class="card-icon">📅</span>
-        <h3>রুটিন ব্যবস্থাপনা</h3></div>
+        <h3>রুটিন</h3></div>
       </a>
 
       <a class="dashboard-card" href="#admit-cards">
         <div class="dashboard-card-heading"><span class="card-icon">🎫</span>
-        <h3>এডমিট কার্ড ম্যানেজমেন্ট</h3></div>
+        <h3>এডমিট কার্ড</h3></div>
       </a>
 
       <a class="dashboard-card" href="#people-management">
@@ -96,7 +100,7 @@
 
       <a class="dashboard-card" href="#gallery-management">
         <div class="dashboard-card-heading"><span class="card-icon">🖼️</span>
-        <h3>গ্যালারি ব্যবস্থাপনা</h3></div>
+        <h3>গ্যালারি</h3></div>
       </a>
 
     </section>
