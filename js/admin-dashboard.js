@@ -227,7 +227,7 @@ onAuthStateChanged(auth, async (user) => {
 
   currentAdmin = user;
   renderAdminProfile(user);
-  dashboardMessage.textContent = "অ্যাডমিন হিসেবে যাচাই সম্পন্ন হয়েছে।";
+  dashboardMessage.textContent = "";
 });
 
 logoutButton.addEventListener("click", async () => {

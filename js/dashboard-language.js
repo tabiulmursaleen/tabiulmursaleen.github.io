@@ -196,7 +196,7 @@ const pairs = [
   ["ছবির লিংক https:// দিয়ে শুরু হতে হবে।", "The photo URL must start with https://."],
   ["ছবির লিংক অবশ্যই https:// দিয়ে শুরু হতে হবে।", "The photo URL must start with https://."],
   ["নাম লিখুন।", "Enter a name."], ["← ড্যাশবোর্ডে ফিরুন", "← Back to Dashboard"],
-  ["অ্যাডমিন হিসেবে যাচাই সম্পন্ন হয়েছে।", "Admin verification complete."], ["লগআউট করা যায়নি। আবার চেষ্টা করুন।", "Could not log out. Please try again."],
+  ["লগআউট করা যায়নি। আবার চেষ্টা করুন।", "Could not log out. Please try again."],
   ["শ্রেণি 9, 10, 11 বা 12 লিখুন (যেমন নবম বা একাদশ)।", "Enter class 9, 10, 11, or 12 (for example, Class 9 or Class 11)."],
   ["প্রতিষ্ঠানের তালিকাভুক্ত ট্রেডের নাম লিখুন বা নির্বাচন করুন।", "Enter or select one of the institution's listed trades."],
   ["রোল নম্বরে ১–৪ অঙ্কের সঠিক সংখ্যা লিখুন।", "Enter a valid roll number with 1 to 4 digits."],
