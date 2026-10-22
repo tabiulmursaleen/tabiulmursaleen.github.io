@@ -3,7 +3,7 @@ import {
   collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 import { auth, db } from "./firebase-config.js";
-import { getAcademicSubjects } from "./academic-subjects.js?v=20261020-6";
+import { getAcademicSubjects } from "./academic-subjects.js?v=20261022-subject-catalog2";
 
 const ADMIN_UID = "wWuBEmlsaofgjAaQi7bfblsX6L62";
 const form = document.getElementById("examRoutineForm");
@@ -14,6 +14,7 @@ const saveButton = document.getElementById("saveExamRoutine");
 const cancelButton = document.getElementById("cancelExamRoutineEdit");
 let editingId = "";
 let busy = false;
+const CUSTOM_SUBJECT = "__manual_subject__";
 
 const classTab = document.getElementById("classRoutineTab");
 const examTab = document.getElementById("examRoutineTab");
@@ -47,14 +48,9 @@ function fillSubjectOptions(select, className, selectedName = "") {
   select.replaceChildren(new Option("বিষয় নির্বাচন করুন", ""));
   const subjects = getAcademicSubjects(className);
   subjects.forEach((subject) => select.append(new Option(subject.name, subject.name)));
-  ["ট্রেড ১", "ট্রেড ২", "ট্রেড ৩", "ট্রেড ৪"].forEach((name) => {
-    if (!subjects.some((subject) => subject.name === name)) select.append(new Option(name, name));
-  });
-  const legacy = selectedName && !subjects.some((subject) => subject.name === selectedName);
-  if (legacy && ![...select.options].some((option) => option.value === selectedName)) {
-    select.append(new Option(selectedName, selectedName));
-  }
-  select.value = selectedName;
+  select.append(new Option("নিজে বিষয় লিখুন…", CUSTOM_SUBJECT));
+  const found = subjects.some((subject) => subject.name === selectedName);
+  select.value = found ? selectedName : selectedName ? CUSTOM_SUBJECT : "";
 }
 
 function addRow(item = {}) {
@@ -84,12 +80,20 @@ function addRow(item = {}) {
   const className = document.getElementById("examRoutineClass").value;
   fillSubjectOptions(subjectSelect, className, item.subject || "");
   subjectLabel.append(subjectSelect);
+  const customSubjectInput = input("text", "exam-routine-custom-subject", "", "বিষয়ের নাম লিখুন");
+  customSubjectInput.required = subjectSelect.value === CUSTOM_SUBJECT;
+  customSubjectInput.hidden = !customSubjectInput.required;
+  if (customSubjectInput.required) customSubjectInput.value = item.subject || "";
+  subjectLabel.append(customSubjectInput);
   const codeLabel = document.createElement("label");
   codeLabel.append("বিষয় কোড ");
   const codeInput = input("text", "exam-routine-code", item.subjectCode || "", "বিষয় কোড লিখুন");
   codeInput.required = false;
   codeLabel.append(codeInput);
   subjectSelect.addEventListener("change", () => {
+    const customMode = subjectSelect.value === CUSTOM_SUBJECT;
+    customSubjectInput.hidden = !customMode;
+    customSubjectInput.required = customMode;
     codeInput.value = getAcademicSubjects(document.getElementById("examRoutineClass").value)
       .find((subject) => subject.name === subjectSelect.value)?.code || "";
   });
@@ -109,11 +113,15 @@ document.getElementById("examRoutineClass").addEventListener("change", () => {
   [...rowsHost.querySelectorAll(".exam-routine-edit-row")].forEach((row) => {
     const select = row.querySelector(".exam-routine-subject");
     const code = row.querySelector(".exam-routine-code");
-    const oldName = select.value;
+    const customInput = row.querySelector(".exam-routine-custom-subject");
+    const oldName = select.value === CUSTOM_SUBJECT ? customInput.value.trim() : select.value;
     const classSubjects = getAcademicSubjects(document.getElementById("examRoutineClass").value);
     fillSubjectOptions(select, document.getElementById("examRoutineClass").value);
-    select.value = classSubjects.some((subject) => subject.name === oldName)
-      || ["ট্রেড ১", "ট্রেড ২", "ট্রেড ৩", "ট্রেড ৪"].includes(oldName) ? oldName : "";
+    const matchesClass = classSubjects.some((subject) => subject.name === oldName);
+    select.value = matchesClass ? oldName : oldName ? CUSTOM_SUBJECT : "";
+    customInput.hidden = matchesClass || !oldName;
+    customInput.required = !matchesClass && Boolean(oldName);
+    if (customInput.required) customInput.value = oldName;
     code.value = classSubjects.find((subject) => subject.name === select.value)?.code || "";
   });
 });
@@ -197,7 +205,9 @@ form.addEventListener("submit", async (event) => {
   const subjects = [...rowsHost.querySelectorAll(".exam-routine-edit-row")].map((row) => ({
     date: row.querySelector(".exam-routine-date").value,
     day: row.querySelector(".exam-routine-day").value,
-    subject: row.querySelector(".exam-routine-subject").value.trim(),
+    subject: row.querySelector(".exam-routine-subject").value === CUSTOM_SUBJECT
+      ? row.querySelector(".exam-routine-custom-subject").value.trim()
+      : row.querySelector(".exam-routine-subject").value.trim(),
     subjectCode: row.querySelector(".exam-routine-code").value.trim()
   }));
   if (subjects.some((item) => !item.date || !item.day || !item.subject)) {

@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>অ্যাডমিন ড্যাশবোর্ড | TMNKSC</title>
-  <link rel="stylesheet" href="css/admin.css?v=20261022-attendance-header-redesign1">
+  <link rel="stylesheet" href="css/admin.css?v=20261022-gallery-any-video1">
 </head>
 <body>
 
@@ -90,7 +90,7 @@
 
       <a class="dashboard-card" href="#admit-cards">
         <div class="dashboard-card-heading"><span class="card-icon">🎫</span>
-        <h3>এডমিট কার্ড</h3></div>
+        <h3>পরীক্ষা</h3></div>
       </a>
 
       <a class="dashboard-card" href="#people-management">
@@ -251,7 +251,7 @@
     </section>
 
     <section id="admit-cards" class="dashboard-section" hidden>
-      <h2>এডমিট কার্ড ম্যানেজমেন্ট</h2>
+      <h2>পরীক্ষা</h2>
       <section class="accounts-panel fee-spreadsheet-section admit-fee-spreadsheet" aria-labelledby="admitFeeSpreadsheetTitle">
         <h3 id="admitFeeSpreadsheetTitle">শ্রেণী ও ট্রেডভিত্তিক বেতন স্প্রেডশিট</h3>
         <p class="field-help">শিক্ষাবর্ষ, শ্রেণি ও ট্রেড নির্বাচন করে মাসভিত্তিক জমা এবং মোট গৃহীত অর্থ দেখুন।</p>
@@ -763,31 +763,27 @@
         <button type="button" class="secondary-button gallery-type-button" data-gallery-type="video" aria-pressed="false">ভিডিও</button>
       </div>
       <form id="galleryForm" class="admin-form">
-        <input id="galleryItemId" type="hidden">
-        <div class="form-grid">
-          <label class="full-width" id="galleryUrlLabel">Google Drive ছবির লিংক <span>*</span><input id="galleryUrl" type="url" required placeholder="https://drive.google.com/file/d/..."></label>
-          <label class="full-width">ক্যাপশন<input id="galleryCaption" maxlength="200" placeholder="ছবির সংক্ষিপ্ত বিবরণ"></label>
-        </div>
+        <div id="galleryEntries" class="gallery-entries"></div>
+        <button id="addGalleryEntry" type="button" class="secondary-button gallery-add-entry" aria-label="আরেকটি ছবি যোগ করুন" title="আরেকটি ছবি যোগ করুন" hidden>+</button>
         <label class="check-label"><input id="galleryPublished" type="checkbox" checked> ওয়েবসাইটে প্রকাশ করুন</label>
-        <div class="management-form-actions"><button type="submit">গ্যালারিতে সংরক্ষণ</button><button id="galleryReset" type="button" class="secondary-button">ফাঁকা করুন</button></div>
       </form>
       <p id="galleryMessage" class="module-message" role="status" aria-live="polite"></p>
       <h3 id="galleryListTitle">সংরক্ষিত ছবি</h3>
-      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>প্রিভিউ</th><th>ক্যাপশন</th><th>অবস্থা</th><th>কাজ</th></tr></thead><tbody id="galleryRows"></tbody></table></div>
+      <div id="galleryGrid" class="gallery-admin-grid" aria-live="polite"></div>
     </section>
 
     <p id="dashboardMessage" role="status" aria-live="polite"></p>
   </main>
 
-  <script type="module" src="js/dashboard-language.js?v=20261022-attendance-routine-link1"></script>
+  <script type="module" src="js/dashboard-language.js?v=20261022-gallery-plus-button1"></script>
   <script type="module" src="js/admin-dashboard.js?v=20261021-1"></script>
   <script type="module" src="js/admin-notices.js"></script>
-  <script type="module" src="js/admin-students.js?v=20261022-class-sort-order1"></script>
+  <script type="module" src="js/admin-students.js?v=20261022-attendance-trade-subjects1"></script>
   <script type="module" src="js/admin-routines.js?v=20261019-1"></script>
-  <script type="module" src="js/admin-exam-routines.js?v=20261022-exam-trades1"></script>
+  <script type="module" src="js/admin-exam-routines.js?v=20261022-subject-catalog2"></script>
   <script src="js/teachers-data.js?v=20261020-1"></script>
   <script src="js/staffs-data.js?v=20261020-1"></script>
-  <script type="module" src="js/admin-community.js?v=20261022-photo-url1"></script>
+  <script type="module" src="js/admin-community.js?v=20261022-gallery-any-video1"></script>
 </body>
 </html>
 

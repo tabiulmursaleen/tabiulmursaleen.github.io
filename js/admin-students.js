@@ -17,7 +17,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 import { auth, db } from "./firebase-config.js";
-import { getAcademicSubjects } from "./academic-subjects.js?v=20261020-6";
+import { getAcademicSubjects } from "./academic-subjects.js?v=20261022-subject-catalog2";
 import { studentPlaceholderForName } from "./student-placeholder.js?v=20261022-silhouette2";
 
 const ADMIN_UID = "wWuBEmlsaofgjAaQi7bfblsX6L62";
@@ -2241,6 +2241,34 @@ async function generateAttendanceSheets() {
       className: { label: detailLabel("Class", "শ্রেণি"), value: (student) => translate(student.className || "—") },
       trade: { label: detailLabel("Trade", "ট্রেড"), value: (student) => translate(student.trade || "—") }
     };
+    const tradeSubjectPrefixes = [
+      { prefix: "এগ্রো বেইজড ফুড", names: ["এগ্রো বেইজড ফুড", "এগ্রো বেসড ফুড", "অ্যাগ্রো বেসড ফুড প্রসেসিং"] },
+      { prefix: "অ্যাপারেল", names: ["অ্যাপারেল ম্যানুফ্যাকচারিং বেসিকস", "অ্যাপারেল", "এপারেল"] },
+      { prefix: "জেনারেল মেকানিক্স", names: ["জেনারেল মেকানিক্স", "জেনারেল মেকানিকস", "জেনারেল মেকানিক"] },
+      { prefix: "আইটি সাপোর্ট", names: ["আইটি সাপোর্ট এন্ড আইওটি বেসিকস", "আইটি সাপোর্ট"] },
+      { prefix: "জেনারেল ইলেকট্রনিক্স", names: ["জেনারেল ইলেকট্রনিক্স", "জেনারেল ইলেক্ট্রনিক্স"] }
+    ];
+    const tradePaperForStudent = (student, paperNumber) => {
+      const studentTrade = normalizeTradeName(student.trade);
+      const trade = tradeSubjectPrefixes.find((item) => item.names.some((name) => normalizeTradeName(name) === studentTrade));
+      if (!trade) return null;
+      return getAcademicSubjects(student.className).find((item) =>
+        item.name.startsWith(trade.prefix)
+        && normalizeDigits(item.name).match(/[1-4]$/)?.[0] === String(paperNumber)
+      ) || null;
+    };
+    const resolveAttendanceSubject = (subject, student) => {
+      const subjectName = String(subject.subject || "").trim();
+      const normalizedName = normalizeDigits(subjectName).replace(/[–—-]/g, "-").trim();
+      const genericTrade = normalizedName.match(/^(?:ট্রেড|trade)\s*([1-4])$/i);
+      const listedTrade = tradeSubjectPrefixes.some((trade) => normalizedName.startsWith(trade.prefix));
+      const paperNumber = genericTrade?.[1] || (listedTrade ? normalizedName.match(/([1-4])$/)?.[1] : "");
+      if (!paperNumber) return { ...subject, displaySubject: subjectName, displayCode: subject.subjectCode || "—" };
+      const matched = tradePaperForStudent(student, paperNumber);
+      return matched
+        ? { ...subject, displaySubject: matched.name, displayCode: matched.code || subject.subjectCode || "—" }
+        : { ...subject, displaySubject: subjectName, displayCode: subject.subjectCode || "—" };
+    };
     const area = byId("admitPrintArea");
     area.replaceChildren();
     admitPrintMode = "attendance";
@@ -2310,9 +2338,9 @@ async function generateAttendanceSheets() {
         head.append(cell);
       });
       const body = table.createTBody();
-      subjects.forEach((subject) => {
+      subjects.map((subject) => resolveAttendanceSubject(subject, student)).forEach((subject) => {
         const row = body.insertRow();
-        [formatAttendanceDate(subject.date), subject.subject, subject.subjectCode || "—", "", ""]
+        [formatAttendanceDate(subject.date), subject.displaySubject, subject.displayCode, "", ""]
           .forEach((value) => {
             const cell = row.insertCell();
             cell.textContent = value;
@@ -2401,6 +2429,8 @@ document.addEventListener("dashboard-language-change", () => {
 updateAdmitModeFields();
 byId("admitPaidThrough").value = "04";
 
+const RESULT_CUSTOM_SUBJECT = "__manual_result_subject__";
+
 function addResultSubjectRow(className, subject = {}) {
   const row = document.createElement("div");
   row.className = "result-subject-setting";
@@ -2410,22 +2440,29 @@ function addResultSubjectRow(className, subject = {}) {
   select.className = "result-subject-select";
   select.required = true;
   select.append(new Option("বিষয় নির্বাচন করুন", ""));
-  getAcademicSubjects(className).forEach((entry) => {
+  const academicSubjects = getAcademicSubjects(className);
+  academicSubjects.forEach((entry) => {
     const option = new Option(entry.name, entry.name);
     select.append(option);
   });
-  if (subject.name && !getAcademicSubjects(className).some((entry) => entry.name === subject.name)) {
-    select.append(new Option(subject.name, subject.name));
-  }
-  select.value = subject.name || "";
+  select.append(new Option("নিজে বিষয় লিখুন…", RESULT_CUSTOM_SUBJECT));
+  const standardSubject = academicSubjects.find((entry) => entry.name === subject.name);
+  select.value = standardSubject ? standardSubject.name : subject.name ? RESULT_CUSTOM_SUBJECT : "";
   subjectLabel.append(select);
+  const customSubjectInput = document.createElement("input");
+  customSubjectInput.type = "text";
+  customSubjectInput.className = "result-custom-subject-name";
+  customSubjectInput.placeholder = "বিষয়ের নাম লিখুন";
+  customSubjectInput.value = standardSubject ? "" : subject.name || "";
+  customSubjectInput.hidden = select.value !== RESULT_CUSTOM_SUBJECT;
+  customSubjectInput.required = !customSubjectInput.hidden;
+  subjectLabel.append(customSubjectInput);
   const codeLabel = document.createElement("label");
   codeLabel.textContent = "বিষয় কোড";
   const codeInput = document.createElement("input");
   codeInput.type = "text";
   codeInput.className = "result-subject-code";
-  codeInput.readOnly = true;
-  codeInput.value = subject.code || getAcademicSubjects(className).find((entry) => entry.name === select.value)?.code || "";
+  codeInput.value = subject.code || standardSubject?.code || "";
   codeLabel.append(codeInput);
   const settings = [["theoryFullMarks", "তাত্ত্বিক পূর্ণমান", subject.theoryFullMarks ?? subject.fullMarks ?? ""], ["practicalFullMarks", "ব্যবহারিক পূর্ণমান", subject.practicalFullMarks ?? (subject.fullMarks ? 0 : "")]];
   row.append(subjectLabel, codeLabel);
@@ -2449,10 +2486,14 @@ function addResultSubjectRow(className, subject = {}) {
   remove.addEventListener("click", () => { row.remove(); byId("resultMatrixWrap").hidden = true; });
   row.append(remove);
   select.addEventListener("change", () => {
+    const customMode = select.value === RESULT_CUSTOM_SUBJECT;
+    customSubjectInput.hidden = !customMode;
+    customSubjectInput.required = customMode;
     const entry = getAcademicSubjects(className).find((item) => item.name === select.value);
     codeInput.value = entry?.code || "";
     byId("resultMatrixWrap").hidden = true;
   });
+  customSubjectInput.addEventListener("input", () => { byId("resultMatrixWrap").hidden = true; });
   resultSubjectRows.append(row);
 }
 
@@ -2460,17 +2501,19 @@ function renderSubjectOptions(className, previousSubjects = []) {
   resultSubjectRows.replaceChildren();
   const options = getAcademicSubjects(className);
   byId("resultSubjectsHint").textContent = options.length
-    ? "বিষয় নির্বাচন করলে বিষয় কোড নিজে থেকে বসবে।"
-    : "এই শ্রেণির বিষয় তালিকা এখনো যোগ করা হয়নি।";
+    ? "বিষয় নির্বাচন করলে বিষয় কোড নিজে থেকে বসবে; নতুন বিষয়ও হাতে লেখা যাবে।"
+    : "এই শ্রেণির তালিকায় বিষয় নেই; নতুন বিষয় হাতে লিখুন।";
   if (previousSubjects.length) previousSubjects.forEach((subject) => addResultSubjectRow(className, subject));
-  else if (options.length) addResultSubjectRow(className);
+  else if (className) addResultSubjectRow(className);
   byId("resultMatrixWrap").hidden = true;
 }
 
 function selectedResultSubjects() {
   return [...resultSubjectRows.querySelectorAll(".result-subject-setting")].map((row) => ({
-    name: row.querySelector(".result-subject-select").value,
-    code: row.querySelector(".result-subject-code").value,
+    name: row.querySelector(".result-subject-select").value === RESULT_CUSTOM_SUBJECT
+      ? row.querySelector(".result-custom-subject-name").value.trim()
+      : row.querySelector(".result-subject-select").value,
+    code: row.querySelector(".result-subject-code").value.trim(),
     theoryFullMarks: Number(row.querySelector('[data-mark-type="theoryFullMarks"]').value),
     practicalFullMarks: Number(row.querySelector('[data-mark-type="practicalFullMarks"]').value)
   }));
@@ -2498,7 +2541,7 @@ function renderResultMatrix(prefillRecords = []) {
     byId("resultMatrixWrap").hidden = true;
     return;
   }
-  if (!subjects.length || subjects.some((subject) => !subject.name || !subject.code)) {
+  if (!subjects.length || subjects.some((subject) => !subject.name)) {
     message("resultMessage", "কমপক্ষে একটি বিষয় নির্বাচন করুন।", true);
     byId("resultMatrixWrap").hidden = true;
     return;
@@ -2523,7 +2566,7 @@ function renderResultMatrix(prefillRecords = []) {
   subjects.forEach((subject) => {
     const th = document.createElement("th");
     th.colSpan = Number(subject.practicalFullMarks) > 0 ? 2 : 1;
-    th.textContent = `${t(subject.name)} · ${subject.code}`;
+    th.textContent = `${t(subject.name)}${subject.code ? ` · ${subject.code}` : ""}`;
     subjectHeader.append(th);
   });
   const componentHeader = thead.insertRow();
@@ -2550,7 +2593,7 @@ function renderResultMatrix(prefillRecords = []) {
     rollCell.textContent = normalizeDigits(String(student[rollType] || "—"));
     subjects.forEach((subject) => {
       const saved = savedRecords.find((record) => record.studentCode === student.studentCode)
-        ?.subjects?.find((item) => item.name === subject.name || item.code === subject.code);
+        ?.subjects?.find((item) => item.name === subject.name || (subject.code && item.code === subject.code));
       const parts = [["theory", subject.theoryFullMarks]];
       if (Number(subject.practicalFullMarks) > 0) parts.push(["practical", subject.practicalFullMarks]);
       parts.forEach(([component, maximum]) => {
@@ -2582,7 +2625,7 @@ function renderResultMatrix(prefillRecords = []) {
 byId("resultClass").addEventListener("change", () => renderSubjectOptions(byId("resultClass").value));
 byId("addResultSubject").addEventListener("click", () => {
   const className = byId("resultClass").value;
-  if (className && getAcademicSubjects(className).length) addResultSubjectRow(className);
+  if (className) addResultSubjectRow(className);
 });
 byId("prepareResultMatrix").addEventListener("click", () => {
   const className = byId("resultClass").value;
@@ -2671,7 +2714,7 @@ resultForm.addEventListener("submit", async (event) => {
     message("resultMessage", "শ্রেণি, পরীক্ষা, বিষয় ও রোলের ছক তৈরি করুন।", true);
     return;
   }
-  if (subjects.some((subject) => !subject.name || !subject.code || !Number.isFinite(subject.theoryFullMarks) || subject.theoryFullMarks < 0 || !Number.isFinite(subject.practicalFullMarks) || subject.practicalFullMarks < 0 || subject.theoryFullMarks + subject.practicalFullMarks <= 0)
+  if (subjects.some((subject) => !subject.name || !Number.isFinite(subject.theoryFullMarks) || subject.theoryFullMarks < 0 || !Number.isFinite(subject.practicalFullMarks) || subject.practicalFullMarks < 0 || subject.theoryFullMarks + subject.practicalFullMarks <= 0)
     || new Set(subjects.map((subject) => subject.name)).size !== subjects.length
     || inputs.some((input) => input.value === "" || Number(input.value) < 0 || Number(input.value) > Number(input.max))) {
     message("resultMessage", "প্রতিটি বিষয়ের পূর্ণমান দিন এবং প্রাপ্ত নম্বর পূর্ণমানের মধ্যে রাখুন।", true);

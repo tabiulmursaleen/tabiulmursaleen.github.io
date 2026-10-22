@@ -1019,6 +1019,34 @@ button:disabled {
 .management-form h3 { margin-top: 0; }
 .management-form-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
 .management-thumbnail { width: 48px; height: 58px; object-fit: cover; border-radius: 6px; background: #edf1f5; }
+.gallery-entries { display: grid; gap: 14px; }
+.gallery-entry { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 9px; align-items: center; padding: 8px 10px; border: 1px solid #dbe3ed; border-radius: 10px; background: #fff; }
+.gallery-entry-number { color: #65758a; font-size: 0.88rem; font-weight: 700; text-align: center; }
+.gallery-entry-url { display: block; width: 100%; min-width: 0; min-height: 40px; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 7px; background: #fff; font: inherit; }
+.gallery-entry-actions { display: flex; align-items: center; gap: 5px; }
+.gallery-add-entry,.gallery-remove-entry,.gallery-save-entry { display: inline-grid; place-items: center; width: 34px; min-width: 34px; height: 34px; min-height: 34px; margin: 0; padding: 0; border-radius: 50%; font-size: 1.2rem; font-weight: 700; line-height: 1; }
+.gallery-save-entry { border-color: #2c7a52; background: #e7f4ec; color: #21633d; }
+.gallery-save-entry:hover { background: #d1eadb; color: #174b2d; }
+.gallery-remove-entry { grid-area: remove; justify-self: start; }
+.gallery-admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; align-items: stretch; }
+.gallery-admin-grid.is-empty { display: block; padding: 24px; border: 1px dashed #cbd5e1; border-radius: 12px; color: #64748b; text-align: center; }
+.gallery-admin-card { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border: 1px solid #d6e0eb; border-radius: 13px; background: #fff; box-shadow: 0 4px 14px rgba(29, 55, 82, 0.08); cursor: grab; touch-action: pan-y; transition: border-color 150ms ease, box-shadow 150ms ease, opacity 150ms ease, transform 150ms ease; }
+.gallery-admin-card:active { cursor: grabbing; }
+.gallery-admin-card.is-dragging { opacity: 0.42; transform: scale(0.98); }
+.gallery-admin-card.is-drop-target { border-color: #c19b3d; box-shadow: 0 0 0 3px rgba(193, 155, 61, 0.24), 0 8px 22px rgba(29, 55, 82, 0.14); }
+.gallery-admin-card-preview { position: relative; display: grid; place-items: center; height: 170px; overflow: hidden; background: linear-gradient(145deg, #f6f8fb, #e9eff6); }
+.gallery-admin-card-preview img,.gallery-admin-card-preview video { width: 100%; height: 100%; object-fit: cover; }
+.gallery-admin-card-preview.preview-unavailable { color: #64748b; font-size: 0.9rem; }
+.gallery-admin-caption-editor { display: flex; gap: 6px; padding: 10px 11px 4px; }
+.gallery-admin-caption-editor input { flex: 1; min-width: 0; min-height: 38px; padding: 7px 9px; border: 1px solid #cbd5e1; border-radius: 7px; color: #25364a; font: inherit; }
+.gallery-admin-caption-editor .gallery-caption-save { flex: 0 0 auto; align-self: stretch; margin: 0; }
+.gallery-admin-card-status { align-self: flex-start; margin: 5px 12px 10px; padding: 3px 9px; border-radius: 999px; background: #f1f3f6; color: #566477; font-size: 0.78rem; }
+.gallery-admin-card-status.is-published { background: #e6f4ec; color: #21633d; }
+.gallery-admin-card-actions { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 11px; border-top: 1px solid #edf1f5; background: #f8fafc; }
+.gallery-admin-card-actions .table-action { margin: 0; }
+.gallery-admin-card-actions .gallery-admin-card-status { align-self: center; margin: 0 0 0 auto; white-space: nowrap; }
+.gallery-caption-save[hidden] { display: none; }
+.gallery-preview-play { position: absolute; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: rgba(24, 61, 99, 0.88); color: #fff; font-size: 20px; padding-left: 3px; box-shadow: 0 3px 12px #0003; }
 .data-table .table-actions-cell { white-space: nowrap; }
 .data-table .table-actions-cell .table-action { margin: 2px; }
 .person-teacher-field[hidden] { display: none; }
@@ -1027,6 +1055,8 @@ button:disabled {
   .management-tabs { gap: 6px; }
   .management-tabs button { padding: 9px 6px; font-size: 0.88rem; }
   .management-form { padding: 13px; }
+  .gallery-entry { grid-template-columns: 24px minmax(0, 1fr) auto; gap: 6px; padding: 7px; }
+  .gallery-add-entry,.gallery-remove-entry,.gallery-save-entry { width: 31px; min-width: 31px; height: 31px; min-height: 31px; }
   #people-management .data-table { min-width: 580px; }
 }
 
@@ -2783,24 +2813,37 @@ input[type="week"]::-webkit-calendar-picker-indicator:hover {
 /* Mobile admin layout refinements. */
 @media (max-width: 650px) {
   .login-container {
-    gap: 14px;
-    padding: 20px 12px;
+    min-height: 100svh;
+    gap: 8px;
+    padding: 12px 12px;
   }
   .login-welcome {
     width: min(100%, 400px);
   }
+  .login-welcome-kicker {
+    margin-bottom: 7px;
+    padding: 5px 10px;
+    font-size: 13px;
+  }
   .login-welcome h2 {
+    margin-bottom: 8px;
     font-size: clamp(21px, 5.8vw, 27px);
+    line-height: 1.2;
+  }
+  .login-welcome-eiin {
+    padding: 5px 10px;
+    font-size: 14px;
   }
   .login-card {
     width: min(100%, 400px);
     max-width: 400px;
-    padding: 22px 18px;
+    padding: 16px 18px;
     border-radius: 14px;
   }
+  .login-card .school-icon { font-size: 34px; line-height: 1; }
   .login-card h1 {
-    margin: 7px 0 10px;
-    font-size: 25px;
+    margin: 5px 0 8px;
+    font-size: 23px;
   }
   .login-card .subtitle {
     margin-bottom: 18px;
@@ -2808,19 +2851,26 @@ input[type="week"]::-webkit-calendar-picker-indicator:hover {
     line-height: 1.5;
   }
   .login-card label {
-    margin: 12px 0 6px;
+    margin: 8px 0 4px;
   }
   .login-card input {
-    padding: 10px 11px;
+    padding: 8px 10px;
   }
   .login-card button {
-    min-height: 46px;
-    margin-top: 17px;
-    padding: 10px 12px;
+    min-height: 42px;
+    margin-top: 11px;
+    padding: 8px 12px;
+  }
+  .login-card #loginMessage {
+    min-height: 1.5em;
+    margin-top: 6px;
+  }
+  .login-card .back-link {
+    margin-top: 12px;
   }
   .login-card .login-developer-credit {
-    margin-top: 15px;
-    padding-top: 10px;
+    margin-top: 10px;
+    padding-top: 8px;
   }
 }
 

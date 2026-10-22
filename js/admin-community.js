@@ -1,6 +1,6 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 import {
-  collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc
+  collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc, writeBatch
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 import { auth, db } from "./firebase-config.js";
 
@@ -9,6 +9,7 @@ const peopleCollection = "directoryPeople";
 const contentCollection = "classContents";
 const galleryCollection = "galleryItems";
 const $ = (id) => document.getElementById(id);
+const galleryAddButton = $("addGalleryEntry");
 const personTypes = {
   committee: { label: "কমিটি সদস্য", prefix: "committee" },
   teacher: { label: "শিক্ষক", prefix: "teacher" },
@@ -240,29 +241,206 @@ function youtubeEmbed(value) {
   return "";
 }
 
+function driveFileId(value) {
+  try {
+    const url = new URL(value);
+    return url.hostname.endsWith("drive.google.com")
+      ? url.pathname.match(/\/file\/d\/([^/]+)/)?.[1] || url.searchParams.get("id") || ""
+      : "";
+  } catch { return ""; }
+}
+
+function directVideoUrl(value) {
+  try { return /\.(?:mp4|webm|ogv|ogg|m4v)$/i.test(new URL(value).pathname); }
+  catch { return false; }
+}
+
 function renderGallery() {
-  const body = $("galleryRows"); body.replaceChildren();
-  const matching = galleryItems.filter((item) => item.mediaType === currentGalleryType)
-    .sort((a, b) => (b.updatedAt?.toMillis?.() || 0) - (a.updatedAt?.toMillis?.() || 0));
-  if (!matching.length) { const row = body.insertRow(); const cell = row.insertCell(); cell.colSpan = 4; cell.textContent = "এখনো কোনো মিডিয়া যোগ করা হয়নি।"; return; }
+  const grid = $("galleryGrid"); grid.replaceChildren();
+  const matching = galleryOrderForType(currentGalleryType);
+  if (!matching.length) { grid.textContent = "এখনো কোনো মিডিয়া যোগ করা হয়নি।"; grid.classList.add("is-empty"); return; }
+  grid.classList.remove("is-empty");
   matching.forEach((item) => {
-    const row = body.insertRow(); const preview = row.insertCell();
-    if (item.mediaType === "photo") {
-      const image = document.createElement("img"); image.className = "management-thumbnail"; image.src = drivePreview(item.url); image.alt = ""; image.onerror = () => { image.hidden = true; }; preview.append(image);
-    } else preview.textContent = "ভিডিও";
-    row.insertCell().textContent = item.caption || "—";
-    row.insertCell().textContent = item.published ? "প্রকাশিত" : "অপ্রকাশিত";
-    const actions = row.insertCell(); actions.className = "table-actions-cell";
+    const card = document.createElement("article"); card.className = "gallery-admin-card"; card.draggable = true;
+    card.dataset.galleryItemId = item.id;
+    card.addEventListener("dragstart", (event) => {
+      if (event.target.closest("button, input, textarea")) { event.preventDefault(); return; }
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", item.id);
+      card.classList.add("is-dragging");
+    });
+    card.addEventListener("dragend", () => {
+      card.classList.remove("is-dragging");
+      grid.querySelectorAll(".is-drop-target").forEach((node) => node.classList.remove("is-drop-target"));
+    });
+    card.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "move";
+      card.classList.add("is-drop-target");
+    });
+    card.addEventListener("dragleave", (event) => {
+      if (!card.contains(event.relatedTarget)) card.classList.remove("is-drop-target");
+    });
+    card.addEventListener("drop", (event) => {
+      event.preventDefault();
+      card.classList.remove("is-drop-target");
+      const draggedId = event.dataTransfer.getData("text/plain");
+      if (!draggedId || draggedId === item.id) return;
+      const draggedIndex = matching.findIndex((entry) => entry.id === draggedId);
+      const targetIndex = matching.findIndex((entry) => entry.id === item.id);
+      const insertAfter = event.clientY > card.getBoundingClientRect().top + card.offsetHeight / 2;
+      const destination = targetIndex + (insertAfter ? 1 : 0);
+      reorderGalleryItem(draggedId, destination > draggedIndex ? destination - 1 : destination);
+    });
+    const preview = document.createElement("div"); preview.className = "gallery-admin-card-preview";
+    if (item.mediaType === "video" && directVideoUrl(item.url)) {
+      const video = document.createElement("video"); video.src = item.url; video.muted = true; video.preload = "metadata"; video.playsInline = true;
+      video.onerror = () => { video.hidden = true; preview.classList.add("preview-unavailable"); preview.textContent = "ভিডিও লিংক"; };
+      preview.append(video);
+    } else {
+      const image = document.createElement("img");
+      const ytId = item.mediaType === "video" ? youtubeEmbed(item.url) : "";
+      const fileId = item.mediaType === "video" ? driveFileId(item.url) : "";
+      const thumbnailUrl = item.mediaType === "photo" ? drivePreview(item.url) : ytId
+        ? `https://img.youtube.com/vi/${encodeURIComponent(ytId)}/hqdefault.jpg`
+        : fileId ? `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w640` : "";
+      image.alt = item.caption || (item.mediaType === "photo" ? "গ্যালারির ছবি" : "ভিডিওর থাম্বনেইল");
+      image.loading = "lazy";
+      image.onerror = () => { image.hidden = true; preview.classList.add("preview-unavailable"); preview.textContent = item.mediaType === "video" ? "ভিডিও লিংক" : "প্রিভিউ পাওয়া যায়নি"; };
+      if (thumbnailUrl) { image.src = thumbnailUrl; preview.append(image); }
+      else { preview.classList.add("preview-unavailable"); preview.textContent = "ভিডিও লিংক"; }
+    }
+    if (item.mediaType === "video") { const play = document.createElement("span"); play.className = "gallery-preview-play"; play.setAttribute("aria-hidden", "true"); play.textContent = "▶"; preview.append(play); }
+    const captionEditor = document.createElement("div"); captionEditor.className = "gallery-admin-caption-editor";
+    const caption = document.createElement("input"); caption.type = "text"; caption.maxLength = 200; caption.value = item.caption || ""; caption.placeholder = "ক্যাপশন লিখুন"; caption.setAttribute("aria-label", "ক্যাপশন");
+    const saveCaption = document.createElement("button"); saveCaption.type = "button"; saveCaption.className = "table-action gallery-caption-save"; saveCaption.textContent = "সেভ"; saveCaption.title = "ক্যাপশন সংরক্ষণ"; saveCaption.hidden = true;
+    caption.addEventListener("input", () => { saveCaption.hidden = caption.value.trim() === (item.caption || ""); });
+    saveCaption.addEventListener("click", () => saveGalleryCaption(item.id, caption.value));
+    captionEditor.append(caption, saveCaption);
+    const status = document.createElement("span"); status.className = `gallery-admin-card-status${item.published ? " is-published" : ""}`; status.textContent = item.published ? "প্রকাশিত" : "অপ্রকাশিত";
+    const actions = document.createElement("div"); actions.className = "gallery-admin-card-actions";
     const edit = document.createElement("button"); edit.type = "button"; edit.className = "table-action"; edit.textContent = "সম্পাদনা";
-    edit.addEventListener("click", () => { $("galleryItemId").value = item.id; $("galleryUrl").value = item.url; $("galleryCaption").value = item.caption || ""; $("galleryPublished").checked = item.published === true; $("galleryForm").scrollIntoView({ behavior: "smooth", block: "start" }); });
+    edit.addEventListener("click", () => {
+      setGalleryType(item.mediaType);
+      $("galleryEntries").replaceChildren();
+      addGalleryEntry(item);
+      $("galleryPublished").checked = item.published === true;
+      $("galleryForm").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
     const remove = document.createElement("button"); remove.type = "button"; remove.className = "table-action danger-action"; remove.textContent = "মুছুন";
     remove.addEventListener("click", async () => {
       if (!window.confirm("এই মিডিয়াটি গ্যালারি থেকে মুছে ফেলবেন?")) return;
       try { await deleteDoc(doc(db, galleryCollection, item.id)); galleryItems = galleryItems.filter((entry) => entry.id !== item.id); renderGallery(); }
       catch (error) { console.error(error); say("galleryMessage", "মিডিয়া মুছতে সমস্যা হয়েছে। Firestore Rules পরীক্ষা করুন।", true); }
     });
-    actions.append(edit, remove);
+    actions.append(edit, remove, status);
+    card.append(preview, captionEditor, actions);
+    grid.append(card);
   });
+}
+
+async function saveGalleryCaption(itemId, value) {
+  if (busy) return;
+  const item = galleryItems.find((entry) => entry.id === itemId);
+  if (!item) return;
+  const order = galleryOrderForType(item.mediaType);
+  const itemOrder = order.findIndex((entry) => entry.id === itemId);
+  busy = true;
+  try {
+    const batch = writeBatch(db);
+    order.forEach((entry, index) => {
+      const data = entry.id === itemId
+        ? { caption: value.trim(), sortOrder: index, updatedAt: serverTimestamp() }
+        : { sortOrder: index };
+      batch.set(doc(db, galleryCollection, entry.id), data, { merge: true });
+    });
+    await batch.commit();
+    galleryItems = galleryItems.map((entry) => entry.id === itemId
+      ? { ...entry, caption: value.trim(), sortOrder: itemOrder, updatedAt: null }
+      : entry.mediaType === item.mediaType
+        ? { ...entry, sortOrder: order.findIndex((ordered) => ordered.id === entry.id) }
+        : entry);
+    renderGallery();
+    say("galleryMessage", "ক্যাপশন সংরক্ষিত হয়েছে।");
+  } catch (error) {
+    console.error(error);
+    say("galleryMessage", "ক্যাপশন সংরক্ষণ হয়নি। Firestore Rules পরীক্ষা করুন।", true);
+  } finally { busy = false; }
+}
+
+function galleryOrderForType(type) {
+  return galleryItems.filter((item) => item.mediaType === type)
+    .map((item, originalIndex) => ({ ...item, _originalIndex: originalIndex }))
+    .sort((a, b) => (Number.isFinite(Number(a.sortOrder)) ? Number(a.sortOrder) : a._originalIndex)
+      - (Number.isFinite(Number(b.sortOrder)) ? Number(b.sortOrder) : b._originalIndex));
+}
+
+async function reorderGalleryItem(itemId, destination) {
+  if (busy) return;
+  const current = galleryOrderForType(currentGalleryType);
+  const from = current.findIndex((item) => item.id === itemId);
+  const to = Math.max(0, Math.min(destination, current.length - 1));
+  if (from < 0 || to < 0 || to >= current.length) return;
+  if (from === to) return;
+  const [moved] = current.splice(from, 1);
+  current.splice(to, 0, moved);
+  const previous = galleryItems;
+  const orderMap = new Map(current.map((item, index) => [item.id, index]));
+  galleryItems = galleryItems.map((item) => orderMap.has(item.id) ? { ...item, sortOrder: orderMap.get(item.id) } : item);
+  renderGallery();
+  busy = true;
+  try {
+    const batch = writeBatch(db);
+    current.forEach((item, index) => batch.set(doc(db, galleryCollection, item.id), { sortOrder: index }, { merge: true }));
+    await batch.commit();
+    say("galleryMessage", "গ্যালারির ধারাবাহিকতা সংরক্ষিত হয়েছে।");
+  } catch (error) {
+    console.error(error);
+    galleryItems = previous;
+    renderGallery();
+    say("galleryMessage", "ধারাবাহিকতা সংরক্ষণ হয়নি। Firestore Rules পরীক্ষা করুন।", true);
+  } finally { busy = false; }
+}
+
+function addGalleryEntry(item = {}) {
+  const entry = document.createElement("div");
+  entry.className = "gallery-entry";
+  entry.dataset.itemId = item.id || "";
+  const number = document.createElement("span");
+  number.className = "gallery-entry-number";
+  number.textContent = String($("galleryEntries").children.length + 1);
+  const url = document.createElement("input");
+  url.type = "url"; url.required = true; url.className = "gallery-entry-url";
+  url.value = item.url || "";
+  url.placeholder = currentGalleryType === "photo" ? "Google Drive ছবির লিংক পেস্ট করুন" : "YouTube ভিডিওর লিংক পেস্ট করুন";
+  url.setAttribute("aria-label", currentGalleryType === "photo" ? "Google Drive ছবির লিংক" : "YouTube ভিডিওর লিংক");
+  const save = document.createElement("button");
+  save.type = "submit"; save.className = "secondary-button gallery-save-entry";
+  save.textContent = "✓"; save.title = "গ্যালারিতে সংরক্ষণ"; save.setAttribute("aria-label", "গ্যালারিতে সংরক্ষণ");
+  const remove = document.createElement("button");
+  remove.type = "button"; remove.className = "secondary-button gallery-remove-entry";
+  remove.textContent = "×"; remove.title = "এই লিংক বাদ দিন"; remove.setAttribute("aria-label", "এই লিংক বাদ দিন");
+  remove.addEventListener("click", () => {
+    if ($("galleryEntries").children.length > 1) entry.remove();
+    else { entry.dataset.itemId = ""; url.value = ""; }
+    syncGalleryEntryControls();
+  });
+  const actions = document.createElement("div"); actions.className = "gallery-entry-actions"; actions.append(save, remove);
+  entry.append(number, url, actions);
+  $("galleryEntries").append(entry);
+  syncGalleryEntryControls();
+  return entry;
+}
+
+function syncGalleryEntryControls() {
+  const rows = [...$("galleryEntries").querySelectorAll(".gallery-entry")];
+  rows.forEach((row, index) => { row.querySelector(".gallery-entry-number").textContent = String(index + 1); });
+  if (!rows.length) return;
+  galleryAddButton.hidden = false;
+  const typeLabel = currentGalleryType === "photo" ? "আরেকটি ছবি যোগ করুন" : "আরেকটি ভিডিও যোগ করুন";
+  galleryAddButton.setAttribute("aria-label", typeLabel);
+  galleryAddButton.title = typeLabel;
+  rows.at(-1).querySelector(".gallery-entry-actions").append(galleryAddButton);
 }
 
 function setGalleryType(type) {
@@ -273,35 +451,51 @@ function setGalleryType(type) {
     button.setAttribute("aria-pressed", String(selected));
   });
   const isPhoto = type === "photo";
-  $("galleryUrlLabel").firstChild.textContent = isPhoto ? "Google Drive ছবির লিংক " : "YouTube ভিডিও লিংক ";
-  $("galleryUrl").placeholder = isPhoto ? "https://drive.google.com/file/d/..." : "https://www.youtube.com/watch?v=...";
   $("galleryListTitle").textContent = isPhoto ? "সংরক্ষিত ছবি" : "সংরক্ষিত ভিডিও";
-  $("galleryCaption").placeholder = isPhoto ? "ছবির সংক্ষিপ্ত বিবরণ" : "ভিডিওর সংক্ষিপ্ত বিবরণ";
-  $("galleryItemId").value = ""; $("galleryUrl").value = ""; $("galleryCaption").value = "";
+  galleryAddButton.remove();
+  $("galleryEntries").replaceChildren();
+  addGalleryEntry();
+  galleryAddButton.textContent = "+";
   renderGallery();
 }
 document.querySelectorAll(".gallery-type-button").forEach((button) => button.addEventListener("click", () => setGalleryType(button.dataset.galleryType)));
-$("galleryReset").addEventListener("click", () => { $("galleryForm").reset(); $("galleryItemId").value = ""; $("galleryPublished").checked = true; });
+$("addGalleryEntry").addEventListener("click", () => addGalleryEntry());
 $("galleryForm").addEventListener("submit", async (event) => {
   event.preventDefault(); if (busy) return;
-  let url;
+  const entries = [...$("galleryEntries").querySelectorAll(".gallery-entry")];
+  const records = [];
+  const orderedItems = galleryOrderForType(currentGalleryType);
   try {
-    url = safeUrl($("galleryUrl").value, currentGalleryType === "photo" ? "ছবির লিংক" : "ভিডিও লিংক");
-    if (currentGalleryType === "photo") {
-      if (!new URL(url).hostname.match(/(^|\.)drive\.google\.com$|(^|\.)drive\.usercontent\.google\.com$/)) throw new Error("ছবির Google Drive লিংক দিন।");
-    } else if (!youtubeEmbed(url)) throw new Error("সঠিক YouTube ভিডিও লিংক দিন।");
+    for (const [index, entry] of entries.entries()) {
+      const url = safeUrl(entry.querySelector(".gallery-entry-url").value, `${index + 1} নম্বর লিংক`);
+      if (currentGalleryType === "photo") {
+        if (!new URL(url).hostname.match(/(^|\.)drive\.google\.com$|(^|\.)drive\.usercontent\.google\.com$/)) throw new Error(`${index + 1} নম্বর সারিতে Google Drive ছবির লিংক দিন।`);
+      }
+      const id = entry.dataset.itemId || doc(collection(db, galleryCollection)).id;
+      const existing = galleryItems.find((item) => item.id === id);
+      records.push({ id, mediaType: currentGalleryType, url, caption: existing?.caption || "", published: $("galleryPublished").checked });
+    }
   } catch (error) { say("galleryMessage", error.message, true); return; }
-  const id = $("galleryItemId").value || doc(collection(db, galleryCollection)).id;
-  const record = { mediaType: currentGalleryType, url, caption: $("galleryCaption").value.trim(), published: $("galleryPublished").checked, updatedAt: serverTimestamp() };
   busy = true;
   try {
-    await setDoc(doc(db, galleryCollection, id), record, { merge: true });
-    galleryItems = [...galleryItems.filter((item) => item.id !== id), { ...record, id, updatedAt: null }];
-    $("galleryForm").reset(); $("galleryItemId").value = ""; $("galleryPublished").checked = true;
-    renderGallery(); say("galleryMessage", "গ্যালারির তথ্য সংরক্ষিত হয়েছে।");
+    const batch = writeBatch(db);
+    const recordsById = new Map(records.map((record) => [record.id, record]));
+    const finalOrder = orderedItems.map((item) => recordsById.get(item.id) || item);
+    finalOrder.push(...records.filter((record) => !orderedItems.some((item) => item.id === record.id)));
+    const saved = records.map((record) => ({ ...record, sortOrder: finalOrder.findIndex((item) => item.id === record.id), updatedAt: serverTimestamp() }));
+    saved.forEach((record) => batch.set(doc(db, galleryCollection, record.id), record, { merge: true }));
+    finalOrder.forEach((item, index) => {
+      if (!recordsById.has(item.id)) batch.set(doc(db, galleryCollection, item.id), { sortOrder: index }, { merge: true });
+    });
+    await batch.commit();
+    const savedIds = new Set(saved.map((record) => record.id));
+    galleryItems = [...galleryItems.filter((item) => !savedIds.has(item.id)), ...saved.map((record) => ({ ...record, updatedAt: null }))];
+    $("galleryForm").reset(); galleryAddButton.remove(); $("galleryEntries").replaceChildren(); addGalleryEntry(); $("galleryPublished").checked = true;
+    renderGallery(); say("galleryMessage", `${saved.length}টি মিডিয়ার তথ্য একসঙ্গে সংরক্ষিত হয়েছে।`);
   } catch (error) { console.error(error); say("galleryMessage", "গ্যালারির তথ্য সংরক্ষণ হয়নি। Firestore Rules পরীক্ষা করুন।", true); }
   finally { busy = false; }
 });
+setGalleryType("photo");
 
 function refreshTeacherOptions() {
   const teachers = mergedPeople("teacher");

@@ -1,6 +1,29 @@
 import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 import { db } from "./firebase-config.js";
 
+let videoFrameObserver;
+let activeVideoFrames = [];
+let videoResizeFallbackBound = false;
+
+function sizeVideoFrame(frame) {
+  const player = frame.querySelector("iframe, video");
+  const width = frame.getBoundingClientRect().width;
+  if (player && width > 0) player.style.height = `${Math.round(width * 9 / 16)}px`;
+}
+
+function observeVideoFrames(frames) {
+  activeVideoFrames = frames;
+  frames.forEach(sizeVideoFrame);
+  if ("ResizeObserver" in window) {
+    videoFrameObserver?.disconnect();
+    videoFrameObserver = new ResizeObserver((entries) => entries.forEach((entry) => sizeVideoFrame(entry.target)));
+    frames.forEach((frame) => videoFrameObserver.observe(frame));
+  } else if (!videoResizeFallbackBound) {
+    window.addEventListener("resize", () => activeVideoFrames.forEach(sizeVideoFrame), { passive: true });
+    videoResizeFallbackBound = true;
+  }
+}
+
 const driveImage = (value) => {
   try {
     const url = new URL(value);
@@ -103,15 +126,32 @@ function youtubeId(value) {
   return "";
 }
 
+function videoPlayer(item) {
+  const url = new URL(item.url);
+  const title = escape(item.caption || "প্রতিষ্ঠানের ভিডিও");
+  const id = youtubeId(item.url);
+  if (id) return `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}" title="${title}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+  const driveId = url.hostname.endsWith("drive.google.com")
+    ? url.pathname.match(/\/file\/d\/([^/]+)/)?.[1] || url.searchParams.get("id") || ""
+    : "";
+  if (driveId) return `<iframe src="https://drive.google.com/file/d/${encodeURIComponent(driveId)}/preview" title="${title}" loading="lazy" allow="autoplay" allowfullscreen></iframe>`;
+  if (/\.(?:mp4|webm|ogv|ogg|m4v)$/i.test(url.pathname)) return `<video controls preload="metadata" playsinline><source src="${escape(item.url)}"></video>`;
+  return `<iframe src="${escape(item.url)}" title="${title}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+}
+
 async function renderGallery(type, hostId) {
   const host = document.getElementById(hostId);
   if (!host) return;
   const items = (await publishedFrom("galleryItems")).filter((item) => item.mediaType === type);
-  items.sort((a, b) => (b.updatedAt?.toMillis?.() || 0) - (a.updatedAt?.toMillis?.() || 0));
+  const hasSavedOrder = items.length > 0 && items.every((item) => Number.isFinite(Number(item.sortOrder)));
+  items.sort(hasSavedOrder
+    ? (a, b) => Number(a.sortOrder) - Number(b.sortOrder)
+    : (a, b) => (b.updatedAt?.toMillis?.() || 0) - (a.updatedAt?.toMillis?.() || 0));
   if (!items.length) { host.innerHTML = `<p class="community-status">এখনো কোনো ${type === "photo" ? "ছবি" : "ভিডিও"} প্রকাশ করা হয়নি।</p>`; return; }
   host.innerHTML = items.map((item) => type === "photo"
     ? `<article class="media-gallery-card"><a href="${escape(item.url)}" target="_blank" rel="noopener noreferrer"><img src="${escape(driveImage(item.url))}" alt="${escape(item.caption || "প্রতিষ্ঠানের ছবি")}" loading="lazy"></a><p>${escape(item.caption || "")}</p></article>`
-    : `<article class="media-gallery-card video-gallery-card"><div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(youtubeId(item.url))}" title="${escape(item.caption || "প্রতিষ্ঠানের ভিডিও")}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><p>${escape(item.caption || "")}</p></article>`).join("");
+    : `<article class="media-gallery-card video-gallery-card"><div class="video-frame">${videoPlayer(item)}</div><p>${escape(item.caption || "")}</p></article>`).join("");
+  if (type === "video") observeVideoFrames([...host.querySelectorAll(".video-frame")]);
 }
 
 async function renderPage() {
