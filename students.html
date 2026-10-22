@@ -195,6 +195,15 @@
         .student-directory-hero h1{margin:0 0 4px;color:#fff;font-size:clamp(27px,3.2vw,34px)}
         .student-directory-hero p{margin:0;color:rgba(255,255,255,.94);font-size:18px}
         .student-directory-content{padding:32px 0 48px}
+        .student-access-gate{max-width:500px;margin:12px auto 28px;padding:24px;background:#fff;border:1px solid #d9e0e8;border-top:4px solid #d0aa4f;border-radius:12px;box-shadow:0 5px 18px rgba(24,61,99,.08)}
+        .student-access-gate h2{margin:0 0 8px;color:#183d63;font-size:22px;text-align:center}
+        .student-access-gate p{margin:0 0 16px;color:#536274;text-align:center}
+        .student-access-form{display:flex;gap:9px}
+        .student-access-form input{flex:1;min-width:0;min-height:44px;padding:9px 12px;border:1px solid #cbd5e1;border-radius:8px;font:inherit}
+        .student-access-form button{min-height:44px;padding:9px 16px;border:0;border-radius:8px;background:#183d63;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+        .student-access-form button:hover{background:#285780}
+        .student-access-message{min-height:1.4em;margin:10px 0 0!important;color:#a33!important;font-size:14px}
+        .student-directory-protected[hidden],.student-access-gate[hidden]{display:none!important}
         .student-directory-toolbar{margin-bottom:22px;padding:20px;background:#fff;border:1px solid #ded3b5;border-radius:14px;box-shadow:0 5px 18px rgba(24,61,99,.07)}
         .student-directory-filters{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:12px;align-items:end}
         .student-directory-filters label{display:grid;gap:6px;color:#183d63;font-weight:700;font-size:15px}
@@ -204,6 +213,17 @@
         .student-directory-filter-actions button{min-height:44px;padding:9px 16px;border:1px solid #183d63;border-radius:8px;background:#183d63;color:#fff;font:inherit;font-weight:700;cursor:pointer}
         .student-directory-filter-actions button[type=reset]{background:#fff;color:#183d63}
         .student-directory-count{margin:14px 2px 0;color:#536274;font-weight:600}
+        .student-directory-results-controls{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px;margin-top:14px}
+        .student-directory-results-controls label{display:grid;gap:5px;color:#183d63;font-size:14px;font-weight:700}
+        .student-directory-results-controls select{min-width:130px;min-height:40px;padding:7px 10px;border:1px solid #cbd5e1;border-radius:7px;background:#fff;color:#25364a;font:inherit}
+        .student-directory-print,.student-directory-pagination button{min-height:40px;padding:7px 13px;border:1px solid #183d63;border-radius:7px;background:#183d63;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+        .student-directory-print:hover,.student-directory-pagination button:hover:not(:disabled){background:#285780}
+        .student-directory-print-options{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:14px;padding:12px 14px;border:1px solid #d9e0e8;border-radius:9px;background:#f8fafc;color:#183d63}
+        .student-directory-print-options strong{width:100%;font-size:14px}
+        .student-directory-print-options label{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;cursor:pointer}
+        .student-directory-print-options input{accent-color:#183d63}
+        .student-directory-pagination{display:flex;justify-content:center;align-items:center;gap:12px;padding:12px;color:#536274;font-weight:700}
+        .student-directory-pagination button:disabled{opacity:.45;cursor:not-allowed}
         .student-directory-table-wrap{width:100%;overflow-x:auto;background:#fff;border:1px solid #d9e0e8;border-radius:12px;box-shadow:0 5px 18px rgba(24,61,99,.07)}
         .student-directory-table{width:100%;min-width:900px;border-collapse:collapse;background:#fff}
         .student-directory-table th,.student-directory-table td{padding:10px 12px;border-bottom:1px solid #e5eaf0;text-align:center;vertical-align:middle}
@@ -216,11 +236,49 @@
         .student-directory-table .student-name-cell{text-align:left;min-width:150px;color:#183d63;font-weight:700}
         .student-directory-details-link{display:inline-block;padding:7px 12px;border:1px solid #183d63;border-radius:7px;background:#183d63;color:#fff;text-decoration:none;white-space:nowrap;font-size:14px;font-weight:700}
         .student-directory-details-link:hover{border-color:#b58a2c;background:#b58a2c;color:#172b42}
+        .student-directory-print-heading{display:none}
+        .student-directory-table [data-print-column="comment"]{display:none}
         @media(max-width:600px){.student-directory-content{padding:22px 0 35px}.student-directory-toolbar{padding:12px}.student-directory-filters{gap:8px}.student-directory-filters label{font-size:13px}.student-directory-filter-actions button{padding:8px}.student-directory-count{font-size:14px}}
         .student-directory-status{padding:22px;background:#fff;border-radius:9px;text-align:center;color:#536274}
         @media(max-width:800px){.student-directory-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.student-directory-filter-actions{grid-column:1/-1}}
         @media(max-width:480px){.student-directory-content{padding:22px 0 35px}.student-directory-toolbar{padding:14px}.student-directory-filters{gap:10px}.student-directory-filters label{font-size:14px}.student-directory-filter-actions button{flex:1}}
         .student-directory-filter-actions button{flex:0 0 auto;min-width:92px;min-height:40px;padding:7px 12px;font-size:14px}
+        @media(max-width:480px){.student-directory-results-controls{align-items:stretch}.student-directory-results-controls label,.student-directory-results-controls select,.student-directory-print{width:100%}}
+        @media print{
+          @page{size:A4 portrait;margin:10mm}
+          body{background:#fff!important}
+          body > main.student-directory-page,body > main.student-directory-page *{visibility:visible!important}
+          body > main.student-directory-page{display:block!important;position:static!important;width:100%!important;margin:0!important}
+          .main-header,.navbar,.footer,.student-directory-hero,.student-access-gate,.student-directory-toolbar,.student-directory-pagination{display:none!important}
+          .student-directory-page,.student-directory-content{min-height:0!important;padding:0!important;background:#fff!important}
+          .student-directory-protected{display:block!important}
+          .student-directory-print-heading{display:block!important;margin:0 0 4mm;padding:0 0 3mm;border-bottom:1.5px solid #183d63;text-align:center;color:#172b42}
+          .student-directory-print-brand{display:grid;grid-template-columns:26mm minmax(0,1fr) 26mm;gap:1.5mm;align-items:center;margin-bottom:2mm}
+          .student-directory-print-brand img{width:22mm;height:22mm;margin-left:1mm;object-fit:contain}
+          .student-directory-print-brand-copy h1{margin:0;color:#183d63;font-size:17pt;line-height:1.2}
+          .student-directory-print-brand-copy p{margin:.5mm 0 0;font-size:9.5pt;line-height:1.3}
+          .student-directory-print-heading h2{margin:1mm 0;font-size:14pt;line-height:1.25}
+          .student-directory-print-meta{margin:0!important;font-size:10pt!important}
+          .student-directory-table-wrap{overflow:visible!important;border:0!important;box-shadow:none!important}
+          .student-directory-table{width:100%!important;min-width:0!important;border-collapse:collapse!important;font-size:9pt!important}
+          .student-directory-table th,.student-directory-table td{padding:4px 5px!important;border:1px solid #657184!important;font-size:9pt!important;color:#172b42!important}
+          .student-directory-table th{background:#e8edf3!important;color:#172b42!important;position:static!important}
+          .student-directory-table .student-photo-cell img{width:10mm!important;height:13mm!important}
+          .student-directory-details-link{padding:0!important;border:0!important;background:transparent!important;color:#172b42!important;font-size:9pt!important}
+          .student-directory-table tr{break-inside:avoid}
+          body.print-hide-photo .student-directory-table [data-print-column="photo"],
+          body.print-hide-name .student-directory-table [data-print-column="name"],
+          body.print-hide-id .student-directory-table [data-print-column="id"],
+          body.print-hide-trade .student-directory-table [data-print-column="trade"],
+          body.print-hide-roll .student-directory-table [data-print-column="roll"]{display:none!important}
+          body.print-hide-board-roll .student-directory-table [data-print-column="board-roll"]{display:none!important}
+          .student-directory-table [data-print-column="year"],
+          .student-directory-table [data-print-column="branch"],
+          .student-directory-table [data-print-column="class"]{display:none!important}
+          .student-directory-table [data-print-column="details"]{display:none!important}
+          .student-directory-table [data-print-column="comment"]{display:table-cell!important;width:22%;min-width:28mm}
+          body.print-hide-comment .student-directory-table [data-print-column="comment"]{display:none!important}
+        }
     </style>
 </head>
 
@@ -320,14 +378,24 @@
   </section>
   <section class="student-directory-content">
     <div class="container">
+      <section id="studentAccessGate" class="student-access-gate" aria-labelledby="studentAccessTitle">
+        <h2 id="studentAccessTitle">শিক্ষার্থী তালিকা দেখতে পাসওয়ার্ড দিন</h2>
+        <p>অনুমোদিত পাসওয়ার্ড ছাড়া তালিকা দেখা যাবে না।</p>
+        <form id="studentAccessForm" class="student-access-form">
+          <input id="studentAccessPassword" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="current-password" placeholder="পাসওয়ার্ড" aria-label="পাসওয়ার্ড" required>
+          <button type="submit">প্রবেশ করুন</button>
+        </form>
+        <p id="studentAccessMessage" class="student-access-message" role="status" aria-live="polite"></p>
+      </section>
+      <div id="studentDirectoryProtected" class="student-directory-protected" hidden>
       <p id="studentDirectoryStatus" class="student-directory-status" role="status" aria-live="polite">শিক্ষার্থীদের তথ্য লোড হচ্ছে...</p>
       <div id="studentDirectoryToolbar" class="student-directory-toolbar" hidden>
         <form id="studentDirectoryFilters" class="student-directory-filters">
-          <label>শিক্ষাবর্ষ
-            <select id="studentFilterYear"><option value="">সব শিক্ষাবর্ষ</option></select>
+          <label>শিক্ষাবর্ষ *
+            <select id="studentFilterYear" required><option value="">শিক্ষাবর্ষ নির্বাচন করুন</option></select>
           </label>
           <label>শাখা
-            <select id="studentFilterBranch"><option value="">সব শাখা</option></select>
+            <select id="studentFilterBranch" required><option value="">শাখা নির্বাচন করুন</option></select>
           </label>
           <label>শ্রেণি
             <select id="studentFilterClass"><option value="">সব শ্রেণি</option></select>
@@ -351,24 +419,65 @@
           </div>
         </form>
         <p id="studentDirectoryCount" class="student-directory-count" aria-live="polite"></p>
+        <div class="student-directory-results-controls">
+          <label>প্রতি পাতায় দেখান
+            <select id="studentPageSize">
+              <option value="10">১০ জন</option>
+              <option value="25" selected>২৫ জন</option>
+              <option value="50">৫০ জন</option>
+              <option value="100">১০০ জন</option>
+              <option value="all">সব শিক্ষার্থী</option>
+            </select>
+          </label>
+          <button id="studentPrintButton" class="student-directory-print" type="button">ফিল্টার করা তালিকা প্রিন্ট</button>
+        </div>
+        <fieldset class="student-directory-print-options" id="studentPrintOptions">
+          <strong>প্রিন্টে কোন তথ্যগুলো দেখাবেন?</strong>
+          <label><input type="checkbox" data-print-toggle="photo" checked> ছবি</label>
+          <label><input type="checkbox" data-print-toggle="name" checked disabled> নাম</label>
+          <label><input type="checkbox" data-print-toggle="roll" checked> রোল</label>
+          <label><input type="checkbox" data-print-toggle="board-roll" checked> বোর্ড রোল</label>
+          <label><input type="checkbox" data-print-toggle="id" checked> শিক্ষার্থী আইডি</label>
+          <label><input type="checkbox" data-print-toggle="trade" checked> ট্রেড</label>
+          <label><input type="checkbox" data-print-toggle="comment" checked> মন্তব্য কলাম</label>
+        </fieldset>
       </div>
+      <header class="student-directory-print-heading" aria-hidden="true">
+        <div class="student-directory-print-brand">
+          <img src="images/logo/logo-transparent.png" alt="">
+          <div class="student-directory-print-brand-copy">
+            <h1>তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</h1>
+            <p>টেঙ্গুরী, কেন্দুয়া, নেত্রকোণা · EIIN No. 136065</p>
+          </div>
+          <span></span>
+        </div>
+        <h2>শিক্ষার্থী তালিকা</h2>
+        <p id="studentDirectoryPrintMeta" class="student-directory-print-meta"></p>
+      </header>
       <div class="student-directory-table-wrap">
         <table class="student-directory-table">
           <thead>
             <tr>
-              <th>ছবি</th>
-              <th>নাম</th>
-              <th>শিক্ষার্থী আইডি</th>
-              <th>শিক্ষাবর্ষ</th>
-              <th>শাখা</th>
-              <th>শ্রেণি</th>
-              <th>ট্রেড</th>
-              <th>রোল</th>
-              <th>বিস্তারিত</th>
+              <th data-print-column="photo">ছবি</th>
+              <th data-print-column="name">নাম</th>
+              <th data-print-column="roll">রোল</th>
+              <th data-print-column="board-roll">বোর্ড রোল</th>
+              <th data-print-column="id">শিক্ষার্থী আইডি</th>
+              <th data-print-column="year">শিক্ষাবর্ষ</th>
+              <th data-print-column="branch">শাখা</th>
+              <th data-print-column="class">শ্রেণি</th>
+              <th data-print-column="trade">ট্রেড</th>
+              <th data-print-column="comment">মন্তব্য</th>
             </tr>
           </thead>
           <tbody id="studentDirectory"></tbody>
         </table>
+      </div>
+      <div class="student-directory-pagination" id="studentDirectoryPagination" hidden>
+        <button id="studentPreviousPage" type="button">আগের পৃষ্ঠা</button>
+        <span id="studentPageInfo" aria-live="polite"></span>
+        <button id="studentNextPage" type="button">পরের পৃষ্ঠা</button>
+      </div>
       </div>
     </div>
   </section>
@@ -451,7 +560,7 @@
     <!-- Existing mobile menu script -->
     <script src="js/script.js"></script>
 
-    <script type="module" src="js/public-students.js?v=20261021-1"></script>
+    <script type="module" src="js/public-students.js?v=20261022-student-branch-preserve2"></script>
 
 
 </body>

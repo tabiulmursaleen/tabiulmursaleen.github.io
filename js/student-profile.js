@@ -10,6 +10,9 @@ const profile = document.getElementById("studentProfile");
 const status = document.getElementById("studentProfileStatus");
 const photo = document.getElementById("studentProfilePhoto");
 const details = document.getElementById("studentProfileDetails");
+const profileCode = document.getElementById("studentProfileCode");
+const profileQr = document.getElementById("studentProfileQr");
+const printButton = document.getElementById("studentProfilePrintButton");
 
 const publicValueTranslations = new Map([
   ["স্কুল", "School"],
@@ -28,6 +31,18 @@ const publicValueTranslations = new Map([
 function displayValue(value) {
   const text = String(value || "").trim();
   return publicValueTranslations.get(text) || text;
+}
+
+function displayClass(value) {
+  const text = String(value || "").trim();
+  const ordinalClasses = new Map([
+    ["ষষ্ঠ", "Six"], ["সপ্তম", "Seven"], ["অষ্টম", "Eight"],
+    ["নবম", "Nine"], ["দশম", "Ten"], ["একাদশ", "Eleven"], ["দ্বাদশ", "Twelve"]
+  ]);
+  if (ordinalClasses.has(text)) return ordinalClasses.get(text);
+  const normalized = text.replace(/[০-৯]/g, (digit) => "০১২৩৪৫৬৭৮৯".indexOf(digit));
+  const number = normalized.match(/(?:class|grade)?\s*(6|7|8|9|10|11|12)(?:\D|$)/i)?.[1];
+  return ({ 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine", 10: "Ten", 11: "Eleven", 12: "Twelve" })[number] || displayValue(text);
 }
 
 function sentenceCaseName(value) {
@@ -139,20 +154,31 @@ async function loadProfile() {
     const name = sentenceCaseName(student.name) || "Student";
     document.title = `${name} | Student Profile | Tabiul Mursaleen Nogor Karigori School & College`;
     document.getElementById("studentProfileName").textContent = name;
+    profileCode.textContent = `Student ID: ${student.studentCode || "—"}`;
+    if (student.studentCode) {
+      const qrData = encodeURIComponent(student.studentCode);
+      profileQr.src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&format=png&margin=4&data=${qrData}`;
+      profileQr.addEventListener("error", () => { profileQr.hidden = true; }, { once: true });
+    } else {
+      profileQr.hidden = true;
+    }
     displayPhoto(student.photoUrl, name);
-    addDetail("Student ID", student.studentCode);
-    addDetail("Session", student.session);
+    addDetail("Father’s Name", student.fatherName || student.fatherNameBn);
+    addDetail("Mother’s Name", student.motherName || student.motherNameBn);
+    addDetail("Class Roll", student.roll);
     addDetail("Academic Year", student.academicYear);
     addDetail("Branch", displayValue(student.branch));
-    addDetail("Class", displayValue(student.className));
+    addDetail("Class", displayClass(student.className));
     addDetail("Trade", displayValue(student.trade));
-    addDetail("Roll", student.roll);
     status.hidden = true;
     profile.hidden = false;
+    printButton.hidden = false;
   } catch (error) {
     console.error("শিক্ষার্থী প্রোফাইল লোডের সমস্যা:", error);
     showNotFound();
   }
 }
+
+printButton.addEventListener("click", () => window.print());
 
 loadProfile();

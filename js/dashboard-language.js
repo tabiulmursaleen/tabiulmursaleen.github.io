@@ -21,7 +21,7 @@ const pairs = [
   ["Excel থেকে শিক্ষার্থী তথ্য আমদানি", "Import Student Data from Excel"],
   ["প্রস্তুত করা roster JSON নির্বাচন করে শিক্ষার্থী, বোর্ড রোল/রেজিস্ট্রেশন ও অতিরিক্ত তথ্য ডাটাবেজে যোগ করুন। আমদানি হওয়া শিক্ষার্থীরা শুরুতে ওয়েবসাইটে প্রকাশিত হবে না। অনুপস্থিত তথ্য ফাঁকা থাকবে।", "Select the prepared roster JSON to add students, board roll/registration, and additional data to the database. Imported students will remain unpublished initially. Missing information will stay blank."],
   ["আমদানি ফাইল (.json)", "Import File (.json)"], ["ডাটাবেজে শিক্ষার্থী আমদানি", "Import Students into Database"],
-  ["আমদানি করা শিক্ষার্থীদের প্রকাশ করুন", "Publish Imported Students"],
+  ["আমদানি করা শিক্ষার্থীদের প্রকাশ / হালনাগাদ করুন", "Publish / Update Imported Students"],
   ["শিক্ষার্থীর নমুনা ছবি", "Default student illustration"],
   ["মুছুন", "Delete"],
   ["বেতন ব্যবস্থাপনা", "Fee Management"], ["মাসিক বেতন ও অন্যান্য ফি আদায়ের হিসাব রাখুন।", "Record monthly tuition and other fee payments."],

@@ -675,6 +675,11 @@ studentForm.addEventListener("submit", async (event) => {
       className,
       trade: data.trade,
       roll: data.roll,
+      boardRoll: data.boardRoll,
+      fatherName: data.fatherName,
+      fatherNameBn: data.fatherNameBn,
+      motherName: data.motherName,
+      motherNameBn: data.motherNameBn,
       photoUrl,
       published: data.published,
       updatedAt: serverTimestamp()
@@ -855,16 +860,13 @@ studentImportButton.addEventListener("click", async () => {
 studentPublishImportedButton.addEventListener("click", async () => {
   if (!currentAdmin || busy) return;
   const importedStudents = students.filter((student) => student.sourceImportKey);
-  const unpublishedStudents = importedStudents.filter((student) => student.published !== true);
-  if (!unpublishedStudents.length) {
-    message("studentPublishImportedMessage", importedStudents.length
-      ? "আমদানি করা সব শিক্ষার্থী ইতিমধ্যে প্রকাশিত আছে।"
-      : "আমদানি করা কোনো শিক্ষার্থী পাওয়া যায়নি।", !importedStudents.length);
+  if (!importedStudents.length) {
+    message("studentPublishImportedMessage", "আমদানি করা কোনো শিক্ষার্থী পাওয়া যায়নি।", true);
     return;
   }
 
   const approved = window.confirm(
-    `${bn(unpublishedStudents.length)} জন আমদানি করা শিক্ষার্থীর নাম, আইডি, শিক্ষাবর্ষ, শাখা, শ্রেণি, ট্রেড, রোল ও ছবির অবস্থা প্রকাশিত হবে। পিতা-মাতা, জন্মতারিখ, যোগাযোগ ও বোর্ডের ব্যক্তিগত তথ্য প্রকাশ হবে না। এখন প্রকাশ করবেন?`
+    `${bn(importedStudents.length)} জন আমদানি করা শিক্ষার্থীর প্রকাশিত তালিকা হালনাগাদ হবে। এতে নাম, আইডি, শিক্ষাবর্ষ, শাখা, শ্রেণি, ট্রেড, রোল, বোর্ড রোল, পিতা-মাতার নাম ও ছবির অবস্থা থাকবে। জন্মতারিখ, যোগাযোগ ও বোর্ড রেজিস্ট্রেশন নম্বর প্রকাশ হবে না। এখন প্রকাশ/হালনাগাদ করবেন?`
   );
   if (!approved) return;
 
@@ -872,8 +874,8 @@ studentPublishImportedButton.addEventListener("click", async () => {
   studentPublishImportedButton.disabled = true;
   let publishedCount = 0;
   try {
-    for (let start = 0; start < unpublishedStudents.length; start += 200) {
-      const chunk = unpublishedStudents.slice(start, start + 200);
+    for (let start = 0; start < importedStudents.length; start += 200) {
+      const chunk = importedStudents.slice(start, start + 200);
       const batch = writeBatch(db);
       chunk.forEach((student) => {
         if (!student.publicDirectoryId) {
@@ -890,6 +892,11 @@ studentPublishImportedButton.addEventListener("click", async () => {
           className: student.className || "",
           trade: student.trade || "",
           roll: student.roll || "",
+          boardRoll: student.boardRoll || "",
+          fatherName: student.fatherName || "",
+          fatherNameBn: student.fatherNameBn || "",
+          motherName: student.motherName || "",
+          motherNameBn: student.motherNameBn || "",
           photoUrl: student.photoUrl || "",
           published: true,
           updatedAt
@@ -897,10 +904,10 @@ studentPublishImportedButton.addEventListener("click", async () => {
       });
       await batch.commit();
       publishedCount += chunk.length;
-      message("studentPublishImportedMessage", `${bn(publishedCount)} / ${bn(unpublishedStudents.length)} জন প্রকাশিত হয়েছে...`);
+      message("studentPublishImportedMessage", `${bn(publishedCount)} / ${bn(importedStudents.length)} জন হালনাগাদ হয়েছে...`);
     }
     await loadStudents();
-    message("studentPublishImportedMessage", `${bn(publishedCount)} জন আমদানি করা শিক্ষার্থী ওয়েবসাইটে প্রকাশিত হয়েছে।`);
+    message("studentPublishImportedMessage", `${bn(publishedCount)} জন আমদানি করা শিক্ষার্থীর প্রকাশিত তথ্য হালনাগাদ হয়েছে।`);
   } catch (error) {
     console.error("আমদানি করা শিক্ষার্থীদের প্রকাশে সমস্যা:", error);
     message("studentPublishImportedMessage", `${bn(publishedCount)} জন প্রকাশিত হয়েছে; বাকিগুলো হয়নি। ${error.message || "প্রকাশ করা যায়নি।"}`, true);

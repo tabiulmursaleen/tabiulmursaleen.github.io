@@ -6,19 +6,52 @@
   <title>Student Profile | Tabiul Mursaleen Nogor Karigori School &amp; College</title>
   <link rel="stylesheet" href="css/style.css?v=20261022-gallery-caption-navy1">
   <style>
-    .student-profile-main{padding:38px 0 52px;background:#f6f8fb;min-height:420px}
+    .student-profile-main{padding:38px 0 52px;background:linear-gradient(145deg,#eef3f8,#f8f6ef);min-height:420px}
     .student-profile-back{display:inline-flex;margin-bottom:18px;color:#183d63;font-weight:700;text-decoration:none}
-    .student-profile-panel{display:grid;grid-template-columns:minmax(220px,320px) minmax(0,1fr);gap:28px;max-width:900px;margin:auto;padding:24px;background:#fff;border:1px solid #ded3b5;border-radius:16px;box-shadow:0 8px 25px rgba(24,61,99,.1)}
-    .student-profile-photo-wrap{overflow:hidden;align-self:start;border-radius:12px;background:#e9edf1}
+    .student-profile-panel{position:relative;isolation:isolate;display:block;width:min(100%,440px);min-height:0;margin:auto;padding:0;overflow:hidden;background:#fff;border:1px solid #d5c28e;border-radius:18px;box-shadow:0 14px 34px rgba(24,61,99,.16)}
+    .student-profile-panel::before{content:"";position:absolute;z-index:-1;inset:142px 0 8px;background-image:url("images/logo/logo-transparent.png");background-position:center;background-repeat:no-repeat;background-size:auto 84%;opacity:.055;pointer-events:none}
+    .student-id-card-top{padding:18px 24px 15px;background:linear-gradient(115deg,#102b49,#1d4a70 70%,#315d7d);color:#fff;border-bottom:4px solid #d0aa4f}
+    .student-id-card-brand{display:flex;flex-direction:row;align-items:center;gap:0;text-align:center}
+    .student-id-card-brand > div{transform:translateX(-29px)}
+    .student-id-card-logo{flex:0 0 90px;width:90px;height:90px;object-fit:contain;background:#fff;border-radius:50%;padding:4px}
+    .student-id-card-brand > div{flex:1;min-width:0}
+    .student-id-card-brand h2{margin:0;padding-top:6px;color:#fff;font-size:clamp(22px,2.6vw,27px);line-height:1.2;text-align:center}
+    .student-id-card-brand h2::after{content:"";display:block;width:min(72%,210px);height:1px;margin:6px auto 0;background:linear-gradient(90deg,transparent,#f2d781,transparent)}
+    .student-id-card-brand p{margin:3px 0 0;color:#e7edf4;font-size:13px;text-align:center}
+    .student-id-card-kicker{display:table;margin:8px auto 0;padding:4px 12px;border:1px solid #f2d781;border-radius:999px;background:linear-gradient(120deg,#f5e6b6,#fff7df);color:#183d63;text-align:center;font-size:10px;font-weight:900;letter-spacing:.08em;box-shadow:0 3px 9px rgba(0,0,0,.16)}
+    .student-id-card-body{position:relative;z-index:0;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 22px 15px}
+    .student-profile-photo-wrap{width:104px;overflow:hidden;align-self:center;border:3px solid #e4d7b5;border-radius:12px;background:#f1f4f7}
     .student-profile-photo{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center top}
     .student-profile-photo-link{display:block;padding:24px 12px;text-align:center;color:#183d63;font-weight:700}
-    .student-profile-details h1{margin:0 0 18px;color:#183d63;font-size:clamp(24px,3vw,32px)}
-    .student-profile-details dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px;margin:0}
-    .student-profile-details dl div{padding:12px 0;border-bottom:1px solid #e5eaf0}
-    .student-profile-details dt{margin-bottom:4px;color:#64748b;font-size:14px}
+    .student-profile-details{width:100%}
+    .student-profile-details h1{margin:0 0 3px;color:#183d63;font-size:clamp(21px,2.7vw,27px);line-height:1.2;text-align:center}
+    .student-profile-id{display:table;margin:0 auto 8px;padding:4px 11px;border:1px solid #d0aa4f;border-radius:999px;background:linear-gradient(120deg,#183d63,#285a87);color:#fff;font-size:11px;font-weight:800;overflow-wrap:anywhere;text-align:center;box-shadow:0 3px 8px rgba(24,61,99,.14)}
+    .student-profile-details dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px;margin:0}
+    .student-profile-details dl div{padding:6px 0;border-bottom:1px solid #e5eaf0}
+    .student-profile-details dt{margin-bottom:2px;color:#64748b;font-size:11px}
     .student-profile-details dd{margin:0;color:#233a53;font-weight:700;overflow-wrap:anywhere}
+    .student-id-card-bottom{height:8px;background:linear-gradient(90deg,#d0aa4f,#f1dfaa,#d0aa4f)}
+    .student-id-card-footer{position:relative;z-index:0;display:grid;grid-template-columns:1fr 1fr;align-items:end;gap:16px;padding:0 22px 13px}
+    .student-id-card-qr{display:grid;justify-items:start;gap:4px;color:#536274;font-size:11px;font-weight:700}
+    .student-id-card-qr img{display:block;width:68px;height:68px;padding:4px;border:1px solid #dce3ec;border-radius:7px;background:#fff;image-rendering:pixelated}
+    .student-id-card-signature{justify-self:end;width:min(100%,190px);text-align:center;color:#536274;font-size:12px;font-weight:700}
+    .student-id-card-signature-line{height:25px;border-bottom:1px solid #34495e;margin-bottom:5px}
+    .student-profile-print-button{display:block;margin:18px auto 0;padding:10px 24px;border:1px solid #d0aa4f;border-radius:8px;background:#183d63;color:#fff;font:inherit;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(24,61,99,.15)}
+    .student-profile-print-button:hover{background:#285a87}
     .student-profile-status{padding:20px;background:#fff;border:1px solid #dce3ec;border-radius:10px;color:#536274;text-align:center}
-    @media(max-width:650px){.student-profile-main{padding:24px 0 36px}.student-profile-panel{grid-template-columns:minmax(0,1fr);gap:18px;padding:16px}.student-profile-photo-wrap{width:min(100%,280px);margin:auto}.student-profile-details h1{text-align:center}.student-profile-details dl{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}}
+    @media(max-width:650px){.student-profile-main{padding:24px 0 36px}.student-profile-panel{width:min(100%,390px);min-height:0}.student-profile-panel::before{inset:128px 0 8px;background-size:auto 84%}.student-id-card-top{padding:12px 10px 10px}.student-id-card-brand{display:grid;grid-template-columns:70px minmax(0,1fr);gap:0}.student-id-card-brand > div{transform:translateX(-22px)}.student-id-card-logo{flex:initial;width:68px;height:68px}.student-id-card-brand h2{font-size:21px}.student-id-card-brand p{font-size:11px}.student-id-card-body{gap:8px;padding:12px 16px 13px}.student-profile-photo-wrap{width:92px}.student-profile-details h1{font-size:19px}.student-profile-id{font-size:10px;margin-bottom:6px;padding:4px 10px}.student-profile-details dl{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 10px}.student-profile-details dl div{padding:5px 0}.student-profile-details dt{font-size:10px}.student-profile-details dd{font-size:12px}.student-id-card-footer{gap:10px;padding:0 15px 12px}.student-id-card-qr img{width:60px;height:60px}.student-id-card-signature{font-size:11px}}
+    @media(max-width:380px){.student-profile-photo-wrap{width:84px}.student-id-card-body{padding:11px 12px 12px}.student-profile-details h1{font-size:17px}.student-id-card-brand{display:grid;grid-template-columns:62px minmax(0,1fr)}.student-id-card-logo{flex:initial;width:60px;height:60px}.student-id-card-brand > div{transform:translateX(-20px)}.student-id-card-brand h2{font-size:19px}.student-id-card-footer{padding-inline:12px}}
+    @media print{
+      @page{size:A4 portrait;margin:12mm}
+      body.student-profile-page > *{display:none!important}
+      body.student-profile-page > main.student-profile-main{display:block!important;position:static!important;width:100%!important;margin:0!important;padding:0!important;background:#fff!important}
+      body.student-profile-page > main.student-profile-main,
+      body.student-profile-page > main.student-profile-main *{visibility:visible!important}
+      .student-profile-main .container > *:not(#studentProfile){display:none!important}
+      .student-profile-panel{display:block!important;width:min(100%,125mm)!important;min-height:0!important;margin:0 auto!important;break-inside:avoid;box-shadow:none!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .student-id-card-brand h2{font-size:29px!important}
+      .student-profile-print-button{display:none!important}
+    }
   </style>
 </head>
 
@@ -109,15 +142,40 @@
 
   <main class="student-profile-main">
     <div class="container">
-      <a class="student-profile-back" href="students.html">← Back to Student List</a>
+      <a class="student-profile-back" href="students.html">← শিক্ষার্থী তালিকায় ফিরুন</a>
       <p id="studentProfileStatus" class="student-profile-status" role="status" aria-live="polite">Loading student details...</p>
       <section id="studentProfile" class="student-profile-panel" hidden>
-        <div class="student-profile-photo-wrap"><img id="studentProfilePhoto" class="student-profile-photo" alt=""></div>
-        <div class="student-profile-details">
-          <h1 id="studentProfileName"></h1>
-          <dl id="studentProfileDetails"></dl>
+        <header class="student-id-card-top">
+          <div class="student-id-card-brand">
+            <img class="student-id-card-logo" src="images/logo/logo-transparent.png" alt="Institution logo">
+            <div>
+              <h2>তাবিউল মুরসালীন নগর<br>কারিগরি স্কুল এন্ড কলেজ</h2>
+              <p>টেঙ্গুরী, কেন্দুয়া, নেত্রকোণা · EIIN No. 136065</p>
+            </div>
+          </div>
+          <p class="student-id-card-kicker">STUDENT IDENTITY CARD</p>
+        </header>
+        <div class="student-id-card-body">
+          <div class="student-profile-photo-wrap"><img id="studentProfilePhoto" class="student-profile-photo" alt=""></div>
+          <div class="student-profile-details">
+            <h1 id="studentProfileName"></h1>
+            <p id="studentProfileCode" class="student-profile-id"></p>
+            <dl id="studentProfileDetails"></dl>
+          </div>
         </div>
+        <div class="student-id-card-footer">
+          <div class="student-id-card-qr">
+            <img id="studentProfileQr" alt="Student ID QR code" referrerpolicy="no-referrer">
+            <span>Scan Student ID</span>
+          </div>
+          <div class="student-id-card-signature">
+            <div class="student-id-card-signature-line"></div>
+            <span>Institution Head’s Signature</span>
+          </div>
+        </div>
+        <div class="student-id-card-bottom" aria-hidden="true"></div>
       </section>
+      <button id="studentProfilePrintButton" class="student-profile-print-button" type="button" hidden>আইডি কার্ড প্রিন্ট করুন</button>
     </div>
   </main>
 
@@ -213,7 +271,7 @@
 </footer>
 
   <script src="js/script.js"></script>
-  <script type="module" src="js/student-profile.js?v=20261020-4"></script>
+  <script type="module" src="js/student-profile.js?v=20261023-id-card-print1"></script>
 
 </body>
 </html>
