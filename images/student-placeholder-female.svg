@@ -2,21 +2,18 @@
   <title id="title">Student photo placeholder</title>
   <desc id="desc">Illustration of a schoolgirl in uniform holding books</desc>
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8f5eb"/><stop offset="1" stop-color="#e7eef5"/></linearGradient>
-    <linearGradient id="uniform" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#244b70"/><stop offset="1" stop-color="#132f4b"/></linearGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffdf7"/><stop offset="1" stop-color="#edf5fb"/></linearGradient>
+    <linearGradient id="uniform" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e4eef7"/><stop offset="1" stop-color="#cbdfee"/></linearGradient>
   </defs>
   <rect width="400" height="500" rx="30" fill="url(#bg)"/>
   <circle cx="200" cy="190" r="137" fill="#fff" opacity=".7"/>
-  <circle cx="342" cy="72" r="9" fill="#c39a3d" opacity=".8"/><circle cx="59" cy="112" r="6" fill="#477195" opacity=".65"/>
+  <circle cx="342" cy="72" r="9" fill="#ead9a8" opacity=".8"/><circle cx="59" cy="112" r="6" fill="#bfd4e4" opacity=".75"/>
   <path d="M63 467c9-110 55-163 137-163s128 53 137 163v33H63z" fill="url(#uniform)"/>
   <path d="m159 310 41 51 41-51-14-20h-54z" fill="#fff"/><path d="m188 357 12 13 12-13-6 60h-12z" fill="#c39a3d"/>
-  <path d="M115 174c0-70 33-111 85-111s85 41 85 111v69c0 53-34 87-85 87s-85-34-85-87z" fill="#d89a76"/>
-  <path d="M102 218c-19-84 4-155 98-160 92-5 123 74 98 160l-17-10-4-67c-45 8-100 1-143-24l-9 88z" fill="#263342"/>
-  <path d="M117 158c-7 45-4 101 20 159l-21 45-28-7c7-90 8-157 29-197zm166 0c8 45 5 101-19 159l20 45 28-7c-7-90-8-157-29-197z" fill="#263342"/>
-  <path d="M145 224c10-7 21-7 31 0m47 0c10-7 21-7 31 0" fill="none" stroke="#4f382f" stroke-linecap="round" stroke-width="6"/>
-  <circle cx="161" cy="244" r="5" fill="#4f382f"/><circle cx="239" cy="244" r="5" fill="#4f382f"/>
-  <path d="M180 278c11 10 25 10 37 0" fill="none" stroke="#965e4b" stroke-linecap="round" stroke-width="5"/>
-  <path d="M78 420h103c15 0 27 12 27 27v38H78z" fill="#fff" stroke="#b58a2c" stroke-width="6"/>
-  <path d="M208 447c0-15 12-27 27-27h88v65h-88c-15 0-27-12-27-27z" fill="#f0c866" stroke="#b58a2c" stroke-width="6"/>
-  <path d="M101 441h54m-54 17h66m48-17h53m-53 17h45" stroke="#9baebe" stroke-linecap="round" stroke-width="5"/>
+  <path d="M115 174c0-70 33-111 85-111s85 41 85 111v69c0 53-34 87-85 87s-85-34-85-87z" fill="#f1c9b2"/>
+  <path d="M102 218c-19-84 4-155 98-160 92-5 123 74 98 160l-17-10-4-67c-45 8-100 1-143-24l-9 88z" fill="#82939d"/>
+  <path d="M117 158c-7 45-4 101 20 159l-21 45-28-7c7-90 8-157 29-197zm166 0c8 45 5 101-19 159l20 45 28-7c-7-90-8-157-29-197z" fill="#82939d"/>
+  <path d="M78 420h103c15 0 27 12 27 27v38H78z" fill="#fff" stroke="#c9b779" stroke-width="6"/>
+  <path d="M208 447c0-15 12-27 27-27h88v65h-88c-15 0-27-12-27-27z" fill="#f7e9bf" stroke="#c9b779" stroke-width="6"/>
+  <path d="M101 441h54m-54 17h66m48-17h53m-53 17h45" stroke="#b7c9d7" stroke-linecap="round" stroke-width="5"/>
 </svg>

@@ -47,8 +47,13 @@ function fillSubjectOptions(select, className, selectedName = "") {
   select.replaceChildren(new Option("বিষয় নির্বাচন করুন", ""));
   const subjects = getAcademicSubjects(className);
   subjects.forEach((subject) => select.append(new Option(subject.name, subject.name)));
+  ["ট্রেড ১", "ট্রেড ২", "ট্রেড ৩", "ট্রেড ৪"].forEach((name) => {
+    if (!subjects.some((subject) => subject.name === name)) select.append(new Option(name, name));
+  });
   const legacy = selectedName && !subjects.some((subject) => subject.name === selectedName);
-  if (legacy) select.append(new Option(selectedName, selectedName));
+  if (legacy && ![...select.options].some((option) => option.value === selectedName)) {
+    select.append(new Option(selectedName, selectedName));
+  }
   select.value = selectedName;
 }
 
@@ -81,8 +86,8 @@ function addRow(item = {}) {
   subjectLabel.append(subjectSelect);
   const codeLabel = document.createElement("label");
   codeLabel.append("বিষয় কোড ");
-  const codeInput = input("text", "exam-routine-code", item.subjectCode || "");
-  codeInput.readOnly = true;
+  const codeInput = input("text", "exam-routine-code", item.subjectCode || "", "বিষয় কোড লিখুন");
+  codeInput.required = false;
   codeLabel.append(codeInput);
   subjectSelect.addEventListener("change", () => {
     codeInput.value = getAcademicSubjects(document.getElementById("examRoutineClass").value)
@@ -105,11 +110,11 @@ document.getElementById("examRoutineClass").addEventListener("change", () => {
     const select = row.querySelector(".exam-routine-subject");
     const code = row.querySelector(".exam-routine-code");
     const oldName = select.value;
+    const classSubjects = getAcademicSubjects(document.getElementById("examRoutineClass").value);
     fillSubjectOptions(select, document.getElementById("examRoutineClass").value);
-    select.value = getAcademicSubjects(document.getElementById("examRoutineClass").value)
-      .some((subject) => subject.name === oldName) ? oldName : "";
-    code.value = getAcademicSubjects(document.getElementById("examRoutineClass").value)
-      .find((subject) => subject.name === select.value)?.code || "";
+    select.value = classSubjects.some((subject) => subject.name === oldName)
+      || ["ট্রেড ১", "ট্রেড ২", "ট্রেড ৩", "ট্রেড ৪"].includes(oldName) ? oldName : "";
+    code.value = classSubjects.find((subject) => subject.name === select.value)?.code || "";
   });
 });
 
@@ -195,8 +200,8 @@ form.addEventListener("submit", async (event) => {
     subject: row.querySelector(".exam-routine-subject").value.trim(),
     subjectCode: row.querySelector(".exam-routine-code").value.trim()
   }));
-  if (subjects.some((item) => !item.date || !item.day || !item.subject || !item.subjectCode)) {
-    message.textContent = "প্রতিটি সারিতে তারিখ, বিষয় ও বিষয় কোড পূরণ করুন।"; return;
+  if (subjects.some((item) => !item.date || !item.day || !item.subject)) {
+    message.textContent = "প্রতিটি সারিতে তারিখ, বার ও বিষয় নির্বাচন করুন।"; return;
   }
   const published = document.getElementById("examRoutinePublished").checked;
   const data = {

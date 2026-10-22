@@ -4,7 +4,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 import { db } from "./firebase-config.js";
-import { studentPlaceholderForName } from "./student-placeholder.js?v=20261020-1";
+import { studentPlaceholderForName } from "./student-placeholder.js?v=20261022-silhouette2";
 
 const profile = document.getElementById("studentProfile");
 const status = document.getElementById("studentProfileStatus");

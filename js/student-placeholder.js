@@ -29,16 +29,16 @@ function normalizedTokens(value) {
 export function studentPlaceholderForName(name, gender = "") {
   const explicit = String(gender || "").trim().toLocaleLowerCase();
   if (["female", "girl", "ছাত্রী", "মেয়ে", "নারী"].includes(explicit)) {
-    return "images/student-placeholder-female.svg";
+    return "images/student-placeholder-female.svg?v=20261022-silhouette2";
   }
   if (["male", "boy", "ছাত্র", "পুরুষ"].includes(explicit)) {
-    return "images/student-placeholder.svg";
+    return "images/student-placeholder.svg?v=20261022-silhouette2";
   }
 
   const tokens = normalizedTokens(name);
   const femaleByName = tokens.some((token) => femaleNameTokens.has(token))
     || tokens[0] === "AKTER";
   return femaleByName
-    ? "images/student-placeholder-female.svg"
-    : "images/student-placeholder.svg";
+    ? "images/student-placeholder-female.svg?v=20261022-silhouette2"
+    : "images/student-placeholder.svg?v=20261022-silhouette2";
 }

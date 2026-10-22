@@ -752,7 +752,11 @@ button:disabled {
 
 #checkAdmitEligibility,
 #prepareAdmitCards,
-#printAdmitCards {
+#prepareSeatPlan,
+#prepareAttendanceSheet,
+#printAdmitCards,
+#printSeatPlan,
+#printAttendanceSheet {
   width: auto;
   min-height: 40px;
   margin: 14px 0 0;
@@ -762,6 +766,15 @@ button:disabled {
 
 .admit-selection-toolbar #prepareAdmitCards {
   margin: 0;
+}
+.admit-selection-toolbar #prepareSeatPlan {
+  margin: 0;
+  border: 1px solid #b99b55;
+  background: linear-gradient(120deg, #285780, #183d63);
+  color: #fff;
+}
+.admit-selection-toolbar #prepareSeatPlan:hover {
+  background: linear-gradient(120deg, #356b98, #244f77);
 }
 
 .admit-student-thumbnail {
@@ -787,7 +800,7 @@ button:disabled {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 20px;
   max-width: 960px;
   margin: 0 auto 22px;
   padding: 14px;
@@ -2156,7 +2169,9 @@ button:hover {
   }
 
   #prepareAdmitCards,
+  #prepareSeatPlan,
   #printAdmitCards,
+  #printSeatPlan,
   #checkAdmitEligibility {
     width: 100%;
   }
@@ -2206,7 +2221,7 @@ button:hover {
     height: 285mm;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: repeat(2, minmax(0, 1fr));
-    gap: 4mm;
+    gap: 8mm;
     max-width: none;
     margin: 0;
     padding: 0;
@@ -2234,13 +2249,13 @@ button:hover {
   }
 
   .admit-card-heading h1 {
-    font-size: 14pt;
-    line-height: 1.25;
-    white-space: nowrap;
+    font-size: 16pt;
+    line-height: 1.15;
+    white-space: normal;
   }
 
   .admit-card-heading h1.english-institution-name {
-    font-size: 15pt;
+    font-size: 14.5pt;
     white-space: normal;
   }
 
@@ -2265,6 +2280,200 @@ button:hover {
   .admit-card-signatures {
     padding-top: 7mm;
   }
+}
+
+.admit-card-heading {
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  text-align: center;
+}
+.admit-institution-logo {
+  flex: 0 0 54px;
+  width: 54px;
+  height: 54px;
+}
+.admit-institution-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+}
+.admit-card-heading h1 {
+  font-size: 18px;
+  line-height: 1.2;
+}
+@media print {
+  .admit-card-heading h1 {
+    font-size: 16pt;
+    line-height: 1.15;
+    white-space: normal;
+  }
+  .admit-card-heading h1.english-institution-name {
+    font-size: 14.5pt;
+  }
+  .admit-institution-logo {
+    flex-basis: 18mm;
+    width: 18mm;
+    height: 18mm;
+  }
+  .admit-card-heading { gap: 2mm; }
+}
+
+.admit-card-photo-block {
+  width: 27mm;
+  min-width: 0;
+  text-align: center;
+}
+.admit-card-photo-caption {
+  margin: 3px 0 0;
+  color: #536277;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.admit-institution-logo {
+  transform: translateX(2px);
+}
+@media print {
+  .admit-card-photo-caption {
+    margin-top: 1mm;
+    font-size: 7pt;
+  }
+  .admit-institution-logo {
+    transform: translateX(1mm);
+  }
+}
+
+.seat-plan-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 12px 0 16px;
+  padding: 10px 12px;
+  border: 1px solid #d5dfe9;
+  border-radius: 9px;
+  background: #f7f9fc;
+}
+.seat-plan-fields legend {
+  padding: 0 6px;
+  color: #183d63;
+  font-weight: 700;
+}
+.seat-plan-fields label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: #30455c;
+  font-size: 14px;
+  font-weight: 500;
+}
+.seat-plan-fields input {
+  width: auto;
+  margin: 0;
+  accent-color: #183d63;
+}
+.seat-plan-page {
+  max-width: 960px;
+  min-height: 930px;
+  margin: 0 auto 22px;
+  padding: 22px;
+  border: 1px solid #d8e0e8;
+  background: #fff;
+  color: #1e2d40;
+}
+.seat-plan-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #b99b55;
+  text-align: center;
+}
+.seat-plan-heading img {
+  width: 58px;
+  height: 58px;
+  flex: 0 0 58px;
+  object-fit: contain;
+}
+.seat-plan-heading div { flex: 1; min-width: 0; }
+.seat-plan-heading h1 {
+  margin: 0;
+  color: #183d63;
+  font-size: 23px;
+  line-height: 1.3;
+}
+.seat-plan-heading p {
+  margin: 4px 0 0;
+  color: #536277;
+  font-size: 13px;
+}
+.seat-plan-page > h2 {
+  margin: 15px 0 5px;
+  color: #183d63;
+  text-align: center;
+}
+.seat-plan-page > p:not(.seat-plan-page-note) {
+  margin: 5px 0 14px;
+  color: #30455c;
+  text-align: center;
+  font-weight: 700;
+}
+.seat-plan-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+.seat-plan-table th,
+.seat-plan-table td {
+  padding: 9px 8px;
+  border: 1px solid #aebdcb;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.seat-plan-table th {
+  background: #eaf0f6;
+  color: #183d63;
+  font-size: 14px;
+}
+.seat-plan-table td { height: 38px; }
+.seat-plan-table tbody tr:nth-child(even) { background: #f7f9fc; }
+.seat-plan-table th:first-child,
+.seat-plan-table td:first-child { width: 12mm; }
+.seat-plan-page-note {
+  margin: 12px 0 0;
+  color: #68798b;
+  font-size: 12px;
+  text-align: right;
+}
+@media print {
+  .seat-plan-page {
+    box-sizing: border-box;
+    width: 198mm;
+    height: 285mm;
+    min-height: 0;
+    max-width: none;
+    margin: 0;
+    padding: 9mm;
+    border: 0;
+    break-after: page;
+    page-break-after: always;
+  }
+  .seat-plan-page:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+  .seat-plan-heading { gap: 4mm; padding-bottom: 3mm; }
+  .seat-plan-heading img { width: 17mm; height: 17mm; flex-basis: 17mm; }
+  .seat-plan-heading h1 { font-size: 17pt; }
+  .seat-plan-heading p { margin-top: 1mm; font-size: 9pt; }
+  .seat-plan-page > h2 { margin: 4mm 0 1mm; font-size: 14pt; }
+  .seat-plan-page > p:not(.seat-plan-page-note) { margin: 1mm 0 3mm; font-size: 10pt; }
+  .seat-plan-table th,
+  .seat-plan-table td { padding: 2.2mm 1.5mm; font-size: 9pt; }
+  .seat-plan-table th { font-size: 9pt; }
+  .seat-plan-table td { height: 9mm; }
+  .seat-plan-page-note { margin-top: 3mm; font-size: 8pt; }
 }
 
 .dashboard-container > .welcome-card {
@@ -2720,5 +2929,274 @@ input[type="week"]::-webkit-calendar-picker-indicator:hover {
   background: linear-gradient(120deg, #285780, #183d63);
   color: #fff;
   box-shadow: 0 4px 12px rgba(24, 61, 99, .2);
+}
+
+/* Printable seat-plan labels: fifteen detachable cards per A4 page. */
+.seat-plan-page {
+  display: block;
+  padding: 14px;
+}
+.seat-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  height: 100%;
+}
+.seat-plan-card {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  padding: 11px;
+  overflow: hidden;
+  border: 1px dashed #486783;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #fff 0%, #f7f9fc 100%);
+  box-shadow: inset 0 0 0 2px #edf1f5;
+}
+.seat-plan-card-heading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #d8c68f;
+}
+.seat-plan-card-heading h1 {
+  margin: 0;
+  color: #183d63;
+  font-size: 13px;
+  line-height: 1.2;
+  text-align: center;
+}
+.seat-plan-card-title {
+  margin: 6px 0;
+  padding: 4px;
+  border-radius: 4px;
+  background: #eaf0f6;
+  color: #183d63;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+}
+.seat-plan-card-details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 3px;
+  min-height: 0;
+  margin: 0;
+}
+.seat-plan-card-details > div {
+  display: grid;
+  grid-template-columns: minmax(48px, 34%) minmax(0, 1fr);
+  gap: 4px;
+  padding-bottom: 3px;
+  border-bottom: 1px dotted #c7d1dc;
+  font-size: 11px;
+  line-height: 1.3;
+}
+.seat-plan-card-details dt { color: #58697a; font-weight: 700; }
+.seat-plan-card-details dd { min-width: 0; margin: 0; color: #172b42; font-weight: 700; overflow-wrap: anywhere; }
+@media print {
+  .seat-plan-page {
+    display: block;
+    width: 198mm;
+    height: 285mm;
+    min-height: 0;
+    padding: 2.5mm;
+  }
+  .seat-plan-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(5, minmax(0, 1fr));
+    gap: 4mm;
+  }
+  .seat-plan-card {
+    padding: 2mm 2.5mm;
+    border-width: .35mm;
+    border-radius: 1.5mm;
+    box-shadow: inset 0 0 0 .5mm #edf1f5;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .seat-plan-card-heading {
+    padding-bottom: 1.5mm;
+  }
+  .seat-plan-card-heading h1 { font-size: 9pt; line-height: 1.15; }
+  .seat-plan-card-title { margin: 1mm 0; padding: .8mm; font-size: 8.5pt; }
+  .seat-plan-card-details { justify-content: flex-start; gap: .5mm; }
+  .seat-plan-card-details > div {
+    grid-template-columns: minmax(15mm, 34%) minmax(0, 1fr);
+    gap: 1mm;
+    padding-bottom: .4mm;
+    font-size: 8pt;
+    line-height: 1.1;
+  }
+}
+
+/* Admit-card and seat-plan actions share one aligned button style. */
+.admit-selection-toolbar .check-label {
+  margin-right: auto;
+}
+.admit-selection-toolbar #prepareAdmitCards,
+.admit-selection-toolbar #prepareSeatPlan,
+.admit-selection-toolbar #prepareAttendanceSheet {
+  width: auto;
+  min-width: 170px;
+  min-height: 44px;
+  margin: 0;
+  padding: 9px 14px;
+  border: 1px solid #b99b55;
+  border-radius: 8px;
+  background: linear-gradient(120deg, #285780, #183d63);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.admit-selection-toolbar #prepareAdmitCards:hover,
+.admit-selection-toolbar #prepareSeatPlan:hover,
+.admit-selection-toolbar #prepareAttendanceSheet:hover,
+.admit-selection-toolbar #prepareAdmitCards:focus-visible,
+.admit-selection-toolbar #prepareSeatPlan:focus-visible,
+.admit-selection-toolbar #prepareAttendanceSheet:focus-visible {
+  background: linear-gradient(120deg, #356b98, #244f77);
+}
+@media (max-width: 700px) {
+  .admit-selection-toolbar {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: center;
+    gap: 8px;
+  }
+  .admit-selection-toolbar .check-label {
+    grid-column: 1 / -1;
+    margin-right: 0;
+  }
+  .admit-selection-toolbar #prepareAdmitCards,
+  .admit-selection-toolbar #prepareSeatPlan,
+  .admit-selection-toolbar #prepareAttendanceSheet {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    padding: 8px 6px;
+    font-size: 13px;
+    white-space: normal;
+  }
+}
+
+.attendance-sheet-page {
+  width: min(100%, 900px);
+  min-height: 720px;
+  margin: 18px auto;
+  padding: 24px;
+  border: 1px solid #c8d4e0;
+  background: #fff;
+  color: #172b42;
+}
+.attendance-routine-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr);
+  gap: 16px;
+  align-items: start;
+  margin: 12px 0 16px;
+}
+.attendance-routine-tools .attendance-fields { min-width: 0; margin: 0; }
+.attendance-routine-panel {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #d5dfe9;
+  border-radius: 9px;
+  background: #f7f9fc;
+}
+.attendance-routine-panel h3 { margin: 0 0 9px; color: #183d63; font-size: 16px; }
+.attendance-routine-panel > label { display: block; color: #334a61; font-size: 13px; font-weight: 700; }
+.attendance-routine-panel input { width: 100%; margin-top: 5px; }
+.attendance-routine-panel button { margin: 8px 0; }
+.attendance-routine-preview { max-height: 300px; overflow: auto; font-size: 13px; }
+.attendance-routine-preview > p { margin: 4px 0 6px; color: #183d63; font-weight: 700; }
+.attendance-routine-preview > a { display: inline-block; margin-bottom: 7px; color: #174f7b; font-weight: 700; }
+.attendance-routine-preview-table { width: 100%; border-collapse: collapse; background: #fff; }
+.attendance-routine-preview-table th,
+.attendance-routine-preview-table td { padding: 5px; border: 1px solid #c8d4e0; text-align: center; }
+.attendance-routine-preview-table th { background: #eaf0f6; color: #173c60; }
+.attendance-routine-preview-table td:nth-child(3) { text-align: left; }
+.attendance-sheet-header {
+  padding-bottom: 8px;
+  border-bottom: 2px solid #183d63;
+  text-align: center;
+}
+.attendance-sheet-brand-row {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) 72px;
+  align-items: center;
+  gap: 8px;
+}
+.attendance-sheet-logo { width: 64px; height: 64px; margin-left: 4px; object-fit: contain; }
+.attendance-sheet-institution-copy { width: 100%; min-width: 0; text-align: center; }
+.attendance-sheet-institution-copy h1 { margin: 0; color: #183d63; font-size: 22px; line-height: 1.25; }
+.attendance-sheet-institution-copy p { margin: 2px 0 0; font-size: 14px; line-height: 1.3; }
+.attendance-sheet-header h2 { margin: 6px 0 0; font-size: 18px; line-height: 1.3; }
+.attendance-sheet-header h1,
+.attendance-sheet-header p,
+.attendance-sheet-header h2 { letter-spacing: 0; white-space: normal; word-break: normal; overflow-wrap: normal; }
+.attendance-student-details {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px 12px;
+  margin: 12px 0;
+}
+.attendance-student-details > div { display: flex; gap: 5px; min-width: 0; }
+.attendance-student-details dt { color: #58697a; font-weight: 700; white-space: nowrap; }
+.attendance-student-details dd { margin: 0; font-weight: 700; overflow-wrap: anywhere; }
+.attendance-student-details > div { font-size: 15px; }
+.attendance-student-details > div[data-field="name"] dd { font-size: inherit; }
+.attendance-subject-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.attendance-subject-table th,
+.attendance-subject-table td { border: 1px solid #718398; padding: 5px 4px; text-align: center; }
+.attendance-subject-table th { background: #eaf0f6; color: #173c60; font-size: 14px; }
+.attendance-subject-table td { height: 38px; font-size: 15px; }
+.attendance-subject-table td:first-child { white-space: pre-line; line-height: 1.35; }
+.attendance-subject-table th:nth-child(1) { width: 19%; }
+.attendance-subject-table th:nth-child(2) { width: 21%; }
+.attendance-subject-table th:nth-child(3) { width: 16%; }
+.attendance-subject-table th:nth-child(4),
+.attendance-subject-table th:nth-child(5) { width: 22%; }
+@media print {
+  .attendance-sheet-page {
+    box-sizing: border-box;
+    width: 198mm;
+    height: 285mm;
+    min-height: 0;
+    margin: 0;
+    padding: 1mm 5mm 5mm;
+    border: 0;
+    break-after: page;
+    page-break-after: always;
+  }
+  .attendance-sheet-page:last-child { break-after: auto; page-break-after: auto; }
+  .attendance-sheet-header { padding-bottom: 2.5mm; }
+  .attendance-sheet-brand-row { grid-template-columns: 26mm minmax(0, 1fr) 26mm; gap: 1.5mm; }
+  .attendance-sheet-logo { width: 22mm; height: 22mm; margin-left: 1mm; }
+  .attendance-sheet-institution-copy h1 { font-size: 17pt; line-height: 1.2; }
+  .attendance-sheet-institution-copy p { margin: .5mm 0 0; font-size: 9.5pt; }
+  .attendance-sheet-header h2 { margin: 1.5mm 0 0; font-size: 13pt; }
+  .attendance-student-details { gap: 2mm 3mm; margin: 4mm 0; }
+  .attendance-student-details > div { gap: 1mm; font-size: 10pt; }
+  .attendance-student-details > div[data-field="name"] dd { font-size: 9pt; }
+  .attendance-subject-table th,
+  .attendance-subject-table td { padding: 1.6mm 1mm; }
+  .attendance-subject-table th { font-size: 10.5pt; }
+  .attendance-subject-table td { height: 9mm; font-size: 11.5pt; }
+  .attendance-subject-table th:nth-child(4),
+  .attendance-subject-table th:nth-child(5) { font-size: 9pt; }
+}
+@media (max-width: 850px) {
+  .attendance-routine-tools { grid-template-columns: minmax(0, 1fr); }
 }
 

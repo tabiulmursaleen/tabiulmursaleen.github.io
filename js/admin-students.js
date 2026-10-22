@@ -18,7 +18,7 @@ import {
 
 import { auth, db } from "./firebase-config.js";
 import { getAcademicSubjects } from "./academic-subjects.js?v=20261020-6";
-import { studentPlaceholderForName } from "./student-placeholder.js?v=20261020-1";
+import { studentPlaceholderForName } from "./student-placeholder.js?v=20261022-silhouette2";
 
 const ADMIN_UID = "wWuBEmlsaofgjAaQi7bfblsX6L62";
 const studentsCollection = "students";
@@ -50,6 +50,7 @@ let currentAdmin = null;
 let students = [];
 let feeRecords = [];
 let admitCandidates = new Map();
+let admitPrintMode = "";
 let editingStudentCode = null;
 let editingResultId = null;
 let resultRecords = [];
@@ -81,6 +82,48 @@ function feeDisplay(value) {
     if (text.startsWith(`${bnName} `)) return `${enName} ${text.slice(bnName.length + 1)}`;
   }
   return text;
+}
+const schoolTradeNames = [
+  "আইটি সাপোর্ট এন্ড আইওটি বেসিকস", "অ্যাপারেল ম্যানুফ্যাকচারিং বেসিকস", "জেনারেল মেকানিক্স",
+  "জেনারেল ইলেক্ট্রনিক্স", "এগ্রো বেসড ফুড"
+];
+const collegeTradeNames = ["কম্পিউটারাইজড একাউন্টিং সিস্টেম", "ডিজিটাল টেকনোলজি ইন বিজনেস"];
+const institutionTradeNames = [...schoolTradeNames, ...collegeTradeNames];
+function normalizeTradeName(value) {
+  const normalized = String(value || "")
+    .normalize("NFKC")
+    .replace(/[\u200B-\u200D\uFEFF]/g, "")
+    .replace(/[০-৯]/g, (digit) => "০১২৩৪৫৬৭৮৯".indexOf(digit))
+    .replace(/[٠-٩]/g, (digit) => "٠١٢٣٤٥٦٧٨٩".indexOf(digit))
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLocaleLowerCase();
+  const withoutLevel = normalized.replace(/[\s-]*\(?[1-4]\)?$/, "").trim();
+  if (["general mechanics", "general mechanic", "জেনারেল মেকানিক্স", "জেনারেল মেকানিকস", "জেনারেল মেকানিক"].includes(withoutLevel)
+    || withoutLevel.startsWith("জেনারেল মেকানিক্স ")
+    || withoutLevel.startsWith("জেনারেল মেকানিকস ")) return "জেনারেল মেকানিক্স";
+  if (withoutLevel.startsWith("general mechanics ") || withoutLevel.startsWith("general mechanic ")) return "জেনারেল মেকানিক্স";
+  return withoutLevel;
+}
+function tradeMatches(studentTrade, selectedTrade) {
+  return !selectedTrade || normalizeTradeName(studentTrade) === normalizeTradeName(selectedTrade);
+}
+function institutionTradesForClass(className) {
+  const classCode = getClassCode(String(className || ""));
+  if (classCode && Number(classCode) >= 6 && Number(classCode) <= 10) return schoolTradeNames;
+  if (classCode && Number(classCode) >= 11 && Number(classCode) <= 12) return collegeTradeNames;
+  return institutionTradeNames;
+}
+function updateStudentTradeOptions() {
+  const branch = byId("studentBranch").value;
+  const allowedTrades = branch === "স্কুল" ? schoolTradeNames
+    : branch === "কলেজ" ? collegeTradeNames
+      : institutionTradeNames;
+  const tradeSelect = byId("studentTrade");
+  const previous = tradeSelect.value;
+  tradeSelect.replaceChildren(new Option("ট্রেড নির্বাচন করুন", ""));
+  allowedTrades.forEach((trade) => tradeSelect.add(new Option(trade, trade)));
+  if (allowedTrades.includes(previous)) tradeSelect.value = previous;
 }
 function formatFeeMonths(record) {
   const isEnglish = document.documentElement.lang === "en";
@@ -134,6 +177,18 @@ function formatDate(value) {
   }).format(new Date(year, month - 1, day));
 }
 
+function formatAttendanceDate(value) {
+  if (!value) return "—";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return String(value);
+  const date = new Date(year, month - 1, day);
+  const dateText = new Intl.DateTimeFormat(uiLocale(), {
+    day: "numeric", month: "long", year: "numeric"
+  }).format(date);
+  const weekday = new Intl.DateTimeFormat(uiLocale(), { weekday: "long" }).format(date);
+  return `${dateText}\n${weekday}`;
+}
+
 function normalizeStudentPhotoUrl(value) {
   const raw = String(value || "").trim();
   if (!raw) throw new Error("শিক্ষার্থীর ছবির Google Drive লিংক দিন।");
@@ -165,9 +220,12 @@ function normalizeStudentPhotoUrl(value) {
 }
 
 function refreshStudentSelects() {
+  const compareClasses = (a, b) =>
+    Number(getClassCode(a) || 99) - Number(getClassCode(b) || 99)
+      || a.localeCompare(b, "bn");
   const previousClass = feeClassSelect.value;
   const classes = [...new Set(students.map((student) => student.className).filter(Boolean))]
-    .sort((a, b) => a.localeCompare(b, "bn"));
+    .sort(compareClasses);
   feeClassSelect.replaceChildren(new Option(feeText("শ্রেণি নির্বাচন করুন", "Select a class"), ""));
   classes.forEach((className) => feeClassSelect.add(new Option(feeDisplay(className), className)));
   if (classes.includes(previousClass)) feeClassSelect.value = previousClass;
@@ -193,7 +251,7 @@ function refreshStudentSelects() {
     const previousAccountClass = accountClass.value;
     accountClass.replaceChildren(new Option(feeText("সব শ্রেণি", "All Classes"), ""));
     const receiptClasses = [...new Set([...classes, ...feeRecords.map((record) => record.className).filter(Boolean)])]
-      .sort((a, b) => a.localeCompare(b, "bn"));
+      .sort(compareClasses);
     receiptClasses.forEach((className) => accountClass.add(new Option(feeDisplay(className), className)));
     if (receiptClasses.includes(previousAccountClass)) accountClass.value = previousAccountClass;
     updateAccountIncomeTradeOptions();
@@ -219,12 +277,19 @@ function updateFeeSheetTradeOptions(tradeId = "feeSheetTrade", classId = "feeShe
   const className = byId(classId).value;
   const tradeSelect = byId(tradeId);
   const previousTrade = tradeSelect.value;
-  const trades = [...new Set(students.filter((student) => !className || student.className === className)
-    .map((student) => student.trade).filter(Boolean))].sort((a, b) => a.localeCompare(b, "bn"));
+  const allowedTrades = institutionTradesForClass(className);
+  const observedTrades = students.filter((student) => !className || student.className === className)
+    .map((student) => String(student.trade || "").trim())
+    .filter((trade) => trade && allowedTrades.some((allowed) => normalizeTradeName(allowed) === normalizeTradeName(trade)));
+  const trades = [...new Map([...allowedTrades, ...observedTrades]
+    .map((trade) => [normalizeTradeName(trade), normalizeTradeName(trade) === "জেনারেল মেকানিক্স" ? "জেনারেল মেকানিক্স" : trade])).values()]
+    .sort((a, b) => a.localeCompare(b, "bn"));
   tradeSelect.replaceChildren(new Option(feeText("সব ট্রেড", "All Trades"), ""));
   trades.forEach((trade) => tradeSelect.add(new Option(feeDisplay(trade), trade)));
   tradeSelect.disabled = false;
-  if (trades.includes(previousTrade)) tradeSelect.value = previousTrade;
+  if (previousTrade && trades.some((trade) => normalizeTradeName(trade) === normalizeTradeName(previousTrade))) {
+    tradeSelect.value = trades.find((trade) => normalizeTradeName(trade) === normalizeTradeName(previousTrade));
+  }
   renderer();
 }
 
@@ -465,11 +530,13 @@ function updatePreviousExamOptions() {
 
 byId("studentBranch").addEventListener("change", () => {
   updateClassOptions();
+  updateStudentTradeOptions();
   updateBoardRegistrationOptions();
 });
 byId("boardRegistrationCompleted").addEventListener("change", updateBoardRegistrationOptions);
 byId("studentPreviousExam").addEventListener("change", updatePreviousExamOptions);
 updateClassOptions();
+updateStudentTradeOptions();
 updateBoardRegistrationOptions();
 updatePreviousExamOptions();
 
@@ -1209,7 +1276,7 @@ function monthlyPaymentEntries(record, reportYear) {
 function feeSpreadsheetRows(reportYear, className, trade) {
   if (!Number.isInteger(reportYear)) return null;
   const roster = students.filter((student) => (!className || student.className === className)
-      && (!trade || student.trade === trade))
+      && tradeMatches(student.trade, trade))
     .sort((a, b) => rollNumber(a) - rollNumber(b) || (a.name || "").localeCompare(b.name || "", "bn"));
   const paymentGrid = new Map(roster.map((student) => [student.studentCode, Array(12).fill(0)]));
   feeRecords.forEach((record) => {
@@ -1300,6 +1367,7 @@ byId("feeSheetYear").addEventListener("input", renderFeeSpreadsheet);
 byId("admitFeeSheetClass").addEventListener("change", () => {
   byId("admitFeeSheetTrade").value = "";
   updateFeeSheetTradeOptions("admitFeeSheetTrade", "admitFeeSheetClass", renderAdmitFeeSpreadsheet);
+  updateAdmitExamOptions();
   resetAdmitSelection();
 });
 byId("admitFeeSheetTrade").addEventListener("change", () => {
@@ -1308,6 +1376,7 @@ byId("admitFeeSheetTrade").addEventListener("change", () => {
 });
 byId("admitFeeSheetYear").addEventListener("input", () => {
   renderAdmitFeeSpreadsheet();
+  updateAdmitExamOptions();
   resetAdmitSelection();
 });
 
@@ -1632,8 +1701,13 @@ function resetAdmitSelection() {
   byId("admitEligiblePanel").hidden = true;
   byId("admitPrintArea").hidden = true;
   byId("printAdmitCards").hidden = true;
+  byId("printSeatPlan").hidden = true;
+  byId("printAttendanceSheet").hidden = true;
   byId("selectAllEligible").checked = false;
   byId("prepareAdmitCards").disabled = true;
+  byId("prepareSeatPlan").disabled = true;
+  byId("prepareAttendanceSheet").disabled = true;
+  admitPrintMode = "";
   admitCandidates = new Map();
 }
 
@@ -1648,6 +1722,37 @@ function updateAdmitModeFields() {
   resetAdmitSelection();
 }
 
+function updateAdmitExamOptions() {
+  const examSelect = byId("admitExam");
+  if (!examSelect) return;
+  const selectedExam = examSelect.value;
+  const className = byId("admitFeeSheetClass").value;
+  const year = Number(byId("admitFeeSheetYear").value);
+  const isEnglish = document.documentElement.lang === "en";
+  const exams = [
+    ["অর্ধবার্ষিক", "অর্ধবার্ষিক পরীক্ষা", "Half-Yearly Exam"],
+    ["নির্বাচনী", "নির্বাচনী পরীক্ষা", "Selection Exam"],
+    ["বার্ষিক", "বার্ষিক পরীক্ষা", "Annual Exam"]
+  ];
+  examSelect.replaceChildren(new Option(
+    isEnglish ? "Select class, academic year, and exam" : "শ্রেণি, শিক্ষাবর্ষ ও পরীক্ষা নির্বাচন করুন",
+    ""
+  ));
+
+  const classCode = getClassCode(className);
+  if (!classCode || !Number.isInteger(year) || year < 2000 || year > 2100) return;
+  const classBn = `${classCodeValues.get(classCode) || className} শ্রেণি`;
+  const classLabel = isEnglish
+    ? (window.dashboardTranslate?.(classBn) || classBn)
+    : classBn;
+  const yearLabel = new Intl.NumberFormat(isEnglish ? "en-US" : "bn-BD", { useGrouping: false }).format(year);
+  exams.forEach(([value, bnLabel, enLabel]) => {
+    const label = isEnglish ? `${classLabel} — ${enLabel} ${yearLabel}` : `${classLabel} — ${bnLabel} ${yearLabel}`;
+    examSelect.add(new Option(label, value));
+  });
+  if (exams.some(([value]) => value === selectedExam)) examSelect.value = selectedExam;
+}
+
 function checkAdmitEligibility() {
   const className = byId("admitFeeSheetClass").value;
   const trade = byId("admitFeeSheetTrade").value;
@@ -1656,6 +1761,11 @@ function checkAdmitEligibility() {
   const mode = byId("admitDisplayMode").value;
   const throughMonth = Number(byId("admitPaidThrough").value);
   const feeType = byId("admitExamFeeType").value;
+  byId("admitPrintArea").hidden = true;
+  byId("printAdmitCards").hidden = true;
+  byId("printSeatPlan").hidden = true;
+  byId("printAttendanceSheet").hidden = true;
+  admitPrintMode = "";
   if (!className || !exam || !mode || !Number.isInteger(year) || year < 2000 || year > 2100
     || (mode === "tuition" && (throughMonth < 1 || throughMonth > 12))) {
     message("admitMessage", admitText("শ্রেণি, পরীক্ষা, শিক্ষাবর্ষ এবং প্রদর্শনের নিয়ম নির্বাচন করুন।", "Select the class, exam, academic year, and display rule."), true);
@@ -1664,7 +1774,7 @@ function checkAdmitEligibility() {
   }
   const classCode = getClassCode(className);
   const classList = students.filter((student) => getClassCode(student.className || "") === classCode)
-    .filter((student) => !trade || student.trade === trade)
+    .filter((student) => tradeMatches(student.trade, trade))
     .sort((a, b) => Number(normalizeDigits(String(a.roll || ""))) - Number(normalizeDigits(String(b.roll || ""))));
   const rows = byId("admitEligibleRows");
   rows.replaceChildren();
@@ -1712,6 +1822,12 @@ function checkAdmitEligibility() {
   byId("admitEligiblePanel").hidden = false;
   byId("admitPrintArea").hidden = true;
   byId("prepareAdmitCards").disabled = eligibleCount === 0;
+  byId("prepareSeatPlan").disabled = eligibleCount === 0;
+  byId("prepareAttendanceSheet").disabled = eligibleCount === 0;
+  byId("printAdmitCards").hidden = true;
+  byId("printSeatPlan").hidden = true;
+  byId("printAttendanceSheet").hidden = true;
+  admitPrintMode = "";
   message("admitMessage", isEnglish
     ? eligibleCount + " of " + classList.length + " students match this display rule for " + (window.dashboardTranslate?.(exam) || exam) + "."
     : bn(eligibleCount) + " জনের মধ্যে " + bn(classList.length) + " জন নির্বাচিত প্রদর্শন নিয়মে " + exam + " পরীক্ষার প্রবেশপত্রের জন্য আছেন।");
@@ -1733,7 +1849,7 @@ function buildAdmitCard(student, exam, year) {
   const institutionName = document.createElement("h1");
   institutionName.classList.toggle("english-institution-name", isEnglish);
   if (isEnglish) institutionName.append("Tabiul Mursaleen Nogor Karigori", document.createElement("br"), "School & College");
-  else institutionName.textContent = t("তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ");
+  else institutionName.append("তাবিউল মুরসালীন নগর", document.createElement("br"), "কারিগরি স্কুল এন্ড কলেজ");
   const address = document.createElement("p");
   address.textContent = (isEnglish ? "Tenguri, Kendua, Netrokona" : "টেঙ্গুরী, কেন্দুয়া, নেত্রকোণা") + " · EIIN No. 136065";
   headingText.append(institutionName, address);
@@ -1769,7 +1885,13 @@ function buildAdmitCard(student, exam, year) {
     photo.src = placeholderPhoto;
     photo.alt = t("শিক্ষার্থীর নমুনা ছবি");
   }
-  details.append(photo);
+  const photoBlock = document.createElement("div");
+  photoBlock.className = "admit-card-photo-block";
+  const photoCaption = document.createElement("p");
+  photoCaption.className = "admit-card-photo-caption";
+  photoCaption.textContent = isEnglish ? "Candidate Photo" : "পরীক্ষার্থীর ছবি";
+  photoBlock.append(photo, photoCaption);
+  details.append(photoBlock);
   const list = document.createElement("dl");
   const name = isEnglish ? (student.name || student.nameBn) : (student.nameBn || student.name);
   const mode = byId("admitDisplayMode").value;
@@ -1780,15 +1902,14 @@ function buildAdmitCard(student, exam, year) {
   if (mode === "exam-fee") {
     paymentLabel = "পরিশোধিত ফি";
     paymentValue = byId("admitExamFeeType").selectedOptions[0].textContent;
-  } else if (mode === "class-all") {
-    paymentLabel = "প্রদর্শন ভিত্তি";
-    paymentValue = "শ্রেণি ও ট্রেডের সবাই";
   }
   const fields = [
     ["শিক্ষার্থীর নাম", name], ["শিক্ষার্থী আইডি", student.studentCode], ["শাখা", t(student.branch || "—")],
-    ["শ্রেণি", t(student.className || "—")], ["ট্রেড", t(student.trade || "—")], ["রোল নম্বর", normalizeDigits(String(student.roll || "—"))],
-    [paymentLabel, paymentValue]
+    ["শ্রেণি", t(student.className || "—")], ["ট্রেড", t(student.trade || "—")],
+    [isEnglish ? "Class Roll" : "ক্লাস রোল", normalizeDigits(String(student.roll || "—"))],
+    [isEnglish ? "Board Roll" : "বোর্ড রোল", normalizeDigits(String(student.boardRoll || "—"))]
   ];
+  if (mode !== "class-all") fields.push([paymentLabel, paymentValue]);
   for (const [label, value] of fields) {
     const wrapper = document.createElement("div");
     const term = document.createElement("dt");
@@ -1828,6 +1949,7 @@ function generateAdmitCards() {
   }
   const area = byId("admitPrintArea");
   area.replaceChildren();
+  admitPrintMode = "admit";
   const exam = byId("admitExam").value;
   const year = Number(byId("admitFeeSheetYear").value);
   for (let offset = 0; offset < selectedStudents.length; offset += 4) {
@@ -1838,42 +1960,443 @@ function generateAdmitCards() {
   }
   area.hidden = false;
   byId("printAdmitCards").hidden = false;
+  byId("printSeatPlan").hidden = true;
+  byId("printAttendanceSheet").hidden = true;
   area.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function generateSeatPlan() {
+  const selectedCodes = [...document.querySelectorAll(".admit-student-choice:checked")]
+    .map((input) => input.dataset.studentCode);
+  const selectedStudents = selectedCodes.map((code) => admitCandidates.get(code)).filter(Boolean);
+  const selectedFields = [...document.querySelectorAll(".seat-plan-field:checked")]
+    .map((input) => input.value);
+  if (!selectedStudents.length) {
+    message("admitMessage", admitText("সিট প্ল্যান তৈরির জন্য শিক্ষার্থী নির্বাচন করুন।", "Select students to create the seat plan."), true);
+    return;
+  }
+  if (!selectedFields.length) {
+    message("admitMessage", admitText("সিট প্ল্যানে অন্তত একটি তথ্য নির্বাচন করুন।", "Select at least one detail for the seat plan."), true);
+    return;
+  }
+
+  const area = byId("admitPrintArea");
+  area.replaceChildren();
+  admitPrintMode = "seat-plan";
+  const isEnglish = document.documentElement.lang === "en";
+  const t = (text) => window.dashboardTranslate?.(text) || text;
+  const exam = byId("admitExam").value;
+  const year = Number(byId("admitFeeSheetYear").value);
+  const yearText = new Intl.NumberFormat(uiLocale(), { useGrouping: false }).format(year);
+  const fieldInfo = {
+    name: { label: "শিক্ষার্থীর নাম", value: (student) => isEnglish ? (student.name || student.nameBn) : (student.nameBn || student.name) },
+    classRoll: { label: isEnglish ? "Class Roll" : "ক্লাস রোল", value: (student) => normalizeDigits(String(student.roll || "—")) },
+    boardRoll: { label: "বোর্ড রোল", value: (student) => normalizeDigits(String(student.boardRoll || "—")) },
+    studentCode: { label: "শিক্ষার্থী আইডি", value: (student) => student.studentCode || "—" },
+    branch: { label: "শাখা", value: (student) => t(student.branch || "—") },
+    className: { label: "শ্রেণি", value: (student) => t(student.className || "—") },
+    trade: { label: "ট্রেড", value: (student) => t(student.trade || "—") }
+  };
+  for (let offset = 0; offset < selectedStudents.length; offset += 15) {
+    const page = document.createElement("section");
+    page.className = "seat-plan-page";
+    const grid = document.createElement("div");
+    grid.className = "seat-plan-grid";
+    selectedStudents.slice(offset, offset + 15).forEach((student, index) => {
+      const card = document.createElement("article");
+      card.className = "seat-plan-card";
+      const head = document.createElement("header");
+      head.className = "seat-plan-card-heading";
+      const schoolName = document.createElement("h1");
+      schoolName.textContent = isEnglish ? "Tabiul Mursaleen Nogor Karigori School & College" : "তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ";
+      head.append(schoolName);
+      card.append(head);
+
+      const title = document.createElement("p");
+      title.className = "seat-plan-card-title";
+      title.textContent = `${isEnglish ? "Seat Plan" : "সিট প্ল্যান"} · ${t(exam)} · ${yearText}`;
+      card.append(title);
+
+      const details = document.createElement("dl");
+      details.className = "seat-plan-card-details";
+      selectedFields.forEach((field) => {
+        const row = document.createElement("div");
+        const label = document.createElement("dt");
+        label.textContent = t(fieldInfo[field].label);
+        const value = document.createElement("dd");
+        value.textContent = String(fieldInfo[field].value(student) || "—");
+        row.append(label, value);
+        details.append(row);
+      });
+      card.append(details);
+      grid.append(card);
+    });
+    page.append(grid);
+    area.append(page);
+  }
+  area.hidden = false;
+  byId("printAdmitCards").hidden = true;
+  byId("printSeatPlan").hidden = false;
+  byId("printAttendanceSheet").hidden = true;
+  area.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function attendanceRoutinePageUrl(routineId) {
+  return new URL(`exam-routine.html?id=${encodeURIComponent(routineId)}`, location.href).href;
+}
+
+function attendanceRoutineIdFromLink(value) {
+  const url = new URL(value, location.href);
+  if (!url.pathname.toLowerCase().endsWith("/exam-routine.html")) {
+    throw new Error("রুটিন পেজের সঠিক লিংক দিন।");
+  }
+  const id = url.searchParams.get("id");
+  if (!id) throw new Error("রুটিন লিংকে id পাওয়া যায়নি।");
+  return id;
+}
+
+function normalizeAttendanceExam(value) {
+  const normalized = normalizeDigits(String(value || ""))
+    .normalize("NFKC")
+    .toLocaleLowerCase("bn-BD");
+  if (normalized.includes("অর্ধবার্ষিক") || normalized.includes("half-yearly") || normalized.includes("half yearly")) return "অর্ধবার্ষিক";
+  if (normalized.includes("নির্বাচনী") || normalized.includes("selection")) return "নির্বাচনী";
+  if (normalized.includes("বার্ষিক") || normalized.includes("annual")) return "বার্ষিক";
+  return normalized
+    .replace(/\d{2,4}/g, "")
+    .replace(/পরীক্ষা|examination|exam/gi, "")
+    .replace(/[\s–—-]+/g, "")
+    .trim();
+}
+
+function attendanceRoutineMatches(routine, className, exam) {
+  const wantedClass = getClassCode(String(className || ""));
+  const routineClass = getClassCode(String(routine?.className || ""));
+  return routine?.published === true
+    && Boolean(wantedClass && routineClass && wantedClass === routineClass)
+    && normalizeAttendanceExam(routine.examName) === normalizeAttendanceExam(exam);
+}
+
+function attendanceRoutineMismatch(routine, className, exam) {
+  if (routine?.published !== true) {
+    return admitText("লিংকের রুটিনটি ড্যাশবোর্ডে প্রকাশিত হিসেবে চিহ্নিত নয়।", "The linked routine is not marked as published in the dashboard.");
+  }
+  const wantedClass = getClassCode(String(className || ""));
+  const routineClass = getClassCode(String(routine?.className || ""));
+  if (!wantedClass || !routineClass || wantedClass !== routineClass) {
+    const actual = routine?.className || "অজানা";
+    return admitText(`শ্রেণি মিলছে না। নির্বাচিত: ${className}; রুটিনে: ${actual}।`, `Class mismatch. Selected: ${className}; routine: ${actual}.`);
+  }
+  const actualExam = String(routine?.examName || "অজানা");
+  return admitText(`পরীক্ষার নাম মিলছে না। নির্বাচিত: ${exam}; রুটিনে: ${actualExam}।`, `Exam name mismatch. Selected: ${exam}; routine: ${actualExam}.`);
+}
+
+function showAttendanceRoutinePreview(routine) {
+  const preview = byId("attendanceRoutinePreview");
+  preview.replaceChildren();
+  const isEnglish = document.documentElement.lang === "en";
+  const summary = document.createElement("p");
+  summary.className = "attendance-routine-summary";
+  summary.textContent = isEnglish
+    ? `${window.dashboardTranslate?.(routine.className) || routine.className} · ${window.dashboardTranslate?.(routine.examName) || routine.examName}`
+    : `${routine.className} · ${routine.examName}`;
+  preview.append(summary);
+
+  const openLink = document.createElement("a");
+  openLink.href = attendanceRoutinePageUrl(routine.id);
+  openLink.target = "_blank";
+  openLink.rel = "noopener noreferrer";
+  openLink.textContent = isEnglish ? "Open published routine" : "প্রকাশিত রুটিন পেজ খুলুন";
+  preview.append(openLink);
+
+  const subjects = (routine.subjects || []).filter((subject) => subject.date && subject.subject)
+    .slice().sort((a, b) => String(a.date).localeCompare(String(b.date)));
+  const table = document.createElement("table");
+  table.className = "attendance-routine-preview-table";
+  const header = table.createTHead().insertRow();
+  (isEnglish ? ["No.", "Date", "Subject", "Code"] : ["ক্রমিক", "তারিখ", "বিষয়", "কোড"])
+    .forEach((text) => { const cell = document.createElement("th"); cell.textContent = text; header.append(cell); });
+  const body = table.createTBody();
+  subjects.forEach((subject, index) => {
+    const row = body.insertRow();
+    [bn(index + 1), formatDate(subject.date), subject.subject, subject.subjectCode || "—"]
+      .forEach((text) => { const cell = row.insertCell(); cell.textContent = text; });
+  });
+  preview.append(table);
+}
+
+async function loadAttendanceRoutinePreview({ silent = false } = {}) {
+  const className = byId("admitFeeSheetClass").value;
+  const exam = byId("admitExam").value.trim();
+  const linkValue = byId("attendanceRoutineLink").value.trim();
+  const preview = byId("attendanceRoutinePreview");
+  preview.replaceChildren(document.createTextNode(admitText("প্রকাশিত পরীক্ষার রুটিন খোঁজা হচ্ছে...", "Loading the published exam routine...")));
+  if (!className || !exam) {
+    preview.textContent = admitText("শ্রেণি ও পরীক্ষা নির্বাচন করলে প্রকাশিত রুটিন এখানে দেখা যাবে।", "Choose a class and exam to see its published routine here.");
+    return null;
+  }
+
+  try {
+    let routine;
+    if (linkValue) {
+      let routineId;
+      try { routineId = attendanceRoutineIdFromLink(linkValue); }
+      catch (error) {
+        preview.textContent = error.message;
+        if (!silent) message("admitMessage", error.message, true);
+        return null;
+      }
+      const snapshot = await getDoc(doc(db, "examRoutines", routineId));
+      if (!snapshot.exists()) {
+        const text = admitText("এই লিংকের রুটিনটি ডাটাবেজে পাওয়া যায়নি।", "The routine for this link was not found.");
+        preview.textContent = text;
+        if (!silent) message("admitMessage", text, true);
+        return null;
+      }
+      routine = { id: snapshot.id, ...snapshot.data() };
+      if (!attendanceRoutineMatches(routine, className, exam)) {
+        const text = attendanceRoutineMismatch(routine, className, exam);
+        preview.textContent = text;
+        if (!silent) message("admitMessage", text, true);
+        return null;
+      }
+    } else {
+      const snapshot = await getDocs(collection(db, "examRoutines"));
+      const routines = snapshot.docs.map((entry) => ({ id: entry.id, ...entry.data() }))
+        .filter((item) => attendanceRoutineMatches(item, className, exam))
+        .sort((a, b) => {
+          const timestamp = (value) => value?.toMillis?.() || (value?.seconds ? value.seconds * 1000 : 0);
+          return timestamp(b.publishedAt || b.updatedAt || b.createdAt) - timestamp(a.publishedAt || a.updatedAt || a.createdAt);
+        });
+      routine = routines[0];
+      if (!routine) {
+        const text = admitText("এই শ্রেণি ও পরীক্ষার কোনো প্রকাশিত পরীক্ষার রুটিন পাওয়া যায়নি। আগে পরীক্ষার রুটিন প্রকাশ করুন।", "No published exam routine was found for this class and exam. Publish the exam routine first.");
+        preview.textContent = text;
+        if (!silent) message("admitMessage", text, true);
+        return null;
+      }
+    }
+
+    const subjects = (routine.subjects || []).filter((subject) => subject.date && subject.subject);
+    if (!subjects.length) {
+      const text = admitText("প্রকাশিত রুটিনে কোনো বিষয় ও পরীক্ষার তারিখ পাওয়া যায়নি।", "The published routine has no subjects with exam dates.");
+      preview.textContent = text;
+      if (!silent) message("admitMessage", text, true);
+      return null;
+    }
+    showAttendanceRoutinePreview(routine);
+    return routine;
+  } catch (error) {
+    console.error("পরীক্ষার রুটিন লোড করা যায়নি:", error);
+    const text = admitText("পরীক্ষার রুটিন লোড করা যায়নি। Firestore access rules পরীক্ষা করুন।", "Could not load the exam routine. Check Firestore access rules.");
+    preview.textContent = text;
+    if (!silent) message("admitMessage", text, true);
+    return null;
+  }
+}
+
+async function generateAttendanceSheets() {
+  const selectedCodes = [...document.querySelectorAll(".admit-student-choice:checked")]
+    .map((input) => input.dataset.studentCode);
+  const selectedStudents = selectedCodes.map((code) => admitCandidates.get(code)).filter(Boolean);
+  const selectedFields = [...document.querySelectorAll(".attendance-field:checked")]
+    .map((input) => input.value);
+  if (!selectedStudents.length) {
+    message("admitMessage", admitText("হাজিরা শিট তৈরির জন্য পরীক্ষার্থী নির্বাচন করুন।", "Select candidates to create attendance sheets."), true);
+    return;
+  }
+  if (!selectedFields.length) {
+    message("admitMessage", admitText("হাজিরা শিটে অন্তত একটি পরীক্ষার্থী তথ্য নির্বাচন করুন।", "Select at least one candidate detail for the attendance sheet."), true);
+    return;
+  }
+
+  const className = byId("admitFeeSheetClass").value;
+  const exam = byId("admitExam").value.trim();
+  const year = Number(byId("admitFeeSheetYear").value);
+  byId("admitPrintArea").hidden = true;
+  byId("printAdmitCards").hidden = true;
+  byId("printSeatPlan").hidden = true;
+  byId("printAttendanceSheet").hidden = true;
+  admitPrintMode = "";
+  message("admitMessage", admitText("প্রকাশিত পরীক্ষার রুটিন খোঁজা হচ্ছে...", "Loading the published exam routine..."));
+  try {
+    const routine = await loadAttendanceRoutinePreview();
+    if (!routine) return;
+    const subjects = (routine?.subjects || []).filter((subject) => subject.date && subject.subject)
+      .slice().sort((a, b) => String(a.date).localeCompare(String(b.date)));
+    if (!routine || !subjects.length) {
+      message("admitMessage", admitText("এই শ্রেণি ও পরীক্ষার কোনো প্রকাশিত পরীক্ষার রুটিন পাওয়া যায়নি। আগে পরীক্ষার রুটিন প্রকাশ করুন।", "No published exam routine was found for this class and exam. Publish the exam routine first."), true);
+      return;
+    }
+
+    const isEnglish = document.documentElement.lang === "en";
+    const translate = (text) => window.dashboardTranslate?.(text) || text;
+    const detailLabel = (english, bangla) => isEnglish ? `${english}:` : `${bangla}ঃ`;
+    const fieldInfo = {
+      name: { label: detailLabel("Student Name", "শিক্ষার্থীর নাম"), value: (student) => isEnglish ? (student.name || student.nameBn) : (student.nameBn || student.name) },
+      classRoll: { label: detailLabel("Class Roll", "ক্লাস রোল"), value: (student) => normalizeDigits(String(student.roll || "—")) },
+      boardRoll: { label: detailLabel("Board Roll", "বোর্ড রোল"), value: (student) => normalizeDigits(String(student.boardRoll || "—")) },
+      studentCode: { label: detailLabel("Student ID", "শিক্ষার্থী আইডি"), value: (student) => student.studentCode || "—" },
+      branch: { label: detailLabel("Branch", "শাখা"), value: (student) => translate(student.branch || "—") },
+      className: { label: detailLabel("Class", "শ্রেণি"), value: (student) => translate(student.className || "—") },
+      trade: { label: detailLabel("Trade", "ট্রেড"), value: (student) => translate(student.trade || "—") }
+    };
+    const area = byId("admitPrintArea");
+    area.replaceChildren();
+    admitPrintMode = "attendance";
+    const yearText = new Intl.NumberFormat(uiLocale(), { useGrouping: false }).format(year);
+    selectedStudents.forEach((student) => {
+      const page = document.createElement("section");
+      page.className = "attendance-sheet-page";
+      const header = document.createElement("header");
+      header.className = "attendance-sheet-header";
+      const brandRow = document.createElement("div");
+      brandRow.className = "attendance-sheet-brand-row";
+      const logo = document.createElement("img");
+      logo.className = "attendance-sheet-logo";
+      logo.src = "images/logo/logo-transparent.png";
+      logo.alt = isEnglish ? "Institution logo" : "প্রতিষ্ঠানের লোগো";
+      brandRow.append(logo);
+      const institutionCopy = document.createElement("div");
+      institutionCopy.className = "attendance-sheet-institution-copy";
+      const institution = document.createElement("h1");
+      institution.textContent = isEnglish ? "Tabiul Mursaleen Nogor Karigori School & College" : "তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ";
+      institutionCopy.append(institution);
+      const address = document.createElement("p");
+      address.textContent = isEnglish ? "Tenguri, Kendua, Netrokona · EIIN No. 136065" : "টেঙ্গুরী, কেন্দুয়া, নেত্রকোণা · EIIN No. 136065";
+      institutionCopy.append(address);
+      brandRow.append(institutionCopy);
+      const brandSpacer = document.createElement("span");
+      brandSpacer.setAttribute("aria-hidden", "true");
+      brandRow.append(brandSpacer);
+      header.append(brandRow);
+      const title = document.createElement("h2");
+      const displayClass = translate(className);
+      const displayExam = isEnglish
+        ? ({ "অর্ধবার্ষিক": "Half-Yearly Exam", "নির্বাচনী": "Selection Exam", "বার্ষিক": "Annual Exam" })[exam] || translate(exam)
+        : ({ "অর্ধবার্ষিক": "অর্ধবার্ষিক পরীক্ষা", "নির্বাচনী": "নির্বাচনী পরীক্ষা", "বার্ষিক": "বার্ষিক পরীক্ষা" })[exam] || translate(exam);
+      const bengaliClass = className.includes("শ্রেণ")
+        ? className.replace("শ্রেণি", "শ্রেণী")
+        : `${className} শ্রেণী`;
+      title.textContent = isEnglish
+        ? `Attendance Sheet · ${displayClass} · ${displayExam} · ${yearText}`
+        : `হাজিরা শিট · ${bengaliClass} · ${displayExam} · ${yearText}`;
+      header.append(title);
+      page.append(header);
+
+      const studentDetails = document.createElement("dl");
+      studentDetails.className = "attendance-student-details";
+      selectedFields.forEach((field) => {
+        const row = document.createElement("div");
+        row.dataset.field = field;
+        const label = document.createElement("dt");
+        label.textContent = fieldInfo[field].label;
+        const value = document.createElement("dd");
+        value.textContent = String(fieldInfo[field].value(student) || "—");
+        row.append(label, value);
+        studentDetails.append(row);
+      });
+      page.append(studentDetails);
+
+      const table = document.createElement("table");
+      table.className = "attendance-subject-table";
+      const head = table.createTHead().insertRow();
+      const headers = isEnglish
+        ? ["Exam Date", "Subject", "Subject Code", "Candidate Signature", "Invigilator Signature"]
+        : ["পরীক্ষার তারিখ", "বিষয়ের নাম", "বিষয় কোড", "পরীক্ষার্থীর স্বাক্ষর", "ইনভিজিলেটরের স্বাক্ষর"];
+      headers.forEach((label) => {
+        const cell = document.createElement("th");
+        cell.textContent = label;
+        head.append(cell);
+      });
+      const body = table.createTBody();
+      subjects.forEach((subject) => {
+        const row = body.insertRow();
+        [formatAttendanceDate(subject.date), subject.subject, subject.subjectCode || "—", "", ""]
+          .forEach((value) => {
+            const cell = row.insertCell();
+            cell.textContent = value;
+          });
+      });
+      page.append(table);
+      area.append(page);
+    });
+
+    area.hidden = false;
+    byId("printAdmitCards").hidden = true;
+    byId("printSeatPlan").hidden = true;
+    byId("printAttendanceSheet").hidden = false;
+    message("admitMessage", admitText(`${selectedStudents.length} জন পরীক্ষার্থীর জন্য হাজিরা শিট তৈরি হয়েছে।`, `Attendance sheets prepared for ${selectedStudents.length} candidates.`));
+    area.scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (error) {
+    console.error("হাজিরা শিট তৈরির জন্য পরীক্ষার রুটিন লোড হয়নি:", error);
+    message("admitMessage", admitText("পরীক্ষার রুটিন লোড করা যায়নি। Firestore access rules পরীক্ষা করুন।", "Could not load the exam routine. Check Firestore access rules."), true);
+  }
 }
 
 byId("checkAdmitEligibility").addEventListener("click", checkAdmitEligibility);
 byId("admitDisplayMode").addEventListener("change", updateAdmitModeFields);
-byId("admitFilterForm").addEventListener("change", resetAdmitSelection);
+byId("admitFilterForm").addEventListener("change", () => {
+  resetAdmitSelection();
+  loadAttendanceRoutinePreview({ silent: true });
+});
+byId("loadAttendanceRoutine").addEventListener("click", () => loadAttendanceRoutinePreview());
+byId("attendanceRoutineLink").addEventListener("change", () => loadAttendanceRoutinePreview());
 byId("selectAllEligible").addEventListener("change", (event) => {
   document.querySelectorAll(".admit-student-choice:not(:disabled)").forEach((checkbox) => { checkbox.checked = event.target.checked; });
-  byId("prepareAdmitCards").disabled = !document.querySelector(".admit-student-choice:checked");
+  const hasSelection = Boolean(document.querySelector(".admit-student-choice:checked"));
+  byId("prepareAdmitCards").disabled = !hasSelection;
+  byId("prepareSeatPlan").disabled = !hasSelection;
+  byId("prepareAttendanceSheet").disabled = !hasSelection;
   byId("admitPrintArea").hidden = true;
+  byId("printAdmitCards").hidden = true;
+  byId("printSeatPlan").hidden = true;
+  byId("printAttendanceSheet").hidden = true;
 });
 byId("admitEligibleRows").addEventListener("change", () => {
   const checkboxes = [...document.querySelectorAll(".admit-student-choice:not(:disabled)")];
   const selected = document.querySelector(".admit-student-choice:checked");
   byId("selectAllEligible").checked = checkboxes.length > 0 && checkboxes.every((checkbox) => checkbox.checked);
   byId("prepareAdmitCards").disabled = !selected;
+  byId("prepareSeatPlan").disabled = !selected;
+  byId("prepareAttendanceSheet").disabled = !selected;
   byId("admitPrintArea").hidden = true;
   byId("printAdmitCards").hidden = true;
+  byId("printSeatPlan").hidden = true;
+  byId("printAttendanceSheet").hidden = true;
+  admitPrintMode = "";
 });
 byId("prepareAdmitCards").addEventListener("click", generateAdmitCards);
-byId("printAdmitCards").addEventListener("click", async () => {
+byId("prepareSeatPlan").addEventListener("click", generateSeatPlan);
+byId("prepareAttendanceSheet").addEventListener("click", generateAttendanceSheets);
+async function printAdmitOutput() {
   const images = [...byId("admitPrintArea").querySelectorAll("img")];
   await Promise.all(images.map((image) => image.decode?.().catch(() => {}) || Promise.resolve()));
   window.print();
-});
+}
+byId("printAdmitCards").addEventListener("click", printAdmitOutput);
+byId("printSeatPlan").addEventListener("click", printAdmitOutput);
+byId("printAttendanceSheet").addEventListener("click", printAdmitOutput);
 document.addEventListener("dashboard-language-change", () => {
   renderAdmitFeeSpreadsheet();
+  updateAdmitExamOptions();
   if (byId("admitEligiblePanel").hidden) return;
   const selectedBefore = new Set([...document.querySelectorAll(".admit-student-choice:checked")].map((input) => input.dataset.studentCode));
   const hadCards = !byId("admitPrintArea").hidden;
+  const previousPrintMode = admitPrintMode;
   checkAdmitEligibility();
   document.querySelectorAll(".admit-student-choice").forEach((input) => { input.checked = selectedBefore.has(input.dataset.studentCode); });
   const availableChoices = [...document.querySelectorAll(".admit-student-choice:not(:disabled)")];
   byId("selectAllEligible").checked = availableChoices.length > 0 && availableChoices.every((input) => input.checked);
-  byId("prepareAdmitCards").disabled = !document.querySelector(".admit-student-choice:checked");
-  if (hadCards) generateAdmitCards();
+  const hasSelection = Boolean(document.querySelector(".admit-student-choice:checked"));
+  byId("prepareAdmitCards").disabled = !hasSelection;
+  byId("prepareSeatPlan").disabled = !hasSelection;
+  byId("prepareAttendanceSheet").disabled = !hasSelection;
+  if (hadCards) {
+    if (previousPrintMode === "seat-plan") generateSeatPlan();
+    else if (previousPrintMode === "attendance") generateAttendanceSheets();
+    else generateAdmitCards();
+  } else loadAttendanceRoutinePreview({ silent: true });
 });
 updateAdmitModeFields();
 byId("admitPaidThrough").value = "04";
@@ -2293,6 +2816,7 @@ byId("feeMonthsYear").value = String(new Date().getFullYear());
 byId("resultYear").value = String(new Date().getFullYear());
 byId("feeSheetYear").value = String(new Date().getFullYear());
 byId("admitFeeSheetYear").value = String(new Date().getFullYear());
+updateAdmitExamOptions();
 byId("expenseDate").value = localDateString();
 
 onAuthStateChanged(auth, async (user) => {
