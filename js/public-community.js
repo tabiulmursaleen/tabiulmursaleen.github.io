@@ -130,7 +130,7 @@ function videoPlayer(item) {
   const url = new URL(item.url);
   const title = escape(item.caption || "প্রতিষ্ঠানের ভিডিও");
   const id = youtubeId(item.url);
-  if (id) return `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}" title="${title}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+  if (id) return `<iframe src="https://www.youtube.com/embed/${encodeURIComponent(id)}?rel=0&amp;origin=${encodeURIComponent(window.location.origin)}" title="${title}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="origin" allowfullscreen></iframe>`;
   const driveId = url.hostname.endsWith("drive.google.com")
     ? url.pathname.match(/\/file\/d\/([^/]+)/)?.[1] || url.searchParams.get("id") || ""
     : "";
