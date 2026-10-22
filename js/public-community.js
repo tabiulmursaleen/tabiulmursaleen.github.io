@@ -134,7 +134,11 @@ function videoPlayer(item) {
   const driveId = url.hostname.endsWith("drive.google.com")
     ? url.pathname.match(/\/file\/d\/([^/]+)/)?.[1] || url.searchParams.get("id") || ""
     : "";
-  if (driveId) return `<iframe src="https://drive.google.com/file/d/${encodeURIComponent(driveId)}/preview" title="${title}" loading="lazy" allow="autoplay" allowfullscreen></iframe>`;
+  if (driveId) {
+    const resourceKey = url.searchParams.get("resourcekey");
+    const resourceKeyQuery = resourceKey ? `?resourcekey=${encodeURIComponent(resourceKey)}` : "";
+    return `<iframe src="https://drive.google.com/file/d/${encodeURIComponent(driveId)}/preview${resourceKeyQuery}" title="${title}" loading="lazy" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+  }
   if (/\.(?:mp4|webm|ogv|ogg|m4v)$/i.test(url.pathname)) return `<video controls preload="metadata" playsinline><source src="${escape(item.url)}"></video>`;
   return `<iframe src="${escape(item.url)}" title="${title}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
 }
