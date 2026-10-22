@@ -121,7 +121,10 @@ function editPerson(person) {
   $("personDob").value = person.dob || "";
   $("personPhone").value = person.phone || "";
   $("personEmail").value = person.email || "";
-  $("personPhoto").value = person.photo || "";
+  const photoUrl = person.photo
+    ? new URL(person.photo, "https://tabiulmursaleen.github.io/").href
+    : "";
+  $("personPhoto").value = photoUrl;
   $("personFormTitle").textContent = `${personTypes[currentType].label} সম্পাদনা`;
   $("personForm").scrollIntoView({ behavior: "smooth", block: "start" });
 }

@@ -59,6 +59,11 @@ service cloud.firestore {
       allow read, create, update, delete: if isAdmin();
     }
 
+    // Institutional expense records are private to the admin.
+    match /institutionExpenses/{expenseId} {
+      allow read, create, update, delete: if isAdmin();
+    }
+
     match /studentResults/{resultId} {
       allow read, create, update, delete: if isAdmin();
     }

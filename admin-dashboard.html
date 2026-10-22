@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>অ্যাডমিন ড্যাশবোর্ড | TMNKSC</title>
-  <link rel="stylesheet" href="css/admin.css?v=20261020-17">
+  <link rel="stylesheet" href="css/admin.css?v=20261022-mobile-menu1">
 </head>
 <body>
 
@@ -51,7 +51,7 @@
   <main class="dashboard-container">
     <section class="welcome-card">
       <h2>স্বাগতম, অ্যাডমিন!</h2>
-      <p>বাম পাশের মেনু থেকে একটি বিভাগ বেছে নিন।</p>
+      <p>নিচের মেনু থেকে একটি বিভাগ বেছে নিন।</p>
     </section>
 
     <section class="dashboard-grid" id="dashboardGrid" aria-label="ড্যাশবোর্ড মেনু">
@@ -66,6 +66,11 @@
       <a class="dashboard-card" href="#fees">
         <div class="dashboard-card-heading"><span class="card-icon">💳</span>
         <h3>বেতন</h3></div>
+      </a>
+
+      <a class="dashboard-card" href="#accounts">
+        <div class="dashboard-card-heading"><span class="card-icon">🧾</span>
+        <h3>অ্যাকাউন্টস</h3></div>
       </a>
 
       <a class="dashboard-card" href="#results">
@@ -247,18 +252,27 @@
 
     <section id="admit-cards" class="dashboard-section" hidden>
       <h2>এডমিট কার্ড ম্যানেজমেন্ট</h2>
-      <p class="section-help">শ্রেণি, পরীক্ষা ও শিক্ষাবর্ষ নির্বাচন করে বেতন পরিশোধ যাচাই করুন। নির্বাচিত মাস পর্যন্ত প্রতিটি মাসের বেতন জমা থাকলেই শিক্ষার্থী প্রবেশপত্রের জন্য যোগ্য হবে।</p>
+      <section class="accounts-panel fee-spreadsheet-section admit-fee-spreadsheet" aria-labelledby="admitFeeSpreadsheetTitle">
+        <h3 id="admitFeeSpreadsheetTitle">শ্রেণী ও ট্রেডভিত্তিক বেতন স্প্রেডশিট</h3>
+        <p class="field-help">শিক্ষাবর্ষ, শ্রেণি ও ট্রেড নির্বাচন করে মাসভিত্তিক জমা এবং মোট গৃহীত অর্থ দেখুন।</p>
+        <div class="fee-spreadsheet-controls">
+          <label>শিক্ষাবর্ষ <input id="admitFeeSheetYear" type="number" min="2000" max="2100"></label>
+          <label>শ্রেণি <select id="admitFeeSheetClass"><option value="">সব শ্রেণি</option></select></label>
+          <label>ট্রেড <select id="admitFeeSheetTrade"><option value="">সব ট্রেড</option></select></label>
+          <button id="printAdmitFeeSpreadsheet" type="button" class="secondary-button">স্প্রেডশিট প্রিন্ট</button>
+        </div>
+        <p id="admitFeeSheetSummary" class="fee-sheet-summary"></p>
+        <div class="data-table-wrap fee-spreadsheet-wrap">
+          <table id="admitFeeSpreadsheetTable" class="data-table fee-spreadsheet-table">
+            <thead id="admitFeeSheetHead"><tr><th>রোল</th><th>শিক্ষার্থীর নাম</th><th>শিক্ষার্থী আইডি</th></tr></thead>
+            <tbody id="admitFeeSheetRows"></tbody>
+            <tfoot id="admitFeeSheetFoot"></tfoot>
+          </table>
+        </div>
+      </section>
+      <p class="section-help">শ্রেণী ও ট্রেডভিত্তিক তালিকা থেকে প্রদর্শনের নিয়ম বেছে শিক্ষার্থী নির্বাচন করুন। প্রতি A4 পাতায় চারটি করে প্রবেশপত্র তৈরি হবে।</p>
       <form id="admitFilterForm" class="admin-form">
         <div class="form-grid">
-          <label>শ্রেণি <span>*</span>
-            <select id="admitClass" required>
-              <option value="">শ্রেণি নির্বাচন করুন</option>
-              <option value="ষষ্ঠ">ষষ্ঠ</option><option value="সপ্তম">সপ্তম</option>
-              <option value="অষ্টম">অষ্টম</option><option value="নবম">নবম</option>
-              <option value="দশম">দশম</option><option value="একাদশ">একাদশ</option>
-              <option value="দ্বাদশ">দ্বাদশ</option>
-            </select>
-          </label>
           <label>পরীক্ষার নাম <span>*</span>
             <select id="admitExam" required>
               <option value="">পরীক্ষা নির্বাচন করুন</option>
@@ -267,9 +281,16 @@
               <option value="বার্ষিক">বার্ষিক</option>
             </select>
           </label>
-          <label>শিক্ষাবর্ষ <span>*</span><input id="admitYear" type="number" min="2000" max="2100" required></label>
-          <label>বেতন পরিশোধিত আছে যে মাস পর্যন্ত <span>*</span>
-            <select id="admitPaidThrough" required>
+          <label>শিক্ষার্থী দেখানোর নিয়ম <span>*</span>
+            <select id="admitDisplayMode" required>
+              <option value="">নিয়ম নির্বাচন করুন</option>
+              <option value="tuition">নির্বাচিত মাস পর্যন্ত বেতন পরিশোধ করেছে</option>
+              <option value="exam-fee">পরীক্ষার ফি / ফরম ফিলাপ করেছে</option>
+              <option value="class-all">নির্বাচিত শ্রেণি ও ট্রেডের সবাই</option>
+            </select>
+          </label>
+          <label id="admitPaidThroughField" hidden>বেতন পরিশোধিত আছে যে মাস পর্যন্ত <span>*</span>
+            <select id="admitPaidThrough">
               <option value="">মাস নির্বাচন করুন</option>
               <option value="01">জানুয়ারি</option><option value="02">ফেব্রুয়ারি</option>
               <option value="03">মার্চ</option><option value="04">এপ্রিল</option>
@@ -279,18 +300,25 @@
               <option value="11">নভেম্বর</option><option value="12">ডিসেম্বর</option>
             </select>
           </label>
+          <label id="admitExamFeeField" hidden>যে ফি পরিশোধ হয়েছে
+            <select id="admitExamFeeType">
+              <option value="any">পরীক্ষার ফি অথবা ফরম ফিলাপ</option>
+              <option value="exam">শুধু পরীক্ষার ফি</option>
+              <option value="form">শুধু ফরম ফিলাপ</option>
+            </select>
+          </label>
         </div>
-        <button id="checkAdmitEligibility" type="button" class="secondary-button">বেতন যাচাই করে শিক্ষার্থী দেখুন</button>
+        <button id="checkAdmitEligibility" type="button" class="secondary-button">নির্বাচিত নিয়মে শিক্ষার্থী দেখুন</button>
       </form>
       <p id="admitMessage" class="module-message" role="status" aria-live="polite"></p>
       <div id="admitEligiblePanel" hidden>
         <div class="admit-selection-toolbar">
-          <label class="check-label"><input id="selectAllEligible" type="checkbox"> সব যোগ্য শিক্ষার্থী নির্বাচন</label>
+          <label class="check-label"><input id="selectAllEligible" type="checkbox"> তালিকার সবাই নির্বাচন করুন</label>
           <button id="prepareAdmitCards" type="button" disabled>প্রবেশপত্র তৈরি করুন</button>
         </div>
         <div class="data-table-wrap">
           <table class="data-table">
-            <thead><tr><th>নির্বাচন</th><th>ছবি</th><th>শিক্ষার্থী</th><th>আইডি / রোল</th><th>বেতন যাচাই</th></tr></thead>
+            <thead><tr><th>নির্বাচন</th><th>ছবি</th><th>শিক্ষার্থী</th><th>আইডি / রোল</th><th>পরিশোধের অবস্থা</th></tr></thead>
             <tbody id="admitEligibleRows"></tbody>
           </table>
         </div>
@@ -492,24 +520,116 @@
 
     <section id="fees" class="dashboard-section" hidden>
       <h2>বেতন ও ফি আদায়</h2>
-      <p class="section-help">প্রতিটি জমা আলাদা লেনদেন হিসেবে রেকর্ড হবে। সংরক্ষিত লেনদেন তালিকায় দেখা যাবে।</p>
+      <p class="section-help">শ্রেণি ও ট্রেড বেছে রোলের ক্রমে একাধিক শিক্ষার্থী নির্বাচন করে একসঙ্গে জমা সংরক্ষণ করুন। প্রত্যেকের জন্য আলাদা রসিদ তৈরি হবে।</p>
       <form id="feeForm" class="admin-form">
         <div class="form-grid">
-          <label>শিক্ষার্থী <span>*</span><select id="feeStudentCode" required><option value="">শিক্ষার্থী নির্বাচন করুন</option></select></label>
+          <label>শ্রেণি <span>*</span><select id="feeClass" required><option value="">শ্রেণি নির্বাচন করুন</option></select></label>
+          <label>ট্রেড <span>*</span><select id="feeTrade" required disabled><option value="">আগে শ্রেণি নির্বাচন করুন</option></select></label>
+          <div class="fee-student-picker full-width">
+            <div class="fee-picker-heading"><strong>শিক্ষার্থী নির্বাচন</strong><label class="fee-select-all"><input id="feeSelectAll" type="checkbox"> তালিকার সবাই</label><span id="feeSelectionCount">০ জন নির্বাচিত</span></div>
+            <div id="feeStudentList" class="fee-student-list" aria-live="polite"><p class="fee-empty-state">শ্রেণি ও ট্রেড নির্বাচন করুন।</p></div>
+          </div>
           <label>ফি-এর ধরন <span>*</span><select id="feeType" required><option value="">নির্বাচন করুন</option><option value="মাসিক বেতন">মাসিক বেতন</option><option value="পরীক্ষার ফি">পরীক্ষার ফি</option><option value="ভর্তি ফি">ভর্তি ফি</option><option value="বোর্ড রেজিস্ট্রেশন ফি">বোর্ড রেজিস্ট্রেশন ফি</option><option value="অন্যান্য">অন্যান্য</option></select></label>
-          <label>মাস (প্রযোজ্য হলে)<input id="feeMonth" type="month"></label>
-          <label>পরিমাণ (টাকা) <span>*</span><input id="feeAmount" type="number" min="1" step="0.01" required inputmode="decimal"></label>
+          <div id="feeMonthsField" class="fee-month-selection full-width" hidden>
+            <div class="fee-month-heading"><strong>যে মাসগুলোর বেতন জমা হবে</strong><label><input id="feeSelectAllMonths" type="checkbox"> সব মাস</label><span id="feeMonthSelectionCount">কোনো মাস নির্বাচিত নয়</span></div>
+            <label class="fee-month-year-label">বেতনের বছর <input id="feeMonthsYear" type="number" min="2000" max="2100"></label>
+            <div id="feeMonthChoices" class="fee-month-grid">
+              <label><input type="checkbox" value="01"> জানুয়ারি</label><label><input type="checkbox" value="02"> ফেব্রুয়ারি</label>
+              <label><input type="checkbox" value="03"> মার্চ</label><label><input type="checkbox" value="04"> এপ্রিল</label>
+              <label><input type="checkbox" value="05"> মে</label><label><input type="checkbox" value="06"> জুন</label>
+              <label><input type="checkbox" value="07"> জুলাই</label><label><input type="checkbox" value="08"> আগস্ট</label>
+              <label><input type="checkbox" value="09"> সেপ্টেম্বর</label><label><input type="checkbox" value="10"> অক্টোবর</label>
+              <label><input type="checkbox" value="11"> নভেম্বর</label><label><input type="checkbox" value="12"> ডিসেম্বর</label>
+            </div>
+            <p class="field-help">প্রতি মাসের বেতনের পরিমাণ লিখুন; নির্বাচিত মাসের সংখ্যা অনুযায়ী মোট টাকা হিসাব হবে।</p>
+          </div>
+          <label id="feeAmountField"><span id="feeAmountCaption">পরিমাণ (টাকা)</span> <span>*</span><input id="feeAmount" type="number" min="1" step="0.01" required inputmode="decimal"></label>
           <label id="feeLateFineField" hidden>লেট ফাইন (টাকা)<input id="feeLateFine" type="number" min="0" step="0.01" inputmode="decimal" value="0"></label>
           <label>জমার তারিখ <span>*</span><input id="feeDate" type="date" required></label>
           <label>পরিশোধের মাধ্যম<select id="feeMethod"><option value="নগদ">নগদ</option><option value="মোবাইল ব্যাংকিং">মোবাইল ব্যাংকিং</option><option value="ব্যাংক">ব্যাংক</option><option value="অন্যান্য">অন্যান্য</option></select></label>
-          <label>রসিদ নম্বর<input id="feeReceipt" type="text" maxlength="50"></label>
           <label class="full-width">মন্তব্য<input id="feeNote" type="text" maxlength="250"></label>
         </div>
         <button id="saveFeeButton" type="submit">জমা সংরক্ষণ</button>
       </form>
       <p id="feeMessage" class="module-message" role="status" aria-live="polite"></p>
       <h3>সাম্প্রতিক জমা</h3>
-      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>তারিখ</th><th>শিক্ষার্থী</th><th>ফি</th><th>মাস</th><th>টাকা</th><th>রসিদ</th></tr></thead><tbody id="feeRows"><tr><td colspan="6">তথ্য লোড হচ্ছে...</td></tr></tbody></table></div>
+      <div class="fee-record-filters">
+        <label>শুরু <input id="feeFilterFrom" type="date"></label>
+        <label>শেষ <input id="feeFilterTo" type="date"></label>
+        <label>শ্রেণি <select id="feeFilterClass"><option value="">সব শ্রেণি</option></select></label>
+        <label>ট্রেড <select id="feeFilterTrade"><option value="">সব ট্রেড</option></select></label>
+        <label>ফি-এর ধরন <select id="feeFilterType"><option value="">সব ধরন</option><option value="মাসিক বেতন">মাসিক বেতন</option><option value="পরীক্ষার ফি">পরীক্ষার ফি</option><option value="ভর্তি ফি">ভর্তি ফি</option><option value="বোর্ড রেজিস্ট্রেশন ফি">বোর্ড রেজিস্ট্রেশন ফি</option><option value="অন্যান্য">অন্যান্য</option></select></label>
+        <button id="clearFeeFilters" type="button" class="secondary-button">ফিল্টার মুছুন</button>
+        <button id="printFeeRecords" type="button" class="secondary-button">তালিকা প্রিন্ট</button>
+      </div>
+      <div class="data-table-wrap"><table class="data-table fee-record-table"><thead><tr><th>তারিখ</th><th>শিক্ষার্থী</th><th>শ্রেণি / ট্রেড</th><th>ফি</th><th>মাস</th><th>টাকা</th><th>রসিদ নম্বর</th><th>রসিদ</th></tr></thead><tbody id="feeRows"><tr><td colspan="8">তথ্য লোড হচ্ছে...</td></tr></tbody></table></div>
+
+    </section>
+
+    <section id="accounts" class="dashboard-section" hidden>
+      <h2>অ্যাকাউন্টস</h2>
+      <p class="section-help">বেতন ও ফি আদায়, ধরনভিত্তিক মোট আদায় এবং প্রতিষ্ঠানের খরচের হিসাব এক জায়গায় দেখুন।</p>
+      <div class="accounts-tabs" role="tablist" aria-label="অ্যাকাউন্টস বিভাগ">
+        <button class="accounts-tab is-active" type="button" data-account-tab="account-fee-sheet" aria-selected="true">বেতন স্প্রেডশিট</button>
+        <button class="accounts-tab" type="button" data-account-tab="account-income" aria-selected="false">ধরনভিত্তিক আদায়</button>
+        <button class="accounts-tab" type="button" data-account-tab="account-expenses" aria-selected="false">প্রতিষ্ঠানের খরচ</button>
+      </div>
+      <p id="accountMessage" class="module-message" role="status" aria-live="polite"></p>
+      <section id="account-fee-sheet" class="accounts-panel fee-spreadsheet-section" aria-labelledby="feeSpreadsheetTitle">
+        <h3 id="feeSpreadsheetTitle">শ্রেণী ও ট্রেডভিত্তিক বেতন স্প্রেডশিট</h3>
+        <p class="field-help">সব শিক্ষার্থীর মাসভিত্তিক জমা ও মোট গৃহীত অর্থ দেখুন; শ্রেণি ও ট্রেড দিয়ে তালিকা সংকুচিত করুন।</p>
+        <div class="fee-spreadsheet-controls">
+          <label>শিক্ষাবর্ষ <input id="feeSheetYear" type="number" min="2000" max="2100"></label>
+          <label>শ্রেণি <select id="feeSheetClass"><option value="">সব শ্রেণি</option></select></label>
+          <label>ট্রেড <select id="feeSheetTrade"><option value="">সব ট্রেড</option></select></label>
+          <button id="printFeeSpreadsheet" type="button" class="secondary-button">স্প্রেডশিট প্রিন্ট</button>
+        </div>
+        <p id="feeSheetSummary" class="fee-sheet-summary"></p>
+        <div class="data-table-wrap fee-spreadsheet-wrap">
+          <table id="feeSpreadsheetTable" class="data-table fee-spreadsheet-table">
+            <thead id="feeSheetHead"><tr><th>রোল</th><th>শিক্ষার্থীর নাম</th><th>শিক্ষার্থী আইডি</th></tr></thead>
+            <tbody id="feeSheetRows"></tbody>
+            <tfoot id="feeSheetFoot"></tfoot>
+          </table>
+        </div>
+      </section>
+      <section id="account-income" class="accounts-panel" hidden>
+        <h3>ফি-এর ধরনভিত্তিক আদায়</h3>
+        <div class="accounts-filters">
+          <label>শুরু <input id="accountIncomeFrom" type="date"></label>
+          <label>শেষ <input id="accountIncomeTo" type="date"></label>
+          <label>শ্রেণি<select id="accountIncomeClass"><option value="">সব শ্রেণি</option></select></label>
+          <label>ট্রেড<select id="accountIncomeTrade" disabled><option value="">সব ট্রেড</option></select></label>
+          <button id="clearAccountIncomeFilters" type="button" class="secondary-button">ফিল্টার মুছুন</button>
+          <button id="printAccountIncome" type="button" class="secondary-button">আদায় তালিকা প্রিন্ট</button>
+        </div>
+        <p id="accountIncomeTotal" class="accounts-total">মোট আদায়: ৳০</p>
+        <div class="data-table-wrap"><table class="data-table accounts-summary-table"><thead><tr><th>ফি-এর ধরন</th><th>লেনদেন সংখ্যা</th><th>মোট আদায়</th></tr></thead><tbody id="accountIncomeRows"><tr><td colspan="3">তথ্য লোড হচ্ছে...</td></tr></tbody></table></div>
+      </section>
+      <section id="account-expenses" class="accounts-panel" hidden>
+        <h3>প্রতিষ্ঠানের খরচের বিবরণ</h3>
+        <form id="expenseForm" class="admin-form">
+          <div class="form-grid">
+            <label>খরচের ধরন <span>*</span><select id="expenseCategory" required><option value="">ধরন নির্বাচন করুন</option><option value="শিক্ষক-কর্মচারীর বেতন/ভাতা">শিক্ষক-কর্মচারীর বেতন/ভাতা</option><option value="বিদ্যুৎ ও ইউটিলিটি">বিদ্যুৎ ও ইউটিলিটি</option><option value="শিক্ষা উপকরণ">শিক্ষা উপকরণ</option><option value="মেরামত ও রক্ষণাবেক্ষণ">মেরামত ও রক্ষণাবেক্ষণ</option><option value="অফিস ও প্রশাসনিক">অফিস ও প্রশাসনিক</option><option value="যাতায়াত">যাতায়াত</option><option value="অন্যান্য">অন্যান্য</option></select></label>
+            <label>খরচের তারিখ <span>*</span><input id="expenseDate" type="date" required></label>
+            <label>পরিমাণ (টাকা) <span>*</span><input id="expenseAmount" type="number" min="0.01" step="0.01" required inputmode="decimal"></label>
+            <label>পরিশোধের মাধ্যম<select id="expenseMethod"><option value="নগদ">নগদ</option><option value="মোবাইল ব্যাংকিং">মোবাইল ব্যাংকিং</option><option value="ব্যাংক">ব্যাংক</option><option value="অন্যান্য">অন্যান্য</option></select></label>
+            <label class="full-width">বিবরণ <span>*</span><input id="expenseDescription" type="text" maxlength="300" required></label>
+            <label class="full-width">ভাউচার / রেফারেন্স (ঐচ্ছিক)<input id="expenseReference" type="text" maxlength="100"></label>
+          </div>
+          <button id="saveExpenseButton" type="submit">খরচ সংরক্ষণ</button>
+        </form>
+        <p id="expenseMessage" class="module-message" role="status" aria-live="polite"></p>
+        <div class="accounts-filters">
+          <label>শুরু <input id="expenseFilterFrom" type="date"></label>
+          <label>শেষ <input id="expenseFilterTo" type="date"></label>
+          <label>খরচের ধরন<select id="expenseFilterCategory"><option value="">সব ধরন</option></select></label>
+          <button id="clearExpenseFilters" type="button" class="secondary-button">ফিল্টার মুছুন</button>
+          <button id="printExpenseList" type="button" class="secondary-button">খরচ তালিকা প্রিন্ট</button>
+        </div>
+        <p id="expenseTotal" class="accounts-total">মোট খরচ: ৳০</p>
+        <div class="data-table-wrap"><table class="data-table accounts-summary-table"><thead><tr><th>তারিখ</th><th>খরচের ধরন ও বিবরণ</th><th>মাধ্যম</th><th>পরিমাণ</th><th>ভাউচার</th></tr></thead><tbody id="expenseRows"><tr><td colspan="5">তথ্য লোড হচ্ছে...</td></tr></tbody></table></div>
+      </section>
     </section>
 
     <section id="results" class="dashboard-section" hidden>
@@ -565,7 +685,7 @@
           <label>জন্মতারিখ<input id="personDob" type="date"></label>
           <label>মোবাইল নম্বর<input id="personPhone" type="tel" maxlength="30"></label>
           <label>ইমেইল<input id="personEmail" type="email" maxlength="120"></label>
-          <label class="full-width">ছবির URL / Google Drive লিংক<input id="personPhoto" type="url" placeholder="https://drive.google.com/file/d/..."></label>
+          <label class="full-width">ছবির URL / Google Drive লিংক<input id="personPhoto" type="url" placeholder="https://tabiulmursaleen.github.io/images/teachers/teacher-01.jpg"></label>
         </div>
         <div class="management-form-actions">
           <button type="submit">তথ্য সংরক্ষণ ও প্রকাশ</button>
@@ -623,14 +743,17 @@
     <p id="dashboardMessage" role="status" aria-live="polite"></p>
   </main>
 
-  <script type="module" src="js/dashboard-language.js?v=20261021-1"></script>
+  <script type="module" src="js/dashboard-language.js?v=20261022-accounts3"></script>
   <script type="module" src="js/admin-dashboard.js?v=20261021-1"></script>
   <script type="module" src="js/admin-notices.js"></script>
-  <script type="module" src="js/admin-students.js?v=20261020-31"></script>
+  <script type="module" src="js/admin-students.js?v=20261022-admit-modes1"></script>
   <script type="module" src="js/admin-routines.js?v=20261019-1"></script>
   <script type="module" src="js/admin-exam-routines.js?v=20261020-5"></script>
   <script src="js/teachers-data.js?v=20261020-1"></script>
   <script src="js/staffs-data.js?v=20261020-1"></script>
-  <script type="module" src="js/admin-community.js?v=20261020-1"></script>
+  <script type="module" src="js/admin-community.js?v=20261022-photo-url1"></script>
 </body>
 </html>
+
+
+

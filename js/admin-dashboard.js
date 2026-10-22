@@ -210,6 +210,20 @@ dashboardSidebarToggle.addEventListener("click", () => {
   dashboardSidebarToggle.title = `সাইড মেনু ${label}`;
 });
 
+// Keep the admin navigation compact on phones; the toggle can reveal labels.
+const mobileDashboardQuery = window.matchMedia("(max-width: 800px)");
+function syncDashboardSidebarToViewport() {
+  const isMobile = mobileDashboardQuery.matches;
+  dashboardGrid.classList.toggle("is-collapsed", isMobile);
+  dashboardContainer.classList.toggle("is-sidebar-collapsed", isMobile);
+  dashboardSidebarToggle.setAttribute("aria-expanded", String(!isMobile));
+  const label = isMobile ? "মেনু খুলুন" : "মেনু গুটান";
+  dashboardSidebarToggle.setAttribute("aria-label", `সাইড মেনু ${label}`);
+  dashboardSidebarToggle.title = `সাইড মেনু ${label}`;
+}
+syncDashboardSidebarToViewport();
+mobileDashboardQuery.addEventListener("change", syncDashboardSidebarToViewport);
+
 const initialSectionId = location.hash.slice(1);
 if (initialSectionId) showDashboardSection(initialSectionId);
 

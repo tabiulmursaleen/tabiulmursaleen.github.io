@@ -721,7 +721,20 @@ button:disabled {
   text-align: center;
 }
 
-.admit-selection-toolbar {
+.admit-fee-spreadsheet {
+  margin: 10px 0 24px;
+  padding: 16px;
+  border: 1px solid #d6dfeb;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #fff 0%, #f1f5fa 100%);
+}
+.admit-fee-spreadsheet > h3 {
+  margin: 2px 0 8px;
+  color: #183d63;
+  text-align: center;
+}
+#admitFilterForm [hidden] { display: none !important; }
+#admitFilterForm { margin-bottom: 10px; }.admit-selection-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1270,6 +1283,7 @@ button:hover {
 }
 .dashboard-card[href="#students"] { --card-band: linear-gradient(120deg, #276f98, #174666); --card-accent: #276f98; }
 .dashboard-card[href="#fees"] { --card-band: linear-gradient(120deg, #318268, #1b5945); --card-accent: #318268; }
+.dashboard-card[href="#accounts"] { --card-band: linear-gradient(120deg, #4f7194, #243f5e); --card-accent: #4f7194; }
 .dashboard-card[href="#results"] { --card-band: linear-gradient(120deg, #7563a4, #4b3c73); --card-accent: #7563a4; }
 .dashboard-card[href="#notices"] { --card-band: linear-gradient(120deg, #b45d56, #7b3d3b); --card-accent: #b45d56; }
 .dashboard-card[href="#routines"] { --card-band: linear-gradient(120deg, #a17d35, #71551f); --card-accent: #a17d35; }
@@ -2294,6 +2308,212 @@ button:hover {
   color: #607086;
   font-size: 16px;
 }
+.fee-picker-heading {
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px 18px;
+  padding:11px 14px;
+  color:#183d63;
+  background:#edf3f8;
+  border:1px solid #d7e1eb;
+  border-radius:9px 9px 0 0;
+}
+.fee-picker-heading strong { margin-right:auto; }
+.fee-picker-heading .fee-select-all { display:inline-flex;align-items:center;gap:7px;margin:0;font-weight:600; }
+.fee-picker-heading .fee-select-all input { width:auto;margin:0; }
+.fee-picker-heading > span { color:#5f7184;font-size:13px; }
+.fee-month-selection { padding:12px;border:1px solid #d7e1eb;border-radius:9px;background:#f8fbfe; }
+.fee-month-heading { display:flex;align-items:center;flex-wrap:wrap;gap:9px 16px;margin-bottom:10px;color:#183d63; }
+.fee-month-heading strong { margin-right:auto; }
+.fee-month-heading label { display:inline-flex;align-items:center;gap:6px;margin:0;font-size:13px;font-weight:600; }
+.fee-month-heading input { width:auto;margin:0;accent-color:#b99b55; }
+.fee-month-heading span { color:#68798b;font-size:13px; }
+.fee-month-year-label { display:block;max-width:210px;margin:0 0 10px!important;color:#43576c;font-size:13px; }
+.fee-month-year-label input { display:block;width:100%;margin-top:5px;padding:8px;border:1px solid #cbd6e1;border-radius:6px;background:#fff;font:inherit; }
+.fee-month-grid { display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px; }
+.fee-month-grid label { display:flex;align-items:center;gap:7px;min-width:0;margin:0;padding:8px 9px;border:1px solid #dbe4ed;border-radius:7px;background:#fff;color:#2a425b;font-size:13px;font-weight:500;cursor:pointer; }
+.fee-month-grid label:has(input:checked) { border-color:#b99b55;background:#edf3f8;color:#183d63; }
+.fee-month-grid input { width:auto;flex:0 0 auto;margin:0;accent-color:#183d63; }
+.fee-month-selection > .field-help { margin:9px 0 0; }
+.fee-student-picker { min-width:0; }
+.fee-student-list {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:0 10px;
+  max-height:270px;
+  overflow:auto;
+  padding:7px 12px;
+  border:1px solid #d7e1eb;
+  border-top:0;
+  border-radius:0 0 9px 9px;
+  background:#fff;
+}
+.fee-student-option {
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-width:0;
+  margin:0;
+  padding:8px 5px;
+  border-bottom:1px solid #edf1f5;
+  color:#293d52;
+  font-size:14px;
+  font-weight:400;
+  cursor:pointer;
+}
+.fee-student-option input { width:auto;flex:0 0 auto;margin:0; }
+.fee-student-option span { min-width:0;overflow-wrap:anywhere; }
+.fee-empty-state { grid-column:1/-1;margin:0;padding:18px 8px;color:#6a7888;text-align:center; }
+.fee-record-filters {
+  display:grid;
+  grid-template-columns:repeat(5,minmax(120px,1fr)) auto auto;
+  align-items:end;
+  gap:10px;
+  margin:14px 0;
+  padding:13px;
+  background:#f2f6fa;
+  border:1px solid #dce5ee;
+  border-radius:10px;
+}
+.fee-record-filters label { min-width:0;margin:0;color:#43576c;font-size:13px; }
+.fee-record-filters input,.fee-record-filters select { min-width:0;width:100%;margin-top:5px;padding:8px;border:1px solid #cbd6e1;border-radius:6px;background:#fff;font:inherit; }
+.fee-record-filters button { width:auto;min-height:39px;margin:0;padding:8px 12px;white-space:nowrap;font-size:14px; }
+.fee-record-table { min-width:900px; }
+.fee-record-table th,
+.fee-record-table td {
+  padding:7px 8px;
+  font-size:13px;
+  line-height:1.35;
+}
+.fee-record-table .table-action { padding:6px 8px;font-size:12px; }
+.fee-spreadsheet-section {
+  margin-top:26px;
+  padding:18px;
+  border:1px solid #d9e2ec;
+  border-top:4px solid #b99b55;
+  border-radius:11px;
+  background:linear-gradient(145deg,#fff,#f6f9fc);
+}
+.fee-spreadsheet-section > h3 { margin:0 0 5px;color:#183d63; }
+.fee-spreadsheet-section > .field-help { margin:0 0 13px; }
+.fee-spreadsheet-controls {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(130px,1fr)) auto auto;
+  align-items:end;
+  gap:10px;
+  margin-bottom:12px;
+}
+.fee-spreadsheet-controls label { min-width:0;margin:0;color:#43576c;font-size:13px; }
+.fee-spreadsheet-controls input,
+.fee-spreadsheet-controls select {
+  display:block;width:100%;min-width:0;margin-top:5px;padding:8px;border:1px solid #cbd6e1;border-radius:6px;background:#fff;font:inherit;
+}
+.fee-spreadsheet-controls button { width:auto;min-height:39px;margin:0;padding:8px 12px;white-space:nowrap;font-size:13px; }
+.fee-sheet-summary { margin:8px 0 11px;color:#415a73;font-size:14px;font-weight:600; }
+.fee-spreadsheet-wrap { max-height:560px; }
+.fee-spreadsheet-table { min-width:1325px;font-size:12px;table-layout:fixed; }
+.fee-spreadsheet-table th,
+.fee-spreadsheet-table td { padding:7px 8px;text-align:center;font-size:12px;white-space:nowrap; }
+.fee-spreadsheet-table th { position:sticky;top:0;z-index:2;background:linear-gradient(120deg,#244d74,#173d62); }
+.fee-spreadsheet-table th:first-child,
+.fee-spreadsheet-table td:first-child { width:55px; }
+.fee-spreadsheet-table th:nth-child(2),
+.fee-spreadsheet-table td:nth-child(2) { width:165px;text-align:left; }
+.fee-spreadsheet-table th:nth-child(3),
+.fee-spreadsheet-table td:nth-child(3) { width:120px; }
+.fee-spreadsheet-table th:nth-child(n+4):nth-child(-n+15),
+.fee-spreadsheet-table td:nth-child(n+4):nth-child(-n+15) { width:72px; }
+.fee-spreadsheet-table th:last-child,
+.fee-spreadsheet-table td:last-child { width:100px; }
+.fee-spreadsheet-table tbody tr:nth-child(even) { background:#eff4f8; }
+.fee-spreadsheet-table tfoot tr { background:#e3ecf4;color:#183d63;font-weight:800; }
+.fee-spreadsheet-table tfoot td { border-top:2px solid #b99b55;padding-top:9px;padding-bottom:9px; }
+.accounts-tabs {
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin:12px 0 16px;
+  padding-bottom:10px;
+  border-bottom:1px solid #dbe3ec;
+}
+.accounts-tab {
+  width:auto;
+  min-height:40px;
+  margin:0;
+  padding:8px 15px;
+  border:1px solid #cbd7e3;
+  border-radius:8px;
+  background:#f3f6f9;
+  color:#244767;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+}
+.accounts-tab:hover,.accounts-tab:focus-visible { background:#e6edf4;color:#183d63; }
+.accounts-tab.is-active { border-color:#183d63;background:#183d63;color:#fff;box-shadow:0 4px 12px #183d6333; }
+.accounts-panel[hidden] { display:none!important; }
+.accounts-panel:not([hidden]) { display:block; }
+.accounts-panel > h3 { margin:4px 0 12px;color:#183d63; }
+.accounts-filters {
+  display:grid;
+  grid-template-columns:repeat(5,minmax(110px,1fr)) auto;
+  align-items:end;
+  gap:10px;
+  margin:12px 0;
+  padding:13px;
+  border:1px solid #dce5ee;
+  border-radius:10px;
+  background:#f2f6fa;
+}
+.accounts-filters label { min-width:0;margin:0;color:#43576c;font-size:13px; }
+.accounts-filters input,.accounts-filters select { width:100%;min-width:0;margin-top:5px;padding:8px;border:1px solid #cbd6e1;border-radius:6px;background:#fff;font:inherit; }
+.accounts-filters button { width:auto;min-height:38px;margin:0;padding:8px 12px;white-space:nowrap; }
+.accounts-total {
+  margin:12px 0;
+  padding:13px 16px;
+  border:1px solid #c4d3e0;
+  border-left:5px solid #b99b55;
+  border-radius:8px;
+  background:linear-gradient(100deg,#eaf1f7,#fff9e9);
+  color:#183d63;
+  font-size:18px;
+  font-weight:800;
+}
+.accounts-summary-table { min-width:580px; }
+.accounts-summary-table th,.accounts-summary-table td { padding:9px 11px;text-align:center; }
+.accounts-summary-table th:first-child,.accounts-summary-table td:nth-child(2) { text-align:left; }
+.accounts-summary-table tbody tr:nth-child(even) { background:#f0f4f8; }
+.accounts-panel #expenseForm { margin:12px 0; }
+.accounts-panel #expenseForm > button { width:auto;min-width:160px; }
+@media(max-width:1000px) {
+  .fee-record-filters { grid-template-columns:repeat(3,minmax(130px,1fr)); }
+}
+@media(max-width:600px) {
+  .fee-student-list { grid-template-columns:1fr;max-height:230px; }
+  .fee-picker-heading { gap:8px 12px;padding:9px; }
+  .fee-picker-heading strong { width:100%; }
+  .fee-month-selection { padding:9px; }
+  .fee-month-grid { grid-template-columns:repeat(3,minmax(0,1fr));gap:6px; }
+  .fee-month-grid label { padding:7px 6px;font-size:12px; }
+  .fee-month-heading strong { width:100%; }
+  .fee-month-year-label { max-width:none; }
+  .fee-record-filters { grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:9px; }
+  .fee-record-filters label:last-of-type { grid-column:1/-1; }
+  .fee-record-filters button { width:100%;font-size:13px;padding:8px 6px; }
+  .fee-record-table th,
+  .fee-record-table td { padding:6px 7px;font-size:12px; }
+  .fee-spreadsheet-section { margin-top:20px;padding:12px; }
+  .fee-spreadsheet-controls { grid-template-columns:repeat(2,minmax(0,1fr));gap:8px; }
+  .fee-spreadsheet-controls button { width:100%;padding:8px 6px;font-size:12px; }
+  .fee-spreadsheet-controls label:first-child { grid-column:1/-1; }
+  .fee-spreadsheet-table { min-width:1325px; }
+  .accounts-tabs { display:grid;grid-template-columns:1fr;gap:7px; }
+  .accounts-tab { width:100%; }
+  .accounts-filters { grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:9px; }
+  .accounts-filters button { width:100%;grid-column:1/-1; }
+  .accounts-total { padding:11px 12px;font-size:16px; }
+}
 @media (max-width: 800px) {
   .dashboard-container > .welcome-card {
     grid-column: 1;
@@ -2301,3 +2521,204 @@ button:hover {
     min-height: 180px;
   }
 }
+
+/* Consistent navy-and-gold calendar controls throughout the admin dashboard. */
+input[type="date"],
+input[type="month"],
+input[type="datetime-local"],
+input[type="week"] {
+  color-scheme: light;
+  accent-color: #b99b55;
+  border-color: #c7d4e1;
+  border-radius: 8px;
+  background-color: #f8fbff;
+  color: #183d63;
+}
+.admin-form input[type="date"],
+.admin-form input[type="month"],
+.admin-form input[type="datetime-local"],
+.admin-form input[type="week"],
+.fee-record-filters input[type="date"] {
+  border-color: #c7d4e1;
+  background: linear-gradient(135deg,#fff,#f5f9fd);
+  color: #183d63;
+  color-scheme: light;
+  accent-color: #b99b55;
+}
+input[type="date"]:focus,
+input[type="month"]:focus,
+input[type="datetime-local"]:focus,
+input[type="week"]:focus {
+  outline: 2px solid rgba(185,155,85,.32);
+  border-color: #b99b55;
+  box-shadow: 0 0 0 3px rgba(24,61,99,.08);
+}
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="month"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="week"]::-webkit-calendar-picker-indicator {
+  padding: 5px;
+  border-radius: 6px;
+  cursor: pointer;
+  filter: invert(22%) sepia(20%) saturate(1776%) hue-rotate(169deg) brightness(92%) contrast(92%);
+  transition: background-color .16s ease,filter .16s ease;
+}
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="month"]::-webkit-calendar-picker-indicator:hover,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover,
+input[type="week"]::-webkit-calendar-picker-indicator:hover {
+  background-color: rgba(185,155,85,.2);
+  filter: invert(47%) sepia(29%) saturate(812%) hue-rotate(7deg) brightness(91%) contrast(88%);
+}
+
+/* Mobile admin layout refinements. */
+@media (max-width: 650px) {
+  .login-container {
+    gap: 14px;
+    padding: 20px 12px;
+  }
+  .login-welcome {
+    width: min(100%, 400px);
+  }
+  .login-welcome h2 {
+    font-size: clamp(21px, 5.8vw, 27px);
+  }
+  .login-card {
+    width: min(100%, 400px);
+    max-width: 400px;
+    padding: 22px 18px;
+    border-radius: 14px;
+  }
+  .login-card h1 {
+    margin: 7px 0 10px;
+    font-size: 25px;
+  }
+  .login-card .subtitle {
+    margin-bottom: 18px;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .login-card label {
+    margin: 12px 0 6px;
+  }
+  .login-card input {
+    padding: 10px 11px;
+  }
+  .login-card button {
+    min-height: 46px;
+    margin-top: 17px;
+    padding: 10px 12px;
+  }
+  .login-card .login-developer-credit {
+    margin-top: 15px;
+    padding-top: 10px;
+  }
+}
+
+@media (max-width: 700px) {
+  #people-management .management-tabs,
+  #gallery-management .management-tabs {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  #people-management .management-tabs button,
+  #gallery-management .management-tabs button {
+    width: 100%;
+    min-height: 42px;
+    margin: 0;
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+}
+
+/* On phones, show admin navigation as a compact icon bar. */
+@media (max-width: 800px) {
+  .dashboard-container.is-sidebar-collapsed {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dashboard-container.is-sidebar-collapsed > .dashboard-grid {
+    display: grid;
+    width: 100%;
+    max-height: none;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    overflow: visible;
+    padding: 6px 0 10px;
+  }
+  .dashboard-container.is-sidebar-collapsed .dashboard-sidebar-toggle {
+    display: none;
+  }
+  .dashboard-container.is-sidebar-collapsed .dashboard-card {
+    min-width: 0;
+    min-height: 92px;
+    border: 1px solid #d9e1e9;
+    border-radius: 8px;
+    background: #f6f8fb;
+  }
+  .dashboard-container.is-sidebar-collapsed .dashboard-card-heading {
+    min-height: 90px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    padding: 6px 3px;
+  }
+  .dashboard-container.is-sidebar-collapsed .dashboard-card .card-icon {
+    width: 27px;
+    height: 27px;
+    flex-basis: 27px;
+    font-size: 20px;
+  }
+  .dashboard-container.is-sidebar-collapsed .dashboard-card[aria-current="page"] {
+    border-color: #b99b55;
+  }
+  .dashboard-container.is-sidebar-collapsed .dashboard-card[aria-current="page"] .dashboard-card-heading {
+    justify-content: center;
+    padding: 6px 3px;
+  }
+  .dashboard-container.is-sidebar-collapsed .dashboard-card h3 {
+    display: block;
+    color: #30455c;
+    font-size: 11px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+    text-align: center;
+  }
+  .dashboard-container.is-sidebar-collapsed .dashboard-card[aria-current="page"] h3 {
+    color: #fff;
+  }
+}
+
+@media (max-width: 380px) {
+  .dashboard-container.is-sidebar-collapsed > .dashboard-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Keep the people category tabs visually consistent across hover and selection. */
+#people-management .people-type-button {
+  border: 1px solid #c8d5e2;
+  border-bottom: 3px solid #b99b55;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #f7f9fc, #eaf0f6);
+  color: #183d63;
+  font-weight: 700;
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease;
+}
+#people-management .people-type-button:hover,
+#people-management .people-type-button:focus-visible {
+  border-color: #a98636;
+  background: linear-gradient(135deg, #e7eef6, #dce7f1);
+  color: #183d63;
+  box-shadow: 0 3px 10px rgba(24, 61, 99, .12);
+}
+#people-management .people-type-button.is-active,
+#people-management .people-type-button.is-active:hover,
+#people-management .people-type-button.is-active:focus-visible {
+  border-color: #b99b55;
+  border-bottom-color: #e2c873;
+  background: linear-gradient(120deg, #285780, #183d63);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(24, 61, 99, .2);
+}
+
