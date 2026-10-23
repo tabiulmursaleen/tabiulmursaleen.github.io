@@ -68,6 +68,11 @@ service cloud.firestore {
       allow read, create, update, delete: if isAdmin();
     }
 
+    // Question papers are private drafts managed and printed by the admin.
+    match /questionPapers/{paperId} {
+      allow read, create, update, delete: if isAdmin();
+    }
+
     // Per-student in-progress marks are private and can only be managed by the admin.
     match /studentResultDrafts/{resultId} {
       allow read, create, update, delete: if isAdmin();

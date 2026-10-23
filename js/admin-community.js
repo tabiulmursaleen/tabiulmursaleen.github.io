@@ -251,8 +251,21 @@ function driveFileId(value) {
 }
 
 function directVideoUrl(value) {
-  try { return /\.(?:mp4|webm|ogv|ogg|m4v)$/i.test(new URL(value).pathname); }
+  try {
+    const url = new URL(value);
+    return /\.(?:mp4|webm|ogv|ogg|m4v)$/i.test(url.pathname);
+  }
   catch { return false; }
+}
+
+function playableVideoUrl(value) {
+  const url = new URL(value);
+  if (url.hostname === "dropbox.com" || url.hostname.endsWith(".dropbox.com")) {
+    url.searchParams.delete("dl");
+    url.searchParams.set("raw", "1");
+    return url.href;
+  }
+  return value;
 }
 
 function renderGallery() {
@@ -294,7 +307,7 @@ function renderGallery() {
     });
     const preview = document.createElement("div"); preview.className = "gallery-admin-card-preview";
     if (item.mediaType === "video" && directVideoUrl(item.url)) {
-      const video = document.createElement("video"); video.src = item.url; video.muted = true; video.preload = "metadata"; video.playsInline = true;
+      const video = document.createElement("video"); video.src = playableVideoUrl(item.url); video.muted = true; video.preload = "metadata"; video.playsInline = true;
       video.onerror = () => { video.hidden = true; preview.classList.add("preview-unavailable"); preview.textContent = "ভিডিও লিংক"; };
       preview.append(video);
     } else {
@@ -412,8 +425,8 @@ function addGalleryEntry(item = {}) {
   const url = document.createElement("input");
   url.type = "url"; url.required = true; url.className = "gallery-entry-url";
   url.value = item.url || "";
-  url.placeholder = currentGalleryType === "photo" ? "Google Drive ছবির লিংক পেস্ট করুন" : "YouTube ভিডিওর লিংক পেস্ট করুন";
-  url.setAttribute("aria-label", currentGalleryType === "photo" ? "Google Drive ছবির লিংক" : "YouTube ভিডিওর লিংক");
+  url.placeholder = currentGalleryType === "photo" ? "Google Drive ছবির লিংক পেস্ট করুন" : "YouTube, Dropbox বা ভিডিও ফাইলের লিংক পেস্ট করুন";
+  url.setAttribute("aria-label", currentGalleryType === "photo" ? "Google Drive ছবির লিংক" : "ভিডিওর লিংক");
   const save = document.createElement("button");
   save.type = "submit"; save.className = "secondary-button gallery-save-entry";
   save.textContent = "✓"; save.title = "গ্যালারিতে সংরক্ষণ"; save.setAttribute("aria-label", "গ্যালারিতে সংরক্ষণ");

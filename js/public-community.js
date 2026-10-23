@@ -126,6 +126,16 @@ function youtubeId(value) {
   return "";
 }
 
+function playableVideoUrl(value) {
+  const url = new URL(value);
+  if (url.hostname === "dropbox.com" || url.hostname.endsWith(".dropbox.com")) {
+    url.searchParams.delete("dl");
+    url.searchParams.set("raw", "1");
+    return url.href;
+  }
+  return value;
+}
+
 function videoPlayer(item) {
   const url = new URL(item.url);
   const title = escape(item.caption || "প্রতিষ্ঠানের ভিডিও");
@@ -139,7 +149,9 @@ function videoPlayer(item) {
     const resourceKeyQuery = resourceKey ? `?resourcekey=${encodeURIComponent(resourceKey)}` : "";
     return `<iframe src="https://drive.google.com/file/d/${encodeURIComponent(driveId)}/preview${resourceKeyQuery}" title="${title}" loading="lazy" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
   }
-  if (/\.(?:mp4|webm|ogv|ogg|m4v)$/i.test(url.pathname)) return `<video controls preload="metadata" playsinline><source src="${escape(item.url)}"></video>`;
+  if (/\.(?:mp4|webm|ogv|ogg|m4v)$/i.test(url.pathname)) {
+    return `<video controls preload="metadata" playsinline><source src="${escape(playableVideoUrl(item.url))}"></video>`;
+  }
   return `<iframe src="${escape(item.url)}" title="${title}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
 }
 
