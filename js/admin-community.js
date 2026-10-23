@@ -1,11 +1,12 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 import {
-  collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc, writeBatch
+  collection, deleteDoc, deleteField, doc, getDocs, serverTimestamp, setDoc, writeBatch
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 import { auth, db } from "./firebase-config.js";
 
 const ADMIN_UID = "wWuBEmlsaofgjAaQi7bfblsX6L62";
 const peopleCollection = "directoryPeople";
+const privatePeopleCollection = "directoryPrivate";
 const contentCollection = "classContents";
 const galleryCollection = "galleryItems";
 const $ = (id) => document.getElementById(id);
@@ -157,9 +158,15 @@ $("personForm").addEventListener("submit", async (event) => {
     dob: $("personDob").value, phone: $("personPhone").value.trim(), email: $("personEmail").value.trim(),
     photo, published: true, deleted: false, updatedAt: serverTimestamp()
   };
+  const publicRecord = { ...record, dob: deleteField() };
   busy = true;
   try {
-    await setDoc(doc(db, peopleCollection, `${currentType}__${id}`), record, { merge: true });
+    const batch = writeBatch(db);
+    batch.set(doc(db, peopleCollection, `${currentType}__${id}`), publicRecord, { merge: true });
+    batch.set(doc(db, privatePeopleCollection, `${currentType}__${id}`), {
+      dob: record.dob || deleteField(), updatedAt: serverTimestamp()
+    }, { merge: true });
+    await batch.commit();
     people = [...people.filter((item) => item.id !== id || item.personType !== currentType), { ...record, updatedAt: null }];
     clearPersonForm(); renderPeople(); say("peopleManagementMessage", "তথ্য সংরক্ষণ ও প্রকাশ করা হয়েছে।");
   } catch (error) {
@@ -172,7 +179,9 @@ async function removePerson(person) {
   if (!window.confirm(`${person.name} — এই তথ্যটি ওয়েবসাইট থেকে সরাবেন?`)) return;
   try {
     const record = { ...person, personType: currentType, deleted: true, published: true, updatedAt: serverTimestamp() };
-    await setDoc(doc(db, peopleCollection, `${currentType}__${person.id}`), record, { merge: true });
+    await setDoc(doc(db, peopleCollection, `${currentType}__${person.id}`), {
+      ...record, dob: deleteField()
+    }, { merge: true });
     people = [...people.filter((item) => item.id !== person.id || item.personType !== currentType), { ...record, updatedAt: null }];
     renderPeople(); say("peopleManagementMessage", "তথ্যটি ওয়েবসাইট থেকে সরানো হয়েছে।");
   } catch (error) { console.error(error); say("peopleManagementMessage", "তথ্য সরানো যায়নি। Firestore Rules পরীক্ষা করুন।", true); }
@@ -517,10 +526,26 @@ function refreshTeacherOptions() {
 
 async function loadManagementData() {
   try {
-    const [peopleSnapshot, contentSnapshot, gallerySnapshot] = await Promise.all([
-      getDocs(collection(db, peopleCollection)), getDocs(collection(db, contentCollection)), getDocs(collection(db, galleryCollection))
+    const [peopleSnapshot, privatePeopleSnapshot, contentSnapshot, gallerySnapshot] = await Promise.all([
+      getDocs(collection(db, peopleCollection)), getDocs(collection(db, privatePeopleCollection)),
+      getDocs(collection(db, contentCollection)), getDocs(collection(db, galleryCollection))
     ]);
-    people = peopleSnapshot.docs.map((entry) => ({ id: entry.id.split("__").slice(1).join("__"), ...entry.data() }));
+    const privatePeople = new Map(privatePeopleSnapshot.docs.map((entry) => [entry.id, entry.data()]));
+    people = [];
+    for (const entry of peopleSnapshot.docs) {
+      const data = entry.data();
+      const privateData = privatePeople.get(entry.id);
+      const dob = privateData?.dob || data.dob || "";
+      if (Object.prototype.hasOwnProperty.call(data, "dob")) {
+        const batch = writeBatch(db);
+        if (data.dob && !privateData?.dob) {
+          batch.set(doc(db, privatePeopleCollection, entry.id), { dob: data.dob }, { merge: true });
+        }
+        batch.update(doc(db, peopleCollection, entry.id), { dob: deleteField() });
+        await batch.commit();
+      }
+      people.push({ id: entry.id.split("__").slice(1).join("__"), ...data, dob });
+    }
     contentItems = contentSnapshot.docs.map((entry) => ({ id: entry.id, ...entry.data() }));
     galleryItems = gallerySnapshot.docs.map((entry) => ({ id: entry.id, ...entry.data() }));
     renderPeople(); renderContents(); renderGallery(); refreshTeacherOptions();

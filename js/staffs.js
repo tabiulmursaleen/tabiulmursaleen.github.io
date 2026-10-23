@@ -154,11 +154,6 @@ function renderStaffProfile() {
         </div>
 
         <div>
-          <dt>জন্মতারিখ</dt>
-          <dd>${staffFormatDate(staff.dob)}</dd>
-        </div>
-
-        <div>
           <dt>মোবাইল নম্বর</dt>
           <dd>${staffValue(staff.phone)}</dd>
         </div>

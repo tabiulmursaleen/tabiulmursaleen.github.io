@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>অ্যাডমিন ড্যাশবোর্ড | TMNKSC</title>
-  <link rel="stylesheet" href="css/admin.css?v=20261023-question-papers21">
+  <link rel="stylesheet" href="css/admin.css?v=20261023-question-papers26">
 </head>
 <body>
 
@@ -712,14 +712,16 @@
         <input id="questionPaperId" type="hidden">
         <div class="question-paper-heading-fields">
           <label class="question-paper-school-name">প্রতিষ্ঠানের নাম<input id="questionPaperInstitution" value="তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ" required></label>
-          <label class="question-paper-checkbox"><input id="questionPaperEnglish" type="checkbox"> ইংরেজি প্রশ্ন</label>
-          <label class="question-paper-checkbox"><input id="questionPaperCreative" type="checkbox"> সৃজনশীল</label>
-          <label>পরীক্ষার নাম <span>*</span><select id="questionPaperExam" required><option value="">নির্বাচন করুন</option><option>অর্ধবার্ষিক পরীক্ষা</option><option>নির্বাচনী পরীক্ষা</option><option>বার্ষিক পরীক্ষা</option><option>প্রাক-নির্বাচনী পরীক্ষা</option></select></label>
-          <label>সাল <span>*</span><select id="questionPaperYear" required></select></label>
-          <label>শ্রেণি <span>*</span><select id="questionPaperClass" required><option value="">শ্রেণি নির্বাচন করুন</option><option value="ষষ্ঠ">ষষ্ঠ</option><option value="সপ্তম">সপ্তম</option><option value="অষ্টম">অষ্টম</option><option value="নবম">নবম</option><option value="দশম">দশম</option><option value="একাদশ">একাদশ</option><option value="দ্বাদশ">দ্বাদশ</option></select></label>
-          <label class="question-paper-subject-field">বিষয় <span>*</span><select id="questionPaperSubject" required><option value="">আগে শ্রেণি নির্বাচন করুন</option></select><input id="questionPaperCustomSubject" placeholder="বিষয়ের নাম লিখুন" hidden><input id="questionPaperSubjectCode" placeholder="বিষয় কোড (ঐচ্ছিক)"></label>
-          <label>পরীক্ষার সময়<select id="questionPaperDuration"></select></label>
-          <label>পূর্ণমান<select id="questionPaperMarks" required></select><input id="questionPaperCustomMarks" type="number" min="1" placeholder="পূর্ণমান লিখুন" hidden></label>
+          <div class="qp-question-modes">
+            <label class="question-paper-checkbox"><input id="questionPaperEnglish" type="checkbox"> ইংরেজি প্রশ্ন</label>
+            <label class="question-paper-checkbox"><input id="questionPaperCreative" type="checkbox"> সৃজনশীল</label>
+          </div>
+          <label><select id="questionPaperExam" aria-label="পরীক্ষার নাম" required><option value="">পরীক্ষার নাম নির্বাচন করুন</option><option>অর্ধবার্ষিক পরীক্ষা</option><option>নির্বাচনী পরীক্ষা</option><option>বার্ষিক পরীক্ষা</option><option>প্রাক-নির্বাচনী পরীক্ষা</option></select></label>
+          <label><select id="questionPaperYear" aria-label="সাল" required></select></label>
+          <label><select id="questionPaperClass" aria-label="শ্রেণি" required><option value="">শ্রেণি নির্বাচন করুন</option><option value="ষষ্ঠ">ষষ্ঠ</option><option value="সপ্তম">সপ্তম</option><option value="অষ্টম">অষ্টম</option><option value="নবম">নবম</option><option value="দশম">দশম</option><option value="একাদশ">একাদশ</option><option value="দ্বাদশ">দ্বাদশ</option></select></label>
+          <label class="question-paper-subject-field"><select id="questionPaperSubject" aria-label="বিষয়" required><option value="">আগে শ্রেণি নির্বাচন করুন</option></select><input id="questionPaperCustomSubject" placeholder="বিষয়ের নাম লিখুন" hidden><input id="questionPaperSubjectCode" placeholder="বিষয় কোড (ঐচ্ছিক)"></label>
+          <label><select id="questionPaperDuration" aria-label="পরীক্ষার সময়"></select></label>
+          <label><select id="questionPaperMarks" aria-label="পূর্ণমান" required></select><input id="questionPaperCustomMarks" type="number" min="1" placeholder="পূর্ণমান লিখুন" hidden></label>
         </div>
         <div class="question-paper-instruction-controls">
           <label class="question-paper-checkbox"><input id="questionPaperGeneralInstructionEnabled" type="checkbox"> উত্তর লেখার প্রধান নির্দেশনা <small>(সব প্রশ্নে প্রযোজ্য)</small></label>
@@ -750,17 +752,19 @@
           <div id="questionPaperSections"></div>
         </section>
         <div class="question-paper-actions">
-          <label>প্রিন্ট ফন্টের আকার <input id="questionPrintFont" type="range" min="9" max="16" value="12"><output id="questionPrintFontValue">12px</output></label>
+          <label>প্রিন্ট ফন্টের আকার <input id="questionPrintFont" type="range" min="13" max="22" value="16"><output id="questionPrintFontValue">16px</output></label>
           <label>সর্বোচ্চ পৃষ্ঠা <select id="questionPrintPages"><option value="1">১ পৃষ্ঠা</option><option value="2" selected>২ পৃষ্ঠা</option><option value="3">৩ পৃষ্ঠা</option><option value="4">৪ পৃষ্ঠা</option><option value="0">সীমা নেই</option></select></label>
           <label>প্রিন্ট কলাম <select id="questionPrintColumns"><option value="1" selected>এক কলাম · পোর্ট্রেট</option><option value="2">দুই কলাম · ল্যান্ডস্কেপ</option></select></label>
-          <button id="saveQuestionPaper" type="submit">প্রশ্নপত্র সংরক্ষণ</button>
-          <button id="printQuestionPaper" class="secondary-button" type="button">প্রিন্ট দেখুন</button>
-          <button id="resetQuestionPaper" class="secondary-button" type="button">নতুন প্রশ্নপত্র</button>
+          <div class="qp-output-actions">
+            <button id="saveQuestionPaper" type="submit">সংরক্ষণ</button>
+            <button id="printQuestionPaper" class="secondary-button" type="button">প্রিন্ট</button>
+            <button id="downloadQuestionPaperWord" class="secondary-button" type="button">Word</button>
+          </div>
         </div>
       </form>
       <p id="questionPaperMessage" class="module-message" role="status" aria-live="polite"></p>
       <h3>সংরক্ষিত প্রশ্নপত্র</h3>
-      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>পরীক্ষা</th><th>শ্রেণি</th><th>বিষয়</th><th>সাল</th><th>কাজ</th></tr></thead><tbody id="questionPaperRows"><tr><td colspan="5">তথ্য লোড হচ্ছে...</td></tr></tbody></table></div>
+      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>পরীক্ষা</th><th>শ্রেণি</th><th>বিষয়</th><th>সাল</th><th>প্রণেতা</th><th>কাজ</th></tr></thead><tbody id="questionPaperRows"><tr><td colspan="6">তথ্য লোড হচ্ছে...</td></tr></tbody></table></div>
     </section>
 
     <section id="people-management" class="dashboard-section" hidden>
@@ -844,12 +848,11 @@
   <script type="module" src="js/admin-students.js?v=20261023-public-student-parents1"></script>
   <script type="module" src="js/admin-routines.js?v=20261019-1"></script>
   <script type="module" src="js/admin-exam-routines.js?v=20261022-subject-catalog2"></script>
-  <script src="js/teachers-data.js?v=20261020-1"></script>
-  <script src="js/staffs-data.js?v=20261020-1"></script>
-  <script type="module" src="js/admin-community.js?v=20261023-dropbox-video-playback1"></script>
-  <script type="module" src="js/admin-question-papers.js?v=20261023-question-papers18"></script>
+  <script src="js/teachers-data.js?v=20261023-private-dob1"></script>
+  <script src="js/staffs-data.js?v=20261023-private-dob1"></script>
+  <script type="module" src="js/admin-community.js?v=20261023-private-dob1"></script>
+  <script type="module" src="js/admin-question-papers.js?v=20261023-question-papers23"></script>
 </body>
 </html>
-
 
 

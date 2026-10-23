@@ -71,7 +71,6 @@ function renderTeacherProfile() {
     ['শিক্ষাগত যোগ্যতা', teacher.qualification],
     ['যোগদানের তারিখ', formatTeacherDate(teacher.joiningDate)],
     ['অভিজ্ঞতা', calculateTeacherExperience(teacher.joiningDate)],
-    ['জন্মতারিখ', formatTeacherDate(teacher.dob)],
     ['মোবাইল নম্বর', teacher.phone],
     ['ইমেইল', teacher.email]
   ];

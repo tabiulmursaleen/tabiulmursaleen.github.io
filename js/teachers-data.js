@@ -8,7 +8,6 @@ const teachers = [
     "subject": "",
     "qualification": "এম.এ",
     "joiningDate": "2024-04-17",
-    "dob": "1977-11-10",
     "phone": "01716858193",
     "email": "bayezidislam2k25@gmail.com",
     "photo": "images/teachers/teacher-01.jpg"
@@ -21,7 +20,6 @@ const teachers = [
     "subject": "বাংলা",
     "qualification": "এম.এ",
     "joiningDate": "2015-11-01",
-    "dob": "1986-10-15",
     "phone": "01717738563",
     "email": "alamgirkabirraja04@gmail.com",
     "photo": "images/teachers/teacher-02.jpg"
@@ -34,7 +32,6 @@ const teachers = [
     "subject": "ইংরেজি",
     "qualification": "এম.এ",
     "joiningDate": "2015-11-01",
-    "dob": "1980-12-12",
     "phone": "01677504474",
     "email": "khokonmahmud51@gmail.com",
     "photo": "images/teachers/teacher-03.jpg"
@@ -47,7 +44,6 @@ const teachers = [
     "subject": "হিসাববিজ্ঞান",
     "qualification": "এম.এ",
     "joiningDate": "2015-11-01",
-    "dob": "1985-07-14",
     "phone": "01974573810",
     "email": "najma85@gmail.com",
     "photo": "images/teachers/teacher-04.jpg"
@@ -60,7 +56,6 @@ const teachers = [
     "subject": "ব্যবস্থাপনা",
     "qualification": "এম.এ",
     "joiningDate": "2015-11-01",
-    "dob": "1987-01-01",
     "phone": "01723769993",
     "email": "sa.saiful1987@gmail.com",
     "photo": "images/teachers/teacher-05.jpg"
@@ -73,7 +68,6 @@ const teachers = [
     "subject": "কম্পিউটার অপারেশন",
     "qualification": "এম.এ",
     "joiningDate": "2015-11-01",
-    "dob": "1979-02-01",
     "phone": "01916820534",
     "email": "masudrana771978@gmail.com",
     "photo": "images/teachers/teacher-06.jpg"
@@ -86,7 +80,6 @@ const teachers = [
     "subject": "গণিত",
     "qualification": "এম.এ",
     "joiningDate": "2026-02-17",
-    "dob": "1998-03-13",
     "phone": "01942976197",
     "email": "mdshamimusman4@gmail.com",
     "photo": "images/teachers/teacher-07.jpg"
@@ -99,7 +92,6 @@ const teachers = [
     "subject": "অ্যাপারেল ম্যানুফ্যাকচারিং বেসিকস",
     "qualification": "বি.এসসি",
     "joiningDate": "2024-09-01",
-    "dob": "1992-01-01",
     "phone": "01721342857",
     "email": "emdadulhaque2110@gmail.com",
     "photo": "images/teachers/teacher-08.jpg"
@@ -112,7 +104,6 @@ const teachers = [
     "subject": "অ্যাপারেল ম্যানুফ্যাকচারিং বেসিকস",
     "qualification": "বি.এস.এস",
     "joiningDate": "2025-09-08",
-    "dob": "1995-10-16",
     "phone": "01741753844",
     "email": "jamilhossain068@gmail.com",
     "photo": "images/teachers/teacher-09.jpg"
@@ -125,7 +116,6 @@ const teachers = [
     "subject": "এগ্রো বেইজড ফুড",
     "qualification": "বি.এসসি",
     "joiningDate": "2025-09-08",
-    "dob": "1994-12-07",
     "phone": "01761316783",
     "email": "diptiranidpiti@gmail.com",
     "photo": "images/teachers/teacher-10.jpg"
@@ -138,7 +128,6 @@ const teachers = [
     "subject": "শারীরিক শিক্ষা",
     "qualification": "এম.এ",
     "joiningDate": "2023-10-01",
-    "dob": "1986-11-11",
     "phone": "01717110076",
     "email": "mk.kandokar@gmail.com",
     "photo": "images/teachers/teacher-11.jpg"
@@ -151,7 +140,6 @@ const teachers = [
     "subject": "কৃষি শিক্ষা",
     "qualification": "এম.এ",
     "joiningDate": "2023-10-01",
-    "dob": "1985-05-12",
     "phone": "01718893632",
     "email": "shafiulalam03@gmail.com",
     "photo": "images/teachers/teacher-12.jpg"
@@ -164,7 +152,6 @@ const teachers = [
     "subject": "সামাজিক বিজ্ঞান",
     "qualification": "এম.এস.এস",
     "joiningDate": "2023-10-01",
-    "dob": "1987-08-07",
     "phone": "01723938865",
     "email": "robiul.alom1987@gmail.com",
     "photo": "images/teachers/teacher-13.jpg"
@@ -177,7 +164,6 @@ const teachers = [
     "subject": "বাংলা",
     "qualification": "এম.এ",
     "joiningDate": "2023-10-01",
-    "dob": "1986-01-08",
     "phone": "01687616795",
     "email": "kakoliferdousi36@gmail.com",
     "photo": "images/teachers/teacher-14.jpg"
@@ -190,7 +176,6 @@ const teachers = [
     "subject": "ইসলাম ধর্ম",
     "qualification": "এম.এ",
     "joiningDate": "2023-10-01",
-    "dob": "1992-01-15",
     "phone": "01738236721",
     "email": "sadikul01738236721@gmail.com",
     "photo": "images/teachers/teacher-15.jpg"
@@ -203,7 +188,6 @@ const teachers = [
     "subject": "ইংরেজি",
     "qualification": "এম.এ",
     "joiningDate": "2024-09-01",
-    "dob": "1992-01-01",
     "phone": "01756520941",
     "email": "anwarhossain459013@gmail.com",
     "photo": "images/teachers/teacher-16.jpg"
@@ -216,7 +200,6 @@ const teachers = [
     "subject": "রসায়ন",
     "qualification": "বি.এসসি",
     "joiningDate": "2024-09-01",
-    "dob": "1993-03-10",
     "phone": "01935719367",
     "email": "saiful.web7@gmail.com",
     "photo": "images/teachers/teacher-17.jpg"
@@ -229,7 +212,6 @@ const teachers = [
     "subject": "",
     "qualification": "ডিপ্লোমা",
     "joiningDate": "2013-08-08",
-    "dob": "1985-06-01",
     "phone": "01710731791",
     "email": "ashikshipon1@gmail.com",
     "photo": "images/teachers/teacher-18.jpg"
@@ -242,7 +224,6 @@ const teachers = [
     "subject": "গ্রন্থাগার ও তথ্যবিজ্ঞান",
     "qualification": "বি.এ",
     "joiningDate": "2021-09-01",
-    "dob": "1988-10-01",
     "phone": "01799069408",
     "email": "",
     "photo": "images/teachers/teacher-19.jpg"

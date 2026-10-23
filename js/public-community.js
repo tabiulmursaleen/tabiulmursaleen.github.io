@@ -48,10 +48,18 @@ async function syncDirectory() {
   for (const [type, property] of [["teacher", "teachersData"], ["staff", "staffMembersData"]]) {
     const list = window[property];
     if (!Array.isArray(list)) continue;
-    const map = new Map(list.map((person) => [person.id, { ...person }]));
+    const map = new Map(list.map((person) => {
+      const publicPerson = { ...person };
+      delete publicPerson.dob;
+      return [publicPerson.id, publicPerson];
+    }));
     records.filter((person) => person.personType === type).forEach((person) => {
       if (person.deleted) map.delete(person.id);
-      else map.set(person.id, { ...map.get(person.id), ...person, photo: driveImage(person.photo) });
+      else {
+        const publicPerson = { ...person };
+        delete publicPerson.dob;
+        map.set(person.id, { ...map.get(person.id), ...publicPerson, photo: driveImage(person.photo) });
+      }
     });
     list.splice(0, list.length, ...[...map.values()].sort((a, b) => String(a.id).localeCompare(String(b.id), undefined, { numeric: true })));
     if (type === "teacher") { window.renderTeacherList?.(); window.renderTeacherProfile?.(); window.renderHomeTeacherPreview?.(); }

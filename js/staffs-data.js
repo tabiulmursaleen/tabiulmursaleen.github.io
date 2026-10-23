@@ -8,7 +8,6 @@ const staffMembers = [
     joiningDate: "2013-08-10",
     phone: "01721573408",
     email: "n8450825@gmail.com",
-    dob: "1992-06-01",
     qualification: "এসএসসি",
     photo: "images/staffs/staff-01.jpg"
   },
@@ -20,7 +19,6 @@ const staffMembers = [
     joiningDate: "2013-08-11",
     phone: "01734657461",
     email: "sharminakter9562582@gmail.com",
-    dob: "1990-05-08",
     qualification: "এইচএসসি",
     photo: "images/staffs/staff-02.jpg"
   },
@@ -32,7 +30,6 @@ const staffMembers = [
     joiningDate: "2015-11-01",
     phone: "01739660926",
     email: "mdrobikulislam191@gmail.com",
-    dob: "1997-01-01",
     qualification: "এইচএসসি",
     photo: "images/staffs/staff-03.jpg"
   },
@@ -44,7 +41,6 @@ const staffMembers = [
     joiningDate: "2024-08-09",
     phone: "01715715591",
     email: "chapa.talukdar@gmail.com",
-    dob: "1994-11-12",
     qualification: "এইচএসসি",
     photo: "images/staffs/staff-04.jpg"
   },
@@ -56,7 +52,6 @@ const staffMembers = [
     joiningDate: "2022-10-25",
     phone: "01781215133",
     email: "mamunbhuiyan1332@gmail.com",
-    dob: "1991-11-30",
     qualification: "জেএসসি",
     photo: "images/staffs/staff-05.jpg"
   },
@@ -68,7 +63,6 @@ const staffMembers = [
     joiningDate: "2023-08-11",
     phone: "01727871692",
     email: "anwarsirok@gmail.com",
-    dob: "1985-11-06",
     qualification: "এসএসসি",
     photo: "images/staffs/staff-06.jpg"
   },
@@ -80,7 +74,6 @@ const staffMembers = [
     joiningDate: "2023-10-09",
     phone: "01984477125",
     email: "",
-    dob: "1976-10-04",
     qualification: "এসএসসি",
     photo: "images/staffs/staff-07.jpg"
   },
@@ -92,7 +85,6 @@ const staffMembers = [
     joiningDate: "2023-11-20",
     phone: "01782800613",
     email: "nazmaakter01989@gmail.com",
-    dob: "1989-03-01",
     qualification: "এইচএসসি",
     photo: "images/staffs/staff-08.jpg"
   },
@@ -104,7 +96,6 @@ const staffMembers = [
     joiningDate: "2023-11-20",
     phone: "01756683503",
     email: "naliakter874@gmail.com",
-    dob: "1993-12-31",
     qualification: "এইচএসসি",
     photo: "images/staffs/staff-09.jpg"
   },
@@ -116,7 +107,6 @@ const staffMembers = [
     joiningDate: "2022-10-25",
     phone: "01756521959",
     email: "myshahin230@gmail.com",
-    dob: "1994-01-01",
     qualification: "এসএসসি",
     photo: "images/staffs/staff-10.jpg"
   }
