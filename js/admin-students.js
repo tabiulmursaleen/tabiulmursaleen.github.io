@@ -2599,8 +2599,9 @@ function renderResultMatrix(prefillRecords = []) {
     rollCell.className = "result-roll-cell";
     rollCell.textContent = normalizeDigits(String(student[rollType] || "—"));
     subjects.forEach((subject) => {
-      const saved = savedRecords.find((record) => record.studentCode === student.studentCode)
-        ?.subjects?.find((item) => item.name === subject.name || (subject.code && item.code === subject.code));
+      const saved = savedRecords.filter((record) => record.studentCode === student.studentCode)
+        .flatMap((record) => record.subjects || [])
+        .find((item) => item.name === subject.name || (subject.code && item.code === subject.code));
       const parts = [["theory", subject.theoryFullMarks]];
       if (Number(subject.practicalFullMarks) > 0) parts.push(["practical", subject.practicalFullMarks]);
       parts.forEach(([component, maximum]) => {
@@ -2761,6 +2762,16 @@ resultForm.addEventListener("submit", async (event) => {
       });
       await draftCleanup.commit();
     }
+    const submittedDrafts = resultDraftRecords.filter((record) => record.authorTeacherId
+      && record.authorTeacherId !== "admin"
+      && record.className === className
+      && Number(record.year) === year
+      && record.exam === exam);
+    for (let start = 0; start < submittedDrafts.length; start += 400) {
+      const teacherDraftCleanup = writeBatch(db);
+      submittedDrafts.slice(start, start + 400).forEach((item) => teacherDraftCleanup.delete(doc(db, "teacherResultDrafts", item.id)));
+      await teacherDraftCleanup.commit();
+    }
     resetResultForm();
     message("resultMessage", "শ্রেণির ফলাফল সংরক্ষণ হয়েছে।");
     await loadResults();
@@ -2774,13 +2785,31 @@ resultForm.addEventListener("submit", async (event) => {
 });
 
 async function loadResults() {
-  const [snapshot, draftsSnapshot] = await Promise.all([
+  const [snapshot, draftsSnapshot, teacherDraftSnapshot] = await Promise.all([
     getDocs(collection(db, resultsCollection)),
-    getDocs(collection(db, resultDraftsCollection))
+    getDocs(collection(db, resultDraftsCollection)),
+    getDocs(collection(db, "teacherResultDrafts"))
   ]);
   const records = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
-  resultDraftRecords = draftsSnapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+  const teacherDrafts = teacherDraftSnapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+  resultDraftRecords = [
+    ...draftsSnapshot.docs.map((item) => ({ id: item.id, ...item.data() })),
+    ...teacherDrafts.map((item) => ({
+      ...item,
+      subjects: [{
+        name: item.subjectName,
+        code: item.subjectCode,
+        theoryFullMarks: Number(item.theoryFullMarks || 0),
+        practicalFullMarks: Number(item.practicalFullMarks || 0),
+        theoryMarks: Number(item.theoryMarks || 0),
+        practicalMarks: Number(item.practicalMarks || 0),
+        fullMarks: Number(item.fullMarks || 0),
+        marks: Number(item.totalMarks || 0)
+      }]
+    }))
+  ];
   resultRecords = records;
+  renderTeacherResultSubmissions(teacherDrafts);
   records.sort((a, b) => (b.year || 0) - (a.year || 0) || (a.exam || "").localeCompare(b.exam || "", "bn"));
   resultRows.replaceChildren();
   if (!records.length) {
@@ -2802,6 +2831,27 @@ async function loadResults() {
       actionButton("মুছুন", "delete-result", result.id, "danger-action")
     );
   }
+}
+
+function renderTeacherResultSubmissions(records) {
+  const body = byId("teacherResultSubmissionRows");
+  if (!body) return;
+  body.replaceChildren();
+  records.sort((a, b) => (b.updatedAt?.toMillis?.() || 0) - (a.updatedAt?.toMillis?.() || 0));
+  if (!records.length) {
+    const row = body.insertRow();
+    cell(row, "এখনো কোনো শিক্ষক ফলাফলের খসড়া জমা দেননি।").colSpan = 6;
+    return;
+  }
+  records.forEach((record) => {
+    const row = body.insertRow();
+    cell(row, record.authorName || "—");
+    cell(row, `${record.studentName || ""} · ${record.studentCode || ""}`);
+    cell(row, `${record.className || ""}${record.trade ? ` · ${record.trade}` : ""}`);
+    cell(row, `${record.exam || ""} · ${bn(record.year || "")}`);
+    cell(row, `${record.subjectName || ""}${record.subjectCode ? ` · ${record.subjectCode}` : ""}`);
+    cell(row, `${bn(record.totalMarks ?? 0)} / ${bn(record.fullMarks ?? 0)}`);
+  });
 }
 
 resultRows.addEventListener("click", async (event) => {

@@ -7,9 +7,27 @@ service cloud.firestore {
         && request.auth.uid == 'wWuBEmlsaofgjAaQi7bfblsX6L62';
     }
 
-    function isVerifiedTeacher() {
+    function isAnonymousUser() {
       return request.auth != null
-        && request.auth.token.email_verified == true;
+        && request.auth.token.firebase.sign_in_provider == 'anonymous';
+    }
+
+    function teacherSessionPath(uid) {
+      return /databases/$(database)/documents/teacherSessions/$(uid);
+    }
+
+    function hasTeacherSession() {
+      return isAnonymousUser()
+        && exists(teacherSessionPath(request.auth.uid));
+    }
+
+    function currentTeacherId() {
+      return get(teacherSessionPath(request.auth.uid)).data.teacherId;
+    }
+
+    function matchesPrivateTeacherDob(teacherId, dob) {
+      return exists(/databases/$(database)/documents/directoryPrivate/$(teacherId))
+        && get(/databases/$(database)/documents/directoryPrivate/$(teacherId)).data.dob == dob;
     }
 
     // Published notices are public; all notice management requires the admin.
@@ -25,15 +43,48 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+    // Public teacher login list; contains profile fields only and never includes DOB.
+    match /publicTeacherDirectory/{teacherId} {
+      allow read: if isAdmin() || resource.data.published == true;
+      allow create, update, delete: if isAdmin();
+    }
+
     // Dates of birth are private and only accessible to administrators.
     match /directoryPrivate/{personId} {
       allow read, create, update, delete: if isAdmin();
     }
 
+    // A teacher's anonymous session is created only when the submitted DOB matches
+    // the administrator-only directoryPrivate record for that teacher.
+    match /teacherSessions/{uid} {
+      allow read: if isAdmin() || (isAnonymousUser() && request.auth.uid == uid);
+      allow create: if isAnonymousUser()
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasAll(['teacherId', 'dob'])
+        && request.resource.data.keys().hasOnly(['teacherId', 'dob'])
+        && request.resource.data.teacherId is string
+        && request.resource.data.dob is string
+        && matchesPrivateTeacherDob(request.resource.data.teacherId, request.resource.data.dob);
+      allow update: if false;
+      allow delete: if isAdmin() || (isAnonymousUser() && request.auth.uid == uid);
+    }
+
     // Class learning resources are public only after publication.
     match /classContents/{contentId} {
-      allow read: if isAdmin() || resource.data.published == true;
-      allow create, update, delete: if isAdmin();
+      allow read: if isAdmin() || resource.data.published == true
+        || (hasTeacherSession() && resource.data.ownerUid == request.auth.uid);
+      allow create: if isAdmin() || (hasTeacherSession()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.authorTeacherId == currentTeacherId());
+      allow update: if isAdmin() || (hasTeacherSession()
+        && resource.data.ownerUid == request.auth.uid
+        && resource.data.authorTeacherId == currentTeacherId()
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.authorTeacherId == resource.data.authorTeacherId
+        && request.resource.data.authorName == resource.data.authorName);
+      allow delete: if isAdmin() || (hasTeacherSession()
+        && resource.data.ownerUid == request.auth.uid
+        && resource.data.authorTeacherId == currentTeacherId());
     }
 
     // Gallery media metadata and public links are readable after publication.
@@ -79,24 +130,45 @@ service cloud.firestore {
       allow read, create, update, delete: if isAdmin();
     }
 
-    // Teachers can access only their own verified-account drafts; admins can access all drafts.
+    // Teachers can access only drafts under their DOB-validated anonymous session; admins can access all drafts.
     match /questionPapers/{paperId} {
-      allow read: if isAdmin() || (isVerifiedTeacher() && resource.data.ownerUid == request.auth.uid);
-      allow create: if isAdmin() || (isVerifiedTeacher()
+      allow read: if isAdmin() || (hasTeacherSession()
+        && resource.data.ownerUid == request.auth.uid);
+      allow create: if isAdmin() || (hasTeacherSession()
         && request.resource.data.ownerUid == request.auth.uid
-        && request.resource.data.authorEmail == request.auth.token.email);
-      allow update: if isAdmin() || (isVerifiedTeacher()
+        && request.resource.data.authorTeacherId == currentTeacherId());
+      allow update: if isAdmin() || (hasTeacherSession()
         && resource.data.ownerUid == request.auth.uid
         && request.resource.data.ownerUid == resource.data.ownerUid
-        && request.resource.data.authorEmail == resource.data.authorEmail
         && request.resource.data.authorName == resource.data.authorName
-        && request.resource.data.authorTeacherId == resource.data.authorTeacherId);
-      allow delete: if isAdmin() || (isVerifiedTeacher() && resource.data.ownerUid == request.auth.uid);
+        && request.resource.data.authorTeacherId == resource.data.authorTeacherId
+        && resource.data.authorTeacherId == currentTeacherId());
+      allow delete: if isAdmin() || (hasTeacherSession()
+        && resource.data.ownerUid == request.auth.uid
+        && resource.data.authorTeacherId == currentTeacherId());
     }
 
     // Per-student in-progress marks are private and can only be managed by the admin.
     match /studentResultDrafts/{resultId} {
       allow read, create, update, delete: if isAdmin();
+    }
+
+    // Teacher-entered result drafts are isolated by authenticated teacher session.
+    match /teacherResultDrafts/{resultId} {
+      allow read: if isAdmin() || (hasTeacherSession()
+        && resource.data.ownerUid == request.auth.uid);
+      allow create: if isAdmin() || (hasTeacherSession()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.authorTeacherId == currentTeacherId());
+      allow update: if isAdmin() || (hasTeacherSession()
+        && resource.data.ownerUid == request.auth.uid
+        && resource.data.authorTeacherId == currentTeacherId()
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.authorTeacherId == resource.data.authorTeacherId
+        && request.resource.data.authorName == resource.data.authorName);
+      allow delete: if isAdmin() || (hasTeacherSession()
+        && resource.data.ownerUid == request.auth.uid
+        && resource.data.authorTeacherId == currentTeacherId());
     }
 
     // A result becomes public only when the admin marks it published.

@@ -1,5 +1,5 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-import { collection, deleteDoc, doc, getDocs, query, serverTimestamp, setDoc, where } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+import { collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 import { auth, db } from "./firebase-config.js";
 import { getAcademicSubjects } from "./academic-subjects.js?v=20261022-subject-catalog2";
 
@@ -451,7 +451,7 @@ form.addEventListener("submit", async (event) => {
   busy = true; $("saveQuestionPaper").disabled = true; setMessage("প্রশ্নপত্র সংরক্ষণ হচ্ছে…");
   try {
     const author = teacherPortal && signedInTeacher
-      ? { ownerUid: signedInUser.uid, authorEmail: signedInTeacher.email.toLowerCase(), authorName: signedInTeacher.name, authorTeacherId: signedInTeacher.id }
+      ? { ownerUid: signedInUser.uid, authorName: signedInTeacher.name, authorTeacherId: signedInTeacher.id }
       : {};
     const saved = { ...record, ...author, updatedAt: serverTimestamp() };
     await setDoc(doc(db, collectionName, id), saved, { merge: true });
@@ -470,18 +470,22 @@ function initialize() {
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) return;
+  await (window.teacherDirectoryReady || Promise.resolve());
   signedInUser = user;
   const isAdminUser = user.uid === ADMIN_UID;
   if (teacherPortal && !isAdminUser) {
-    const teacher = (window.teachersData || []).find((person) => person.email && person.email.toLowerCase() === (user.email || "").toLowerCase());
-    if (!teacher || !user.emailVerified) { setMessage("শিক্ষক ইমেইল যাচাই সম্পন্ন হলে প্রশ্নপত্র ব্যবহার করা যাবে।", true); return; }
+    if (!user.isAnonymous) { setMessage("শিক্ষকের নাম ও জন্মতারিখ দিয়ে প্রবেশ করুন।", true); return; }
+    const sessionSnapshot = await getDoc(doc(db, "teacherSessions", user.uid));
+    const teacherId = sessionSnapshot.exists() ? sessionSnapshot.data().teacherId : "";
+    const teacher = (window.teachersData || []).find((person) => person.id === teacherId);
+    if (!teacher) { setMessage("প্রশ্নপত্র ব্যবহারের আগে নাম ও জন্মতারিখ দিয়ে প্রবেশ করুন।", true); return; }
     signedInTeacher = teacher;
   } else if (user.uid !== ADMIN_UID) { setMessage("এই বিভাগ ব্যবহারের অনুমতি নেই।", true); return; }
   initialize();
   try {
     const teacherOwnRecords = teacherPortal && !isAdminUser;
     const source = teacherOwnRecords
-      ? query(collection(db, collectionName), where("ownerUid", "==", user.uid))
+      ? query(collection(db, collectionName), where("ownerUid", "==", user.uid), where("authorTeacherId", "==", signedInTeacher.id))
       : collection(db, collectionName);
     const snapshot = await getDocs(source);
     papers = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
@@ -490,7 +494,7 @@ onAuthStateChanged(auth, async (user) => {
       document.getElementById("teacherQuestionLogin").hidden = true;
       document.getElementById("teacherQuestionWorkspace").hidden = false;
       document.getElementById("teacherQuestionIdentity").textContent = signedInTeacher
-        ? `${signedInTeacher.name} · ${signedInTeacher.email}`
+        ? signedInTeacher.name
         : "অ্যাডমিন · সকল সংরক্ষিত প্রশ্নপত্র";
       const avatar = document.getElementById("teacherQuestionAvatar");
       const fallback = document.getElementById("teacherQuestionAvatarFallback");

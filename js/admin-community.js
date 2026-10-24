@@ -7,6 +7,7 @@ import { auth, db } from "./firebase-config.js";
 const ADMIN_UID = "wWuBEmlsaofgjAaQi7bfblsX6L62";
 const peopleCollection = "directoryPeople";
 const privatePeopleCollection = "directoryPrivate";
+const publicTeacherDirectoryCollection = "publicTeacherDirectory";
 const contentCollection = "classContents";
 const galleryCollection = "galleryItems";
 const $ = (id) => document.getElementById(id);
@@ -166,6 +167,15 @@ $("personForm").addEventListener("submit", async (event) => {
     batch.set(doc(db, privatePeopleCollection, `${currentType}__${id}`), {
       dob: record.dob || deleteField(), updatedAt: serverTimestamp()
     }, { merge: true });
+    if (currentType === "teacher") {
+      batch.set(doc(db, privatePeopleCollection, id), {
+        dob: record.dob || deleteField(), updatedAt: serverTimestamp()
+      }, { merge: true });
+      batch.set(doc(db, publicTeacherDirectoryCollection, id), {
+        id, name: record.name, designation: record.designation, subject: record.subject,
+        photo: record.photo, published: true, deleted: false, updatedAt: serverTimestamp()
+      }, { merge: true });
+    }
     await batch.commit();
     people = [...people.filter((item) => item.id !== id || item.personType !== currentType), { ...record, updatedAt: null }];
     clearPersonForm(); renderPeople(); say("peopleManagementMessage", "তথ্য সংরক্ষণ ও প্রকাশ করা হয়েছে।");
@@ -182,6 +192,13 @@ async function removePerson(person) {
     await setDoc(doc(db, peopleCollection, `${currentType}__${person.id}`), {
       ...record, dob: deleteField()
     }, { merge: true });
+    if (currentType === "teacher") {
+      await setDoc(doc(db, publicTeacherDirectoryCollection, person.id), {
+        id: person.id, name: person.name || "", designation: person.designation || person.role || "",
+        subject: person.subject || "", photo: person.photo || "", published: false, deleted: true,
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+    }
     people = [...people.filter((item) => item.id !== person.id || item.personType !== currentType), { ...record, updatedAt: null }];
     renderPeople(); say("peopleManagementMessage", "তথ্যটি ওয়েবসাইট থেকে সরানো হয়েছে।");
   } catch (error) { console.error(error); say("peopleManagementMessage", "তথ্য সরানো যায়নি। Firestore Rules পরীক্ষা করুন।", true); }
@@ -193,11 +210,12 @@ $("personFormReset").addEventListener("click", clearPersonForm);
 function renderContents() {
   const body = $("classContentRows"); body.replaceChildren();
   const sorted = [...contentItems].sort((a, b) => (b.updatedAt?.toMillis?.() || 0) - (a.updatedAt?.toMillis?.() || 0));
-  if (!sorted.length) { const row = body.insertRow(); const cell = row.insertCell(); cell.colSpan = 5; cell.textContent = "এখনো কোনো কন্টেন্ট নেই।"; return; }
+  if (!sorted.length) { const row = body.insertRow(); const cell = row.insertCell(); cell.colSpan = 6; cell.textContent = "এখনো কোনো কন্টেন্ট নেই।"; return; }
   sorted.forEach((item) => {
     const row = body.insertRow();
     row.insertCell().textContent = `${item.branch || ""} · ${item.className || ""}`;
     row.insertCell().textContent = item.subject || "—";
+    row.insertCell().textContent = item.teacherName || item.authorName || "—";
     row.insertCell().textContent = item.title || "—";
     row.insertCell().textContent = item.published ? "প্রকাশিত" : "অপ্রকাশিত";
     const actions = row.insertCell(); actions.className = "table-actions-cell";
@@ -531,6 +549,19 @@ async function loadManagementData() {
       getDocs(collection(db, contentCollection)), getDocs(collection(db, galleryCollection))
     ]);
     const privatePeople = new Map(privatePeopleSnapshot.docs.map((entry) => [entry.id, entry.data()]));
+    const teacherDobBatch = writeBatch(db);
+    let hasTeacherDobSeeds = false;
+    (window.teachersData || []).forEach((teacher) => {
+      const privateId = teacher.id;
+      const legacyDob = privatePeople.get(`teacher__${teacher.id}`)?.dob;
+      const dob = teacher.dob || legacyDob;
+      if (dob && !privatePeople.get(privateId)?.dob) {
+        teacherDobBatch.set(doc(db, privatePeopleCollection, privateId), { dob }, { merge: true });
+        privatePeople.set(privateId, { ...privatePeople.get(privateId), dob });
+        hasTeacherDobSeeds = true;
+      }
+    });
+    if (hasTeacherDobSeeds) await teacherDobBatch.commit();
     people = [];
     for (const entry of peopleSnapshot.docs) {
       const data = entry.data();
@@ -541,11 +572,34 @@ async function loadManagementData() {
         if (data.dob && !privateData?.dob) {
           batch.set(doc(db, privatePeopleCollection, entry.id), { dob: data.dob }, { merge: true });
         }
+        if (data.personType === "teacher" && data.dob && !privatePeople.get(data.id)?.dob) {
+          batch.set(doc(db, privatePeopleCollection, data.id), { dob: data.dob }, { merge: true });
+          privatePeople.set(data.id, { ...privatePeople.get(data.id), dob: data.dob });
+        }
         batch.update(doc(db, peopleCollection, entry.id), { dob: deleteField() });
         await batch.commit();
       }
       people.push({ id: entry.id.split("__").slice(1).join("__"), ...data, dob });
     }
+    const teacherOverrides = new Set(people.filter((person) => person.personType === "teacher").map((person) => person.id));
+    (window.teachersData || []).forEach((teacher) => {
+      const privateDob = privatePeople.get(teacher.id)?.dob || privatePeople.get(`teacher__${teacher.id}`)?.dob;
+      if (privateDob && !teacherOverrides.has(teacher.id)) {
+        people.push({ id: teacher.id, personType: "teacher", dob: privateDob });
+      }
+    });
+    const publicTeacherBatch = writeBatch(db);
+    let hasPublicTeacherChanges = false;
+    people.filter((person) => person.personType === "teacher" && person.name).forEach((person) => {
+      publicTeacherBatch.set(doc(db, publicTeacherDirectoryCollection, person.id), {
+        id: person.id, name: person.name, designation: person.designation || person.role || "",
+        subject: person.subject || "", photo: person.photo || "",
+        published: person.published !== false && person.deleted !== true,
+        deleted: person.deleted === true, updatedAt: serverTimestamp()
+      }, { merge: true });
+      hasPublicTeacherChanges = true;
+    });
+    if (hasPublicTeacherChanges) await publicTeacherBatch.commit();
     contentItems = contentSnapshot.docs.map((entry) => ({ id: entry.id, ...entry.data() }));
     galleryItems = gallerySnapshot.docs.map((entry) => ({ id: entry.id, ...entry.data() }));
     renderPeople(); renderContents(); renderGallery(); refreshTeacherOptions();

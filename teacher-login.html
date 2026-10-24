@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>শিক্ষক লগইন | তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</title>
+  <link rel="stylesheet" href="css/style.css?v=20261022-gallery-caption-navy1">
+  <link rel="stylesheet" href="css/admin.css?v=20261024-mobile-inputs1">
+  <style>
+    .teacher-question-page { padding: 24px 0 40px; background: #f4f7fb; min-height: 55vh; }
+    .teacher-question-page ~ .footer .container { text-align:center; }
+    .teacher-question-wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+    .teacher-question-title { margin: 0 0 16px; color: #183d63; text-align: center; }
+    .teacher-question-login { max-width: 460px; margin: 0 auto; padding: 22px; border: 1px solid #d7e1ed; border-radius: 14px; background: #fff; box-shadow: 0 12px 30px #183d6312; }
+    .teacher-question-login h2 { margin: 0 0 7px; color: #183d63; text-align: center; }
+    .teacher-question-login p { margin: 0 0 16px; color: #5a6878; text-align: center; }
+    .teacher-question-login label { display: grid; gap: 6px; margin: 12px 0; color: #26354b; font-weight: 600; }
+    .teacher-question-login input,.teacher-question-login select { box-sizing: border-box; width: 100%; min-height: 42px; padding: 9px 11px; border: 1px solid #cbd5e1; border-radius: 8px; font: inherit; }
+    .teacher-question-login button { width: 100%; margin-top: 7px; }
+    .teacher-question-note { margin-top: 12px !important; font-size: .9rem; }
+    .teacher-question-workspace { padding: 18px; border: 1px solid #d7e1ed; border-radius: 14px; background: #fff; box-shadow: 0 8px 24px #183d630d; }
+    .teacher-portal-choices { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:8px 0 16px; }
+    .teacher-portal-choice { display:flex; min-height:104px; flex-direction:column; align-items:center; justify-content:center; gap:9px; padding:14px 10px; border:1px solid #d8e1ec; border-radius:13px; background:linear-gradient(145deg,#f7faff,#eef3f9); color:#183d63; font:inherit; cursor:pointer; transition:background .16s ease,border-color .16s ease,transform .16s ease,box-shadow .16s ease; }
+    .teacher-portal-choice:hover,.teacher-portal-choice:focus-visible { border-color:#d2b963; background:linear-gradient(145deg,#fff8e7,#f4e9c7); box-shadow:0 7px 18px #183d631c; transform:translateY(-2px); }
+    .teacher-portal-choice.is-active { border-color:#1d4b75; background:linear-gradient(145deg,#1e527f,#153b61); color:#fff; box-shadow:0 7px 18px #183d6326; }
+    .teacher-portal-choice span { font-size:30px; line-height:1; }
+    .teacher-tool-panel { padding:16px; border:1px solid #e1e7ef; border-radius:12px; background:#fff; }
+    .teacher-tool-panel[hidden] { display:none; }
+    .teacher-tool-panel > h2 { margin-top:0; color:#183d63; }
+    .teacher-tool-panel .admin-form { margin-bottom:18px; }
+    #teacherResultMatrix input { width:96px; min-height:40px; padding:7px; }
+    #teacherResultMatrix td:nth-child(2) { min-width:170px; }
+    .teacher-question-message.is-error { color:#a72d2d; }
+    .teacher-question-workspace-head { display:flex; align-items:center; justify-content:flex-end; margin-bottom:14px; }
+    .teacher-question-account { position:relative; display:flex; justify-content:flex-end; }
+    .teacher-question-account-toggle { display:flex; align-items:center; gap:8px; margin:0; padding:3px 6px 3px 3px; border:1px solid #dbe3ec; border-radius:24px; background:#fff; color:#183d63; cursor:pointer; }
+    .teacher-question-account-toggle:hover,.teacher-question-account-toggle:focus-visible { border-color:#d8bd76; background:#fbf4dd; box-shadow:0 2px 10px #183d6320; }
+    .teacher-question-account-label { max-width:min(42vw,260px); overflow:hidden; color:#183d63; font-size:.9rem; font-weight:700; text-overflow:ellipsis; white-space:nowrap; }
+    .teacher-question-avatar { display:block; width:38px; height:38px; border:2px solid #d8bd76; border-radius:50%; object-fit:cover; background:#f2f5f8; }
+    .teacher-question-avatar-fallback { display:grid; width:38px; height:38px; place-items:center; border:2px solid #d8bd76; border-radius:50%; background:#edf2f7; color:#183d63; font-weight:700; }
+    .teacher-question-avatar-fallback[hidden],.teacher-question-avatar[hidden] { display:none; }
+    .teacher-question-account-arrow { display:grid; width:22px; height:22px; place-items:center; border-radius:50%; background:#f4e8bf; transition:transform 160ms ease; }
+    .teacher-question-account-arrow svg { width:10px; height:7px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .teacher-question-account-toggle[aria-expanded="true"] .teacher-question-account-arrow { transform:rotate(180deg); }
+    .teacher-question-account-menu { position:absolute; z-index:30; top:calc(100% + 8px); right:0; display:grid; width:min(250px,calc(100vw - 40px)); gap:5px; padding:7px; border:1px solid #e1d8bd; border-radius:12px; background:#fff; box-shadow:0 14px 32px #183d6326; }
+    .teacher-question-account-menu[hidden] { display:none; }
+    .teacher-question-account-name { display:grid; gap:3px; padding:10px 11px; border-radius:8px; background:linear-gradient(135deg,#fbf7e9,#f2f5f8); color:#183d63; font-size:.9rem; font-weight:700; overflow-wrap:anywhere; }
+    .teacher-question-account-name::before { content:"বর্তমানে প্রবেশ করেছেন"; color:#718093; font-size:.72rem; font-weight:500; }
+    .teacher-logout-action { display:flex; align-items:center; gap:9px; width:100%; min-height:42px; margin:0; padding:9px 11px; border:0; border-radius:8px; background:transparent; color:#34485d; font:inherit; font-size:.9rem; font-weight:600; text-align:left; cursor:pointer; }
+    .teacher-logout-action svg { width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+    .teacher-logout-action:hover,.teacher-logout-action:focus-visible { background:#f4e8bf; color:#8c3d35; }
+    .teacher-question-message { min-height:1.4em; margin:8px 0 0; color:#21633d; }
+    .teacher-question-message.is-error { color:#a72d2d; }
+    @media(max-width:650px) { .teacher-portal-choices { grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; } .teacher-portal-choice { min-height:90px; padding:10px 5px; font-size:.9rem; } .teacher-portal-choice span { font-size:25px; } .teacher-tool-panel { padding:10px; } .teacher-question-account-label { max-width:48vw; font-size:.88rem; } }
+    @media(max-width:560px) { .teacher-question-page { padding:16px 0 26px; } .teacher-question-workspace { padding:10px; } .teacher-question-workspace-head { justify-content:flex-end; } .teacher-question-login { padding:16px; } }
+  </style>
+</head>
+<body data-teacher-question-portal="true">
+  <header class="main-header">
+        <div class="container">
+            <div class="logo-area">
+                <div class="logo-stack"><img src="images/logo/logo-transparent.png" alt="School Logo"><small class="school-eiin">EIIN No. 136065</small></div>
+
+                <div>
+                    <h1>তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</h1>
+                    <p>টেঙ্গুরী, কেন্দুয়া, নেত্রকোণা</p>
+
+                </div>
+            </div>
+        </div>
+    </header>
+  <nav class="navbar">
+        <div class="container">
+
+            <button class="menu-toggle"
+                    id="menuToggle"
+                    aria-label="মেনু খুলুন"
+                    aria-expanded="false">
+                ☰
+            </button>
+
+            <ul id="mainMenu">
+                <li><a href="index.html">হোম</a></li>
+
+                <li class="has-submenu">
+                    <a href="javascript:void(0)" class="dropdown-toggle">প্রাতিষ্ঠানিক তথ্য</a>
+                    <ul class="submenu">
+                        <li><a href="about.html">আমাদের কথা</a></li>
+                        <li class="has-submenu">
+                            <a href="javascript:void(0)">চলমান ট্রেডসমূহ</a>
+                            <ul class="submenu">
+                                <li><a href="school-trades.html">স্কুল শাখা</a></li>
+                                <li><a href="college-trades.html">কলেজ শাখা</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="committee.html">ম্যানেজিং কমিটি</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="teachers.html">শিক্ষকমণ্ডলী</a></li>
+                <li><a href="staff.html">কর্মচারীবৃন্দ</a></li>
+                <li><a href="students.html">ছাত্র/ছাত্রী</a></li>
+
+                <li><a href="result.html">রেজাল্ট</a></li>
+
+                <li class="has-submenu">
+                    <a href="javascript:void(0)" class="dropdown-toggle">ভর্তি</a>
+                    <ul class="submenu">
+                        <li><a href="admin.html">অনলাইন রেজিস্ট্রেশন</a></li>
+                    </ul>
+                </li>
+                <li><a href="notice.html">নোটিশ</a></li>
+                <li class="has-submenu">
+                    <a href="javascript:void(0)" class="dropdown-toggle">একাডেমিক তথ্য</a>
+                    <ul class="submenu">
+                        
+                        <li><a href="routine.html">ক্লাস রুটিন</a></li>
+                        <li><a href="exam-routine.html">পরীক্ষার রুটিন</a></li>
+                        <li><a href="holidays.html">ছুটির তালিকা</a></li>
+                        <li><a href="class-content.html">ক্লাস কন্টেন্ট</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-submenu">
+                    <a href="javascript:void(0)" class="dropdown-toggle">গ্যালারি</a>
+                    <ul class="submenu">
+                        <li><a href="photo-gallery.html">ছবি গ্যালারি</a></li>
+                        <li><a href="video-gallery.html">ভিডিয়ো গ্যালারি</a></li>
+                    </ul>
+                </li>
+
+                <li><a class="active" href="teacher-login.html">শিক্ষক লগইন</a></li>
+                <li><a href="contact.html">যোগাযোগ</a></li>
+            </ul>
+        </div>
+    </nav>
+  <main class="teacher-question-page"><div class="teacher-question-wrap">
+    <h1 class="teacher-question-title">শিক্ষক লগইন</h1>
+    <section id="teacherQuestionLogin" class="teacher-question-login">
+      <h2>শিক্ষক প্রবেশ</h2><p>শিক্ষক পোর্টালে প্রবেশ করতে নিজের নাম ও জন্মতারিখ দিন।</p>
+      <form id="teacherQuestionLoginForm">
+        <label>শিক্ষক নির্বাচন করুন<select id="teacherQuestionTeacher" required><option value="">শিক্ষক নির্বাচন করুন</option></select></label>
+        <label>জন্মতারিখ<input id="teacherQuestionBirthDate" type="date" required></label>
+        <button id="teacherQuestionLoginButton" type="submit">প্রবেশ করুন</button>
+      </form>
+      <p class="teacher-question-note">নাম ও জন্মতারিখ যাচাই হলে তিনটি শিক্ষক সেবা ব্যবহার করতে পারবেন।</p>
+      <p id="teacherQuestionLoginMessage" class="teacher-question-message" role="status" aria-live="polite"></p>
+    </section>
+    <section id="teacherQuestionWorkspace" class="teacher-question-workspace" hidden>
+      <div class="teacher-question-workspace-head">
+        <div class="teacher-question-account">
+          <button id="teacherQuestionAccountToggle" class="teacher-question-account-toggle" type="button" aria-label="শিক্ষক মেনু" aria-expanded="false" aria-controls="teacherQuestionAccountMenu">
+            <span id="teacherQuestionAvatarFallback" class="teacher-question-avatar-fallback" hidden>শি</span>
+            <img id="teacherQuestionAvatar" class="teacher-question-avatar" alt="">
+            <span id="teacherQuestionAccountLabel" class="teacher-question-account-label"></span>
+            <span class="teacher-question-account-arrow" aria-hidden="true"><svg viewBox="0 0 12 8"><path d="m1.5 1.5 4.5 4.5 4.5-4.5" /></svg></span>
+          </button>
+          <div id="teacherQuestionAccountMenu" class="teacher-question-account-menu" hidden>
+            <span id="teacherQuestionIdentity" class="teacher-question-account-name"></span>
+            <button id="teacherQuestionLogout" type="button" class="teacher-logout-action"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/></svg><span>লগআউট</span></button>
+          </div>
+        </div>
+      </div>
+      <div id="teacherPortalChoices" class="teacher-portal-choices" aria-label="শিক্ষক সেবা">
+        <button type="button" class="teacher-portal-choice" data-teacher-tool="content"><span aria-hidden="true">📚</span><strong>ক্লাস কন্টেন্ট আপলোড</strong></button>
+        <button type="button" class="teacher-portal-choice" data-teacher-tool="results"><span aria-hidden="true">📝</span><strong>পরীক্ষার ফলাফল ইনপুট</strong></button>
+        <button type="button" class="teacher-portal-choice" data-teacher-tool="questions"><span aria-hidden="true">📄</span><strong>প্রশ্নপত্র প্রণয়ন</strong></button>
+      </div>
+      <p id="teacherPortalMessage" class="teacher-question-message" role="status" aria-live="polite"></p>
+
+      <section id="teacherContentPanel" class="teacher-tool-panel" hidden>
+        <h2>ক্লাস কন্টেন্ট আপলোড</h2>
+        <p class="section-help">শাখা, শ্রেণি, বিষয় ও ফাইলের লিংক দিয়ে শিক্ষার্থীদের জন্য কন্টেন্ট প্রকাশ করুন।</p>
+        <form id="teacherContentForm" class="admin-form">
+          <input id="teacherContentId" type="hidden">
+          <div class="form-grid">
+            <label>শাখা <span>*</span><select id="teacherContentBranch" required><option value="School">স্কুল</option><option value="College">কলেজ</option></select></label>
+            <label>শ্রেণি <span>*</span><select id="teacherContentClass" required><option value="">শ্রেণি নির্বাচন করুন</option><option>ষষ্ঠ</option><option>সপ্তম</option><option>অষ্টম</option><option>নবম</option><option>দশম</option><option>একাদশ</option><option>দ্বাদশ</option></select></label>
+            <label>বিষয় <span>*</span><input id="teacherContentSubject" required maxlength="120"></label>
+            <label>কন্টেন্টের শিরোনাম <span>*</span><input id="teacherContentTitle" required maxlength="180"></label>
+            <label class="full-width">বর্ণনা<textarea id="teacherContentDescription" rows="3" maxlength="1000"></textarea></label>
+            <label class="full-width">Google Drive ফাইল লিংক <span>*</span><input id="teacherContentUrl" type="url" required placeholder="https://drive.google.com/file/d/..."></label>
+          </div>
+          <label class="check-label"><input id="teacherContentPublished" type="checkbox" checked> ওয়েবসাইটে প্রকাশ করুন</label>
+          <div class="management-form-actions"><button type="submit">জমা দিন</button><button id="teacherContentReset" type="button" class="secondary-button">ফাঁকা করুন</button></div>
+        </form>
+        <h3>আমার ক্লাস কন্টেন্ট</h3>
+        <div class="data-table-wrap"><table class="data-table"><thead><tr><th>শাখা / শ্রেণি</th><th>বিষয়</th><th>শিরোনাম</th><th>অবস্থা</th><th>কাজ</th></tr></thead><tbody id="teacherContentRows"></tbody></table></div>
+      </section>
+
+      <section id="teacherResultsPanel" class="teacher-tool-panel" hidden>
+        <h2>পরীক্ষার ফলাফল ইনপুট</h2>
+        <p class="section-help">শ্রেণি ও ট্রেড/বিষয় নির্বাচন করে রোল অনুযায়ী নম্বর দিন। সংরক্ষিত খসড়া অ্যাডমিন দেখতে ও প্রকাশ করতে পারবেন।</p>
+        <form id="teacherResultForm" class="admin-form">
+          <div class="form-grid">
+            <label>শিক্ষাবর্ষ <span>*</span><input id="teacherResultYear" type="number" min="2000" max="2100" required></label>
+            <label>পরীক্ষার নাম <span>*</span><select id="teacherResultExam" required><option value="">পরীক্ষা নির্বাচন করুন</option><option value="অর্ধবার্ষিক">অর্ধবার্ষিক</option><option value="নির্বাচনী">নির্বাচনী</option><option value="বার্ষিক">বার্ষিক</option><option value="প্রাক-নির্বাচনী">প্রাক-নির্বাচনী</option></select></label>
+            <label>শাখা <span>*</span><select id="teacherResultBranch" required><option value="">শাখা নির্বাচন করুন</option><option value="School">স্কুল</option><option value="College">কলেজ</option></select></label>
+            <label>শ্রেণি <span>*</span><select id="teacherResultClass" required><option value="">শ্রেণি নির্বাচন করুন</option></select></label>
+            <label>ট্রেড <select id="teacherResultTrade"><option value="">সব / সাধারণ বিষয়</option></select></label>
+            <label>বিষয় <span>*</span><select id="teacherResultSubject" required><option value="">বিষয় নির্বাচন করুন</option></select></label>
+            <label>বিষয় কোড<input id="teacherResultSubjectCode" readonly></label>
+            <label>তাত্ত্বিক পূর্ণমান <span>*</span><input id="teacherResultTheoryFull" type="number" min="0" step="0.01" required></label>
+            <label>ব্যবহারিক পূর্ণমান<input id="teacherResultPracticalFull" type="number" min="0" step="0.01" value="0"></label>
+          </div>
+          <button id="teacherResultPrepare" type="button" class="secondary-button">রোলসহ নম্বরের ছক তৈরি করুন</button>
+          <div id="teacherResultMatrixWrap" class="result-matrix-wrap" hidden><h3>রোল অনুযায়ী নম্বর</h3><div id="teacherResultMatrix" class="data-table-wrap"></div></div>
+          <button id="teacherResultSave" type="submit">জমা দিন</button>
+        </form>
+        <p id="teacherResultMessage" class="module-message" role="status" aria-live="polite"></p>
+        <h3>আমার সংরক্ষিত ফলাফল</h3>
+        <div class="data-table-wrap"><table class="data-table"><thead><tr><th>শিক্ষার্থী</th><th>শ্রেণি / ট্রেড</th><th>পরীক্ষা</th><th>বিষয়</th><th>কাজ</th></tr></thead><tbody id="teacherResultRows"></tbody></table></div>
+      </section>
+
+      <section id="teacherQuestionPanel" class="teacher-tool-panel" hidden>
+      <h2>প্রশ্নপত্র তৈরি করুন</h2><p class="section-help">শুধু আপনার সংরক্ষিত প্রশ্নপত্র আপনি দেখতে, সম্পাদনা, প্রিন্ট বা মুছতে পারবেন।</p>
+      <form id="questionPaperForm" class="admin-form question-paper-form">
+        <input id="questionPaperId" type="hidden">
+        <div class="question-paper-heading-fields">
+          <label class="question-paper-school-name">প্রতিষ্ঠানের নাম<input id="questionPaperInstitution" value="তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ" required></label>
+          <div class="qp-question-modes"><label class="question-paper-checkbox"><input id="questionPaperEnglish" type="checkbox"> ইংরেজি প্রশ্ন</label><label class="question-paper-checkbox"><input id="questionPaperCreative" type="checkbox"> সৃজনশীল</label></div>
+          <label><select id="questionPaperExam" aria-label="পরীক্ষার নাম" required><option value="">পরীক্ষার নাম নির্বাচন করুন</option><option>অর্ধবার্ষিক পরীক্ষা</option><option>নির্বাচনী পরীক্ষা</option><option>বার্ষিক পরীক্ষা</option><option>প্রাক-নির্বাচনী পরীক্ষা</option></select></label>
+          <label><select id="questionPaperYear" aria-label="সাল" required></select></label>
+          <label><select id="questionPaperClass" aria-label="শ্রেণি" required><option value="">শ্রেণি নির্বাচন করুন</option><option value="ষষ্ঠ">ষষ্ঠ</option><option value="সপ্তম">সপ্তম</option><option value="অষ্টম">অষ্টম</option><option value="নবম">নবম</option><option value="দশম">দশম</option><option value="একাদশ">একাদশ</option><option value="দ্বাদশ">দ্বাদশ</option></select></label>
+          <label class="question-paper-subject-field"><select id="questionPaperSubject" aria-label="বিষয়" required><option value="">আগে শ্রেণি নির্বাচন করুন</option></select><input id="questionPaperCustomSubject" placeholder="বিষয়ের নাম লিখুন" hidden><input id="questionPaperSubjectCode" placeholder="বিষয় কোড (ঐচ্ছিক)"></label>
+          <label><select id="questionPaperDuration" aria-label="পরীক্ষার সময়"></select></label>
+          <label><select id="questionPaperMarks" aria-label="পূর্ণমান" required></select><input id="questionPaperCustomMarks" type="number" min="1" placeholder="পূর্ণমান লিখুন" hidden></label>
+        </div>
+        <div class="question-paper-instruction-controls">
+          <label class="question-paper-checkbox"><input id="questionPaperGeneralInstructionEnabled" type="checkbox"> উত্তর লেখার প্রধান নির্দেশনা <small>(সব প্রশ্নে প্রযোজ্য)</small></label>
+          <div id="questionPaperGeneralInstruction" class="question-paper-instruction-fields" hidden>
+            <div class="qp-general-modes" role="radiogroup" aria-label="প্রধান নির্দেশনার ধরন"><label class="question-paper-checkbox"><input id="questionPaperGeneralModeStructured" type="checkbox" checked> বর্তমান নম্বরভিত্তিক নির্দেশনা</label><label class="question-paper-checkbox"><input id="questionPaperGeneralModeCustom" type="checkbox"> নিজের নির্দেশনা লিখুন</label></div>
+            <div id="questionPaperGeneralStructured"><label>যে কোনো <input id="questionPaperGeneralCount" type="number" min="1" value="5"> টি প্রশ্নের উত্তর দাও</label><label>প্রতি প্রশ্নের নম্বর <input id="questionPaperGeneralEach" type="number" min="1" value="১০"></label><output id="questionPaperGeneralProduct" class="qp-instruction-product"></output></div>
+            <div id="questionPaperGeneralCustom" hidden><label>প্রধান নির্দেশনা লিখুন<input id="questionPaperGeneralCustomText" type="text" maxlength="240" placeholder="প্রধান নির্দেশনা লিখুন"></label></div>
+          </div>
+          <section class="question-editor qp-general-editor"><h3>প্রশ্নসমূহ</h3><div id="questionRows" class="qp-general-question-list"></div></section>
+        </div>
+        <section class="qp-divisions-panel"><div class="qp-divisions-heading"><div><h3>বিভাগভিত্তিক প্রশ্ন</h3><p>বিভাগ প্রয়োজন হলে এখানে তৈরি করে তার কার্ডে প্রশ্ন যোগ করুন।</p></div><button id="addQuestionSection" class="secondary-button" type="button">+ বিভাগ তৈরি করুন</button></div><div id="questionPaperSections"></div></section>
+        <div class="question-paper-actions"><label>প্রিন্ট ফন্টের আকার <input id="questionPrintFont" type="range" min="13" max="22" value="16"><output id="questionPrintFontValue">16px</output></label><label>সর্বোচ্চ পৃষ্ঠা <select id="questionPrintPages"><option value="1">১ পৃষ্ঠা</option><option value="2" selected>২ পৃষ্ঠা</option><option value="3">৩ পৃষ্ঠা</option><option value="4">৪ পৃষ্ঠা</option><option value="0">সীমা নেই</option></select></label><label>প্রিন্ট কলাম <select id="questionPrintColumns"><option value="1" selected>এক কলাম · পোর্ট্রেট</option><option value="2">দুই কলাম · ল্যান্ডস্কেপ</option></select></label><div class="qp-output-actions"><button id="saveQuestionPaper" type="submit">জমা দিন</button><button id="printQuestionPaper" class="secondary-button" type="button">প্রিন্ট</button><button id="downloadQuestionPaperWord" class="secondary-button" type="button">Word</button></div></div>
+      </form>
+      <p id="questionPaperMessage" class="module-message" role="status" aria-live="polite"></p>
+      <h3>আমার সংরক্ষিত প্রশ্নপত্র</h3><div class="data-table-wrap"><table class="data-table"><thead><tr><th>পরীক্ষা</th><th>শ্রেণি</th><th>বিষয়</th><th>সাল</th><th>প্রণেতা</th><th>কাজ</th></tr></thead><tbody id="questionPaperRows"><tr><td colspan="6">তথ্য লোড হচ্ছে...</td></tr></tbody></table></div>
+      </section>
+    </section>
+  </div></main>
+  <footer class="footer"><div class="container"><p>© ২০২৬ তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</p></div></footer>
+  <div id="questionPaperPrintRoot"></div>
+  <script src="js/script.js?v=20261022"></script>
+  <script src="js/teachers-data.js?v=20261023-private-dob1"></script>
+  <script src="js/themed-calendar.js?v=20261024-1"></script>
+  <script type="module" src="js/teacher-question-papers-auth.js?v=20261024-portal4"></script>
+  <script type="module" src="js/admin-question-papers.js?v=20261024-portal2"></script>
+  <script type="module" src="js/teacher-portal-tools.js?v=20261024-portal2"></script>
+</body>
+</html>
+
