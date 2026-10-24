@@ -2982,6 +2982,136 @@ input[type="week"]::-webkit-calendar-picker-indicator:hover {
   filter: invert(47%) sepia(29%) saturate(812%) hue-rotate(7deg) brightness(91%) contrast(88%);
 }
 
+/* Shared navy-and-cream popup calendar for all date fields. */
+.site-calendar-control {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 46px;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+}
+.site-calendar-control > .site-calendar-native {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  min-height: 1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.site-calendar-value {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid #c7d4e1;
+  border-right: 0;
+  border-radius: 8px 0 0 8px;
+  background: linear-gradient(135deg,#fffdf6,#f8f3e4);
+  color: #183d63;
+  font: inherit;
+  cursor: pointer;
+}
+.site-calendar-value::placeholder { color: #718096; opacity: 1; }
+.site-calendar-value:focus-visible,
+.site-calendar-open:focus-visible { outline: 2px solid #d8bd76; outline-offset: 2px; z-index: 1; }
+.site-calendar-open {
+  display: grid;
+  width: 46px;
+  min-height: 42px;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #183d63;
+  border-radius: 0 8px 8px 0;
+  background: #183d63;
+  color: #f4e8bf;
+  cursor: pointer;
+}
+.site-calendar-open:hover { background: #24527d; color: #fff4cf; }
+.site-calendar-open svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.site-calendar-popup {
+  position: absolute;
+  z-index: 1000;
+  top: calc(100% + 7px);
+  left: 0;
+  width: min(330px, calc(100vw - 40px));
+  padding: 12px;
+  border: 1px solid #d8bd76;
+  border-radius: 14px;
+  background: #fffdf6;
+  color: #183d63;
+  box-shadow: 0 14px 34px #102b4933;
+}
+.site-calendar-popup[hidden] { display: none !important; }
+.site-calendar-head {
+  display: grid;
+  grid-template-columns: 34px minmax(0,1fr) 34px;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 9px;
+  padding: 7px;
+  border-radius: 10px;
+  background: #183d63;
+}
+.site-calendar-head button {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #e4d19a;
+  border-radius: 8px;
+  background: #f4e8bf;
+  color: #183d63;
+  font: 700 1.3rem/1 Arial,sans-serif;
+  cursor: pointer;
+}
+.site-calendar-head button:hover { background: #fff4cf; }
+.site-calendar-selects { display: flex; justify-content: center; gap: 6px; min-width: 0; }
+.site-calendar-selects select {
+  min-width: 0;
+  height: 32px;
+  padding: 3px 5px;
+  border: 1px solid #e4d19a;
+  border-radius: 7px;
+  background: #fffdf6;
+  color: #183d63;
+  font: inherit;
+  font-size: .9rem;
+}
+.site-calendar-month { flex: 1 1 auto; }
+.site-calendar-year { flex: 0 1 88px; }
+.site-calendar-weekdays,.site-calendar-days { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); gap: 4px; text-align: center; }
+.site-calendar-weekdays { margin-bottom: 4px; color: #68778a; font-size: .76rem; font-weight: 700; }
+.site-calendar-days button {
+  min-width: 0;
+  height: 35px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #183d63;
+  font: inherit;
+  font-size: .9rem;
+  cursor: pointer;
+}
+.site-calendar-days button:hover:not(:disabled) { border-color: #d8bd76; background: #f4e8bf; }
+.site-calendar-days button.is-selected { border-color: #183d63; background: #183d63; color: #fff; font-weight: 700; }
+.site-calendar-days button.is-today:not(.is-selected) { border-color: #d8bd76; background: #fbf4df; font-weight: 700; }
+.site-calendar-days button.is-outside { color: #aab2be; }
+.site-calendar-days button:disabled { color: #c5cbd3; cursor: not-allowed; }
+.site-calendar-foot { margin: 8px 0 0; padding-top: 7px; border-top: 1px solid #eee4c7; color: #69778a; font-size: .78rem; text-align: center; }
+@media (max-width: 560px) {
+  .site-calendar-popup { width: min(330px, calc(100vw - 32px)); padding: 10px; }
+  .site-calendar-days button { height: 34px; }
+}
+
 /* Mobile admin layout refinements. */
 @media (max-width: 650px) {
   .login-container {
@@ -3420,5 +3550,156 @@ input[type="week"]::-webkit-calendar-picker-indicator:hover {
 }
 @media (max-width: 850px) {
   .attendance-routine-tools { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Phone-first form readability and touch targets across the admin workspace. */
+@media (max-width: 700px) {
+  html { font-size: 16px; }
+  body { font-size: 16px; line-height: 1.5; }
+  .dashboard-container { width: 100%; margin: 14px auto; padding: 0 12px; }
+  .dashboard-section { min-width: 0; }
+  .dashboard-section .section-help,
+  .dashboard-section .field-help,
+  .dashboard-section .module-description,
+  .dashboard-section .help-text,
+  .dashboard-section small,
+  .teacher-question-workspace .field-help,
+  .teacher-question-workspace .section-help,
+  .teacher-question-workspace small {
+    font-size: 15px !important;
+    line-height: 1.55;
+  }
+  .admin-form {
+    gap: 14px;
+    margin: 12px 0;
+    padding: 14px 12px;
+  }
+  .admin-form label,
+  .dashboard-section > label,
+  .dashboard-section .form-grid > label,
+  .dashboard-section .student-fields-row > label,
+  .teacher-question-workspace label {
+    font-size: 16px !important;
+    line-height: 1.45;
+  }
+  .admin-form input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  .admin-form select,
+  .admin-form textarea,
+  .dashboard-section input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  .dashboard-section select,
+  .dashboard-section textarea,
+  .teacher-question-workspace input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  .teacher-question-workspace select,
+  .teacher-question-workspace textarea {
+    min-width: 0;
+    min-height: 46px;
+    padding: 10px 11px;
+    font-size: 16px !important;
+    line-height: 1.4;
+  }
+  .dashboard-section input[type="checkbox"],
+  .dashboard-section input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    flex: 0 0 20px;
+    accent-color: #183d63;
+  }
+  .dashboard-section input[type="range"] { min-height: 34px; }
+  .dashboard-section textarea { min-height: 112px; }
+  .dashboard-section button,
+  .teacher-question-workspace button,
+  .admin-form > button,
+  .admin-form button {
+    min-height: 44px;
+    padding: 9px 12px;
+    font-size: 15px !important;
+    line-height: 1.35;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .dashboard-section .module-title { font-size: 22px; line-height: 1.3; }
+  .dashboard-section .form-grid,
+  .dashboard-section .student-personal-fields {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .dashboard-section .student-course-fields,
+  .dashboard-section .student-contact-fields,
+  .dashboard-section .student-admission-fields,
+  .dashboard-section .student-address-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 10px;
+  }
+  .dashboard-section .question-paper-heading-fields,
+  .dashboard-section .question-paper-actions,
+  .teacher-question-workspace .question-paper-heading-fields,
+  .teacher-question-workspace .question-paper-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dashboard-section .question-paper-instruction-fields,
+  .dashboard-section .question-paper-instruction-controls,
+  .dashboard-section .qp-general-modes,
+  .teacher-question-workspace .question-paper-instruction-fields,
+  .teacher-question-workspace .question-paper-instruction-controls,
+  .teacher-question-workspace .qp-general-modes {
+    gap: 8px;
+  }
+  .dashboard-section .qp-general-modes .question-paper-checkbox,
+  .dashboard-section .question-paper-instruction-fields label,
+  .dashboard-section .qp-question-top > .question-paper-checkbox,
+  .dashboard-section .qp-section-scope,
+  .dashboard-section .question-paper-actions > label {
+    font-size: 15px !important;
+    line-height: 1.45;
+    white-space: normal;
+  }
+  .teacher-question-workspace .question-paper-instruction-fields label,
+  .teacher-question-workspace .qp-general-modes .question-paper-checkbox,
+  .teacher-question-workspace .qp-question-top > .question-paper-checkbox,
+  .teacher-question-workspace .question-paper-actions > label {
+    font-size: 15px !important;
+    line-height: 1.45;
+    white-space: normal;
+  }
+  .dashboard-section .question-paper-instruction-fields input,
+  .dashboard-section #questionPaperGeneralStructured input {
+    width: auto;
+    max-width: 100px;
+    min-height: 42px;
+    padding: 8px;
+  }
+  .dashboard-section .qp-question-top,
+  .teacher-question-workspace .qp-question-top { grid-template-columns: minmax(0,1fr) 44px 44px 44px; }
+  .dashboard-section .qp-confirm-question,
+  .dashboard-section .qp-add-question,
+  .dashboard-section .qp-delete-question,
+  .dashboard-section .qp-branch-row button,
+  .teacher-question-workspace .qp-confirm-question,
+  .teacher-question-workspace .qp-add-question,
+  .teacher-question-workspace .qp-delete-question,
+  .teacher-question-workspace .qp-branch-row button {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+  }
+  .dashboard-section .qp-branch-row,
+  .teacher-question-workspace .qp-branch-row { grid-template-columns: 54px minmax(0,1fr) 70px 44px; gap: 5px; }
+  .dashboard-section .qp-output-actions,
+  .teacher-question-workspace .qp-output-actions { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .dashboard-section .data-table-wrap,
+  .dashboard-section .result-matrix-wrap,
+  .dashboard-section .attendance-routine-preview,
+  .dashboard-section .routine-table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .dashboard-section .data-table-wrap { overscroll-behavior-x: contain; }
+  .site-calendar-value { min-height: 46px; font-size: 16px !important; }
+  .site-calendar-open { min-height: 46px; width: 46px; }
 }
 
