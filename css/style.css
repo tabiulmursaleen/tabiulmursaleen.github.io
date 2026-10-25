@@ -10,6 +10,8 @@
 
     src:url("../fonts/kalpurush.ttf") format("truetype");
 
+    font-display:block;
+
     font-weight:normal;
 
     font-style:normal;

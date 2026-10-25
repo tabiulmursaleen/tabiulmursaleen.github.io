@@ -1,0 +1,34 @@
+.textbooks-page { padding: 14px 0 24px; background: #f5f7fa; }
+.textbooks-section { max-width: 1200px; }
+.textbooks-section .community-page-heading { margin: 0 0 12px; }
+.textbooks-section .community-page-heading h1 { color: #183d63; }
+.textbook-filters { display: flex; align-items: end; gap: 14px; flex-wrap: wrap; padding: 12px 16px; margin-bottom: 12px; background: linear-gradient(120deg,#173b61,#285b86); border-radius: 12px; box-shadow: 0 7px 20px #183d6320; }
+.textbook-filters label { display: grid; gap: 5px; min-width: 180px; color: #fff; font-weight: 700; }
+.textbook-filters select { width: 100%; min-height: 42px; padding: 8px 11px; border: 1px solid #d4dce6; border-radius: 8px; background: #fff; color: #20364c; font: inherit; }
+.textbook-optional { font-size: .86em; font-weight: 400; color: #dce9f4; }
+.textbook-branch { margin-left: auto; padding: 8px 14px; border: 1px solid #e5d7ae; border-radius: 999px; background: #f7edcf; color: #183d63; font-weight: 700; }
+.textbook-layout { display: grid; grid-template-columns: minmax(290px,.82fr) minmax(0,1.5fr); align-items: start; gap: 18px; }
+.textbook-list-panel,.textbook-viewer-panel { min-width: 0; overflow: hidden; border: 1px solid #dce3ec; border-radius: 12px; background: #fff; box-shadow: 0 5px 18px #183d6310; }
+.textbook-list-heading,.textbook-viewer-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border-bottom: 1px solid #e3e9ef; }
+.textbook-list-heading h2,.textbook-viewer-heading h2 { min-width: 0; margin: 0; color: #183d63; font-size: 20px; }
+.textbook-viewer-heading h2 { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.textbook-list-heading span { color: #68788a; font-size: 14px; white-space: nowrap; }
+.textbook-list { display: grid; gap: 8px; max-height: 680px; overflow: auto; padding: 12px; }
+.textbook-item { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 12px; padding: 11px 12px; border: 1px solid #e3e8ef; border-radius: 9px; background: linear-gradient(110deg,#fff,#f8fafd); }
+.textbook-item h3 { margin: 0; color: #23384d; font-size: 16px; line-height: 1.4; }
+.textbook-code { display: block; margin-top: 3px; color: #748396; font-size: 12px; font-family: Arial,sans-serif; }
+.textbook-show { min-height: 36px; padding: 7px 11px; border: 0; border-radius: 7px; background: #183d63; color: #fff; font: inherit; font-size: 14px; cursor: pointer; white-space: nowrap; }
+.textbook-show:hover,.textbook-show:focus-visible { background: #2c6595; }
+.textbook-empty { margin: 0; padding: 22px 14px; color: #66778a; text-align: center; }
+.textbook-eyebrow { display: block; margin-bottom: 2px; color: #8b7138; font-size: 12px; font-weight: 700; }
+.textbook-open-source { flex: none; padding: 7px 10px; border: 1px solid #d4deea; border-radius: 7px; color: #183d63; font-size: 14px; font-weight: 700; text-decoration: none; }
+.textbook-open-source:hover { background: #edf3f8; }
+.textbook-download-wrap { display: flex; justify-content: center; padding: 10px 14px 12px; }
+.textbook-download-wrap[hidden] { display: none; }
+.textbook-download { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 40px; padding: 8px 18px; border: 1px solid #c4a14a; border-radius: 8px; background: linear-gradient(135deg,#244f77,#17385b); color: #fff; font-weight: 700; text-decoration: none; box-shadow: 0 3px 9px #183d6324; }
+.textbook-download:hover,.textbook-download:focus-visible { background: linear-gradient(135deg,#326995,#1c456c); color: #fff; }
+.textbook-viewer-placeholder { display: none; }
+.textbook-viewer-panel iframe { display: block; width: 100%; height: 650px; border: 0; background: #fff; }
+.textbook-source-note { margin: 0; padding: 9px 14px; border-top: 1px solid #e5eaf0; background: #f8fafc; color: #65768a; font-size: 13px; }
+@media (max-width: 760px) { .textbooks-page { padding: 17px 0 28px; } .textbook-layout { grid-template-columns: 1fr; } .textbook-list { max-height: 380px; } .textbook-viewer-panel iframe { height: 65vh; min-height: 390px; } .textbook-branch { margin-left: 0; } }
+@media (max-width: 480px) { .textbook-filters { gap: 10px; padding: 10px; } .textbook-filters label { min-width: 100%; } .textbook-item { grid-template-columns: minmax(0,1fr); gap: 8px; } .textbook-show { justify-self: start; } .textbook-list-heading h2,.textbook-viewer-heading h2 { font-size: 17px; } .textbook-viewer-heading { align-items: center; flex-direction: row; gap: 7px; padding: 9px 10px; } .textbook-open-source { padding: 6px 8px; font-size: 12px; } .textbook-download-wrap { padding: 8px 10px 10px; } }

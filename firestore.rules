@@ -87,6 +87,12 @@ service cloud.firestore {
         && resource.data.authorTeacherId == currentTeacherId());
     }
 
+    // Textbooks are public only when the administrator has added a PDF link.
+    match /textbooks/{bookId} {
+      allow read: if isAdmin() || resource.data.published == true;
+      allow create, update, delete: if isAdmin();
+    }
+
     // Gallery media metadata and public links are readable after publication.
     match /galleryItems/{itemId} {
       allow read: if isAdmin() || resource.data.published == true;

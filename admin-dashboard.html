@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>অ্যাডমিন ড্যাশবোর্ড | TMNKSC</title>
   <link rel="stylesheet" href="css/admin.css?v=20261024-mobile-inputs1">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
 
@@ -73,14 +74,14 @@
         <h3>অ্যাকাউন্টস</h3></div>
       </a>
 
-      <a class="dashboard-card" href="#results">
-        <div class="dashboard-card-heading"><span class="card-icon">📊</span>
-        <h3>ফলাফল</h3></div>
-      </a>
-
       <a class="dashboard-card" href="#notices">
         <div class="dashboard-card-heading"><span class="card-icon">📢</span>
         <h3>নোটিশ</h3></div>
+      </a>
+
+      <a class="dashboard-card" href="#textbooks-management">
+        <div class="dashboard-card-heading"><span class="card-icon">📖</span>
+        <h3>পাঠ্যবই</h3></div>
       </a>
 
       <a class="dashboard-card" href="#routines">
@@ -88,9 +89,9 @@
         <h3>রুটিন</h3></div>
       </a>
 
-      <a class="dashboard-card" href="#admit-cards">
-        <div class="dashboard-card-heading"><span class="card-icon">🎫</span>
-        <h3>পরীক্ষা</h3></div>
+      <a class="dashboard-card" href="#class-content-management">
+        <div class="dashboard-card-heading"><span class="card-icon">📚</span>
+        <h3>ক্লাস কন্টেন্ট</h3></div>
       </a>
 
       <a class="dashboard-card" href="#question-papers">
@@ -98,14 +99,19 @@
         <h3>প্রশ্নপত্র</h3></div>
       </a>
 
+      <a class="dashboard-card" href="#admit-cards">
+        <div class="dashboard-card-heading"><span class="card-icon">🎫</span>
+        <h3>পরীক্ষা</h3></div>
+      </a>
+
+      <a class="dashboard-card" href="#results">
+        <div class="dashboard-card-heading"><span class="card-icon">📊</span>
+        <h3>ফলাফল</h3></div>
+      </a>
+
       <a class="dashboard-card" href="#people-management">
         <div class="dashboard-card-heading"><span class="card-icon">👥</span>
         <h3>কমিটি, শিক্ষক ও কর্মচারী</h3></div>
-      </a>
-
-      <a class="dashboard-card" href="#class-content-management">
-        <div class="dashboard-card-heading"><span class="card-icon">📚</span>
-        <h3>ক্লাস কন্টেন্ট</h3></div>
       </a>
 
       <a class="dashboard-card" href="#gallery-management">
@@ -824,6 +830,25 @@
       <div class="data-table-wrap"><table class="data-table"><thead><tr><th>শ্রেণি</th><th>বিষয়</th><th>শিক্ষক</th><th>শিরোনাম</th><th>অবস্থা</th><th>কাজ</th></tr></thead><tbody id="classContentRows"></tbody></table></div>
     </section>
 
+    <section id="textbooks-management" class="dashboard-section" hidden>
+      <h2>পাঠ্যবই ব্যবস্থাপনা</h2>
+      <p class="section-help">শ্রেণি নির্বাচন করে বিষয়গুলোর বইয়ের নাম ও PDF লিংক দিন। লিংক যোগ করে সংরক্ষণ করলে বইটি সাইটে দেখা যাবে। একাদশ ও দ্বাদশ শ্রেণিতে নতুন বই ও বিষয় নিজে যোগ করুন। Google Drive ফাইলের শেয়ার অনুমতি “Anyone with the link — Viewer” করে দিন।</p>
+      <div class="textbook-admin-toolbar">
+        <label for="textbookAdminClass">শ্রেণি নির্বাচন করুন
+          <select id="textbookAdminClass"><option value="09">নবম</option><option value="10">দশম</option><option value="11">একাদশ</option><option value="12">দ্বাদশ</option></select>
+        </label>
+        <span id="textbookAdminSubjectCount" class="textbook-admin-count"></span>
+      </div>
+      <form id="textbookAdminAddForm" class="textbook-admin-add-form">
+        <label>বিষয়ের নাম<input id="textbookAdminNewSubject" type="text" maxlength="160" placeholder="নতুন বিষয়ের নাম" required></label>
+        <label>বইয়ের নাম<input id="textbookAdminNewTitle" type="text" maxlength="180" placeholder="বইয়ের নাম" required></label>
+        <label>PDF লিংক<input id="textbookAdminNewUrl" type="url" inputmode="url" placeholder="https://... (ঐচ্ছিক)"></label>
+        <button type="submit" class="textbook-admin-save">নতুন বই যোগ করুন</button>
+      </form>
+      <p id="textbookAdminMessage" class="module-message" role="status" aria-live="polite"></p>
+      <div id="textbookAdminRows" class="textbook-admin-list" aria-live="polite"></div>
+    </section>
+
     <section id="gallery-management" class="dashboard-section" hidden>
       <h2>গ্যালারি ব্যবস্থাপনা</h2>
       <p class="section-help">ছবি Google Drive-এ সবার দেখার অনুমতি দিয়ে শেয়ার করুন। ভিডিওর জন্য YouTube লিংক দিন।</p>
@@ -854,6 +879,7 @@
   <script src="js/teachers-data.js?v=20261023-private-dob1"></script>
   <script src="js/staffs-data.js?v=20261023-private-dob1"></script>
   <script type="module" src="js/admin-community.js?v=20261024-teacher-dob-login3"></script>
+  <script type="module" src="js/admin-textbooks.js?v=20261025-3"></script>
   <script type="module" src="js/admin-question-papers.js?v=20261024-dob-entry1"></script>
 </body>
 </html>
