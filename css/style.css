@@ -507,19 +507,6 @@ section{
 /* ---------- Responsive Navigation ---------- */
 
 @media (max-width: 768px) {
-    html.mobile-menu-scroll-lock {
-        overflow: hidden;
-    }
-
-    body.mobile-menu-scroll-lock {
-        position: fixed;
-        left: 0;
-        right: 0;
-        width: 100%;
-        overflow: hidden;
-    }
-
-
     .navbar .container {
         display: flex;
         flex-direction: column;
@@ -4163,6 +4150,27 @@ section{
         -webkit-overflow-scrolling:touch;
         touch-action:pan-y;
         background:var(--primary);
+    }
+
+    .navbar .container.menu-expanded{
+        flex-wrap:wrap;
+    }
+
+    .navbar .container.menu-expanded > .menu-toggle,
+    .navbar .container.menu-expanded > .mobile-nav-ticker{
+        display:none;
+    }
+
+    .navbar .container.menu-expanded #mainMenu.active{
+        position:static;
+        inset:auto;
+        flex:0 0 100%;
+        order:3;
+        width:100%;
+        height:auto;
+        max-height:none;
+        overflow:visible;
+        overflow-y:visible;
     }
 
     /* Principal's title, portrait, name, and message flow vertically without wasted space. */
