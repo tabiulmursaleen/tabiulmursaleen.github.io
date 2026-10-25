@@ -3276,9 +3276,22 @@ input[type="week"]::-webkit-calendar-picker-indicator:hover {
   }
 }
 
-@media (max-width: 380px) {
+@media (max-width: 480px) {
   .dashboard-container.is-sidebar-collapsed > .dashboard-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+  }
+  .dashboard-container.is-sidebar-collapsed .dashboard-card,
+  .dashboard-container.is-sidebar-collapsed .dashboard-card-heading {
+    min-height: 98px;
+  }
+  .dashboard-container.is-sidebar-collapsed .dashboard-card-heading {
+    padding: 8px 5px;
+  }
+  .dashboard-container.is-sidebar-collapsed .dashboard-card h3 {
+    font-size: 12px;
+    line-height: 1.3;
+    overflow-wrap: break-word;
   }
 }
 
