@@ -139,18 +139,16 @@ service cloud.firestore {
     // Teachers can access only drafts under their DOB-validated anonymous session; admins can access all drafts.
     match /questionPapers/{paperId} {
       allow read: if isAdmin() || (hasTeacherSession()
-        && resource.data.ownerUid == request.auth.uid);
+        && resource.data.authorTeacherId == currentTeacherId());
       allow create: if isAdmin() || (hasTeacherSession()
         && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.authorTeacherId == currentTeacherId());
       allow update: if isAdmin() || (hasTeacherSession()
-        && resource.data.ownerUid == request.auth.uid
-        && request.resource.data.ownerUid == resource.data.ownerUid
+        && resource.data.authorTeacherId == currentTeacherId()
         && request.resource.data.authorName == resource.data.authorName
         && request.resource.data.authorTeacherId == resource.data.authorTeacherId
-        && resource.data.authorTeacherId == currentTeacherId());
+        && request.resource.data.ownerUid == request.auth.uid);
       allow delete: if isAdmin() || (hasTeacherSession()
-        && resource.data.ownerUid == request.auth.uid
         && resource.data.authorTeacherId == currentTeacherId());
     }
 

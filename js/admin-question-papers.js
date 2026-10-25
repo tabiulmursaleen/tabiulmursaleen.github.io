@@ -442,7 +442,7 @@ $("questionPaperGeneralModeStructured").addEventListener("change", syncGeneralIn
 $("questionPaperGeneralModeCustom").addEventListener("change", syncGeneralInstructionMode);
 $("addQuestionSection").addEventListener("click", () => addInstructionSection());
   $("questionPrintFont").addEventListener("input", (event) => { $("questionPrintFontValue").value = `${event.target.value}px`; });
-$("printQuestionPaper").addEventListener("click", printPaper);
+$("printQuestionPaper").addEventListener("click", () => printPaper());
 $("downloadQuestionPaperWord").addEventListener("click", () => printPaper(true));
 form.addEventListener("submit", async (event) => {
   event.preventDefault(); if (busy) return;
@@ -485,7 +485,9 @@ onAuthStateChanged(auth, async (user) => {
   try {
     const teacherOwnRecords = teacherPortal && !isAdminUser;
     const source = teacherOwnRecords
-      ? query(collection(db, collectionName), where("ownerUid", "==", user.uid), where("authorTeacherId", "==", signedInTeacher.id))
+      // Teacher ownership is tied to the DOB-validated teacher identity. The
+      // anonymous Firebase UID can change after a browser/session reset.
+      ? query(collection(db, collectionName), where("authorTeacherId", "==", signedInTeacher.id))
       : collection(db, collectionName);
     const snapshot = await getDocs(source);
     papers = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));

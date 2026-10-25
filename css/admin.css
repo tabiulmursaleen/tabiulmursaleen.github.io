@@ -1247,6 +1247,7 @@ button:disabled {
 }
 .data-table .table-actions-cell { white-space: nowrap; }
 .data-table .table-actions-cell .table-action { margin: 2px; }
+#questionPaperRows .table-action { margin: 2px; }
 .person-teacher-field[hidden] { display: none; }
 
 @media (max-width: 700px) {
