@@ -202,10 +202,59 @@ const mainMenu = document.getElementById("mainMenu");
 const navbar = document.querySelector(".navbar");
 
 if (menuToggle && mainMenu) {
+    let menuPageScrollY = 0;
+
+    function lockPageBehindMenu() {
+        if (document.body.classList.contains("mobile-menu-scroll-lock")) return;
+        menuPageScrollY = window.scrollY;
+        document.body.style.top = `-${menuPageScrollY}px`;
+        document.body.classList.add("mobile-menu-scroll-lock");
+        document.documentElement.classList.add("mobile-menu-scroll-lock");
+    }
+
+    function unlockPageBehindMenu() {
+        if (!document.body.classList.contains("mobile-menu-scroll-lock")) return;
+        document.body.classList.remove("mobile-menu-scroll-lock");
+        document.documentElement.classList.remove("mobile-menu-scroll-lock");
+        document.body.style.top = "";
+        window.scrollTo(0, menuPageScrollY);
+    }
+
+    function fitMobileMenuToViewport() {
+        if (!mainMenu.classList.contains("active") ||
+            !window.matchMedia("(max-width: 768px)").matches) {
+            unlockPageBehindMenu();
+            mainMenu.style.position = "";
+            mainMenu.style.top = "";
+            mainMenu.style.left = "";
+            mainMenu.style.right = "";
+            mainMenu.style.width = "";
+            mainMenu.style.height = "";
+            mainMenu.style.minHeight = "";
+            mainMenu.style.maxHeight = "";
+            return;
+        }
+
+        const viewportHeight = window.visualViewport?.height || window.innerHeight;
+        const menuTop = navbar?.getBoundingClientRect().bottom ??
+            mainMenu.getBoundingClientRect().top;
+        mainMenu.style.position = "fixed";
+        mainMenu.style.top = `${Math.max(0, menuTop)}px`;
+        mainMenu.style.left = "0";
+        mainMenu.style.right = "0";
+        mainMenu.style.width = "100vw";
+        const menuHeight = Math.max(120, viewportHeight - menuTop - 8);
+        mainMenu.style.height = `${menuHeight}px`;
+        mainMenu.style.minHeight = "0";
+        mainMenu.style.maxHeight = `${menuHeight}px`;
+        mainMenu.style.overflowY = "auto";
+        lockPageBehindMenu();
+    }
 
     // Main menu open/close
     function closeMenu() {
         mainMenu.classList.remove("active");
+        fitMobileMenuToViewport();
         menuToggle.setAttribute("aria-expanded", "false");
         menuToggle.setAttribute("aria-label", "মেনু খুলুন");
 
@@ -224,6 +273,13 @@ if (menuToggle && mainMenu) {
             isOpen ? "মেনু বন্ধ করুন" : "মেনু খুলুন"
         );
 
+        if (isOpen) {
+            mainMenu.scrollTop = 0;
+            requestAnimationFrame(fitMobileMenuToViewport);
+        } else {
+            fitMobileMenuToViewport();
+        }
+
         if (!isOpen) {
             mainMenu.querySelectorAll(".has-submenu.open").forEach(item => {
                 item.classList.remove("open");
@@ -232,6 +288,8 @@ if (menuToggle && mainMenu) {
     }
 
     menuToggle.addEventListener("click", toggleMenu);
+    window.addEventListener("resize", fitMobileMenuToViewport, { passive: true });
+    window.visualViewport?.addEventListener("resize", fitMobileMenuToViewport, { passive: true });
 
     // Submenu handling on mobile
     mainMenu.querySelectorAll(".has-submenu > a").forEach(link => {

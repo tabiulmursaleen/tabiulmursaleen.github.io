@@ -507,6 +507,18 @@ section{
 /* ---------- Responsive Navigation ---------- */
 
 @media (max-width: 768px) {
+    html.mobile-menu-scroll-lock {
+        overflow: hidden;
+    }
+
+    body.mobile-menu-scroll-lock {
+        position: fixed;
+        left: 0;
+        right: 0;
+        width: 100%;
+        overflow: hidden;
+    }
+
 
     .navbar .container {
         display: flex;
@@ -4145,6 +4157,11 @@ section{
         width:100%;
         max-height:calc(100vh - 120px);
         overflow-y:auto;
+        overflow-x:hidden;
+        flex-wrap:nowrap;
+        overscroll-behavior-y:contain;
+        -webkit-overflow-scrolling:touch;
+        touch-action:pan-y;
         background:var(--primary);
     }
 
