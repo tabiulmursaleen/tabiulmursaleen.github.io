@@ -4565,7 +4565,7 @@ section{
         width: max-content;
         max-width: 100%;
         white-space: nowrap;
-        font-size: clamp(9px, 3.15vw, 12px);
+        font-size: clamp(10px, 3.3vw, 13px);
         line-height: 1.2;
     }
 }

@@ -89,7 +89,7 @@ function renderContentRows() {
     row.insertCell().textContent = item.title || "—";
     row.insertCell().textContent = `${item.published ? "প্রকাশিত" : "অপ্রকাশিত"}${isAdmin && item.authorName ? ` · ${item.authorName}` : ""}`;
     const actions = row.insertCell(); actions.className = "table-actions-cell";
-    const edit = document.createElement("button"); edit.type = "button"; edit.className = "table-action"; edit.textContent = "সম্পাদনা";
+    const edit = document.createElement("button"); edit.type = "button"; edit.className = "table-action"; edit.textContent = "এডিট";
     edit.addEventListener("click", () => {
       $("teacherContentId").value = item.id;
       $("teacherContentBranch").value = item.branch || "School";
@@ -233,7 +233,7 @@ function renderResultDraftRows() {
     row.insertCell().textContent = item.subjectName || "";
     const actions = row.insertCell(); actions.className = "table-actions-cell";
     if (isAdmin) { const author = document.createElement("span"); author.textContent = item.authorName || "শিক্ষক"; actions.append(author); }
-    const edit = document.createElement("button"); edit.type = "button"; edit.className = "table-action"; edit.textContent = "সম্পাদনা";
+    const edit = document.createElement("button"); edit.type = "button"; edit.className = "table-action"; edit.textContent = "এডিট";
     edit.addEventListener("click", () => {
       $("teacherResultYear").value = String(item.year || "");
       $("teacherResultExam").value = item.exam || "";

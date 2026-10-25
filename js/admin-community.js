@@ -84,7 +84,7 @@ function renderPeople() {
     row.insertCell().textContent = person.name || "—";
     row.insertCell().textContent = person.designation || person.role || "—";
     const actions = row.insertCell(); actions.className = "table-actions-cell";
-    const edit = document.createElement("button"); edit.type = "button"; edit.className = "table-action"; edit.textContent = "সম্পাদনা";
+    const edit = document.createElement("button"); edit.type = "button"; edit.className = "table-action"; edit.textContent = "এডিট";
     edit.addEventListener("click", () => editPerson(person));
     const remove = document.createElement("button"); remove.type = "button"; remove.className = "table-action danger-action"; remove.textContent = "মুছুন";
     remove.addEventListener("click", () => removePerson(person));
@@ -219,7 +219,7 @@ function renderContents() {
     row.insertCell().textContent = item.title || "—";
     row.insertCell().textContent = item.published ? "প্রকাশিত" : "অপ্রকাশিত";
     const actions = row.insertCell(); actions.className = "table-actions-cell";
-    const edit = document.createElement("button"); edit.type = "button"; edit.className = "table-action"; edit.textContent = "সম্পাদনা";
+    const edit = document.createElement("button"); edit.type = "button"; edit.className = "table-action"; edit.textContent = "এডিট";
     edit.addEventListener("click", () => {
       $("classContentId").value = item.id; $("classContentBranch").value = item.branch || "School";
       $("classContentClass").value = item.className || ""; $("classContentSubject").value = item.subject || "";
@@ -359,7 +359,7 @@ function renderGallery() {
     captionEditor.append(caption, saveCaption);
     const status = document.createElement("span"); status.className = `gallery-admin-card-status${item.published ? " is-published" : ""}`; status.textContent = item.published ? "প্রকাশিত" : "অপ্রকাশিত";
     const actions = document.createElement("div"); actions.className = "gallery-admin-card-actions";
-    const edit = document.createElement("button"); edit.type = "button"; edit.className = "table-action"; edit.textContent = "সম্পাদনা";
+    const edit = document.createElement("button"); edit.type = "button"; edit.className = "table-action"; edit.textContent = "এডিট";
     edit.addEventListener("click", () => {
       setGalleryType(item.mediaType);
       $("galleryEntries").replaceChildren();

@@ -2287,7 +2287,7 @@ button:hover {
   padding: 6px 10px;
   border: 1px solid rgba(38, 53, 75, 0.14);
   border-radius: 6px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.2;
   white-space: nowrap;
@@ -2345,8 +2345,21 @@ button:hover {
   .notice-actions button,
   .table-action {
     min-height: 36px;
-    padding: 6px 9px;
-    font-size: 12.5px;
+    padding: 5px 8px;
+    font-size: 11.5px;
+  }
+}
+
+.exam-routine-action {
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 1.15;
+}
+
+@media (max-width: 700px) {
+  .exam-routine-action {
+    padding: 5px 8px;
+    font-size: 11.5px;
   }
 }
 
@@ -3111,7 +3124,7 @@ input[type="week"]::-webkit-calendar-picker-indicator:hover {
   font-size: .9rem;
 }
 .site-calendar-month { flex: 1 1 auto; }
-.site-calendar-year { flex: 0 1 88px; }
+.site-calendar-year { flex: 0 0 104px; min-width: 104px; }
 .site-calendar-weekdays,.site-calendar-days { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); gap: 4px; text-align: center; }
 .site-calendar-weekdays { margin-bottom: 4px; color: #68778a; font-size: .76rem; font-weight: 700; }
 .site-calendar-days button {

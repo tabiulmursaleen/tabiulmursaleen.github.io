@@ -397,7 +397,7 @@ function renderStudents() {
     cell(row, student.published ? "প্রকাশিত" : "গোপন");
     const actions = cell(row, "");
     actions.className = "table-actions-cell";
-    actions.append(actionButton("সম্পাদনা", "edit-student", student.studentCode));
+    actions.append(actionButton("এডিট", "edit-student", student.studentCode));
     actions.append(actionButton("মুছুন", "delete-student", student.studentCode, "danger-action"));
   }
   refreshStudentSelects();
@@ -2827,7 +2827,7 @@ async function loadResults() {
     const actions = cell(row, "");
     actions.className = "table-actions-cell";
     actions.append(
-      actionButton("সম্পাদনা", "edit-result", result.id),
+      actionButton("এডিট", "edit-result", result.id),
       actionButton("মুছুন", "delete-result", result.id, "danger-action")
     );
   }
@@ -2906,7 +2906,7 @@ const cancelResultButton = document.createElement("button");
 cancelResultButton.type = "button";
 cancelResultButton.id = "cancelResultEdit";
 cancelResultButton.className = "secondary-button";
-cancelResultButton.textContent = "সম্পাদনা বাতিল";
+cancelResultButton.textContent = "এডিট বাতিল";
 cancelResultButton.hidden = true;
 byId("saveResultButton").after(cancelResultButton);
 cancelResultButton.addEventListener("click", resetResultForm);

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>শিক্ষক লগইন | তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</title>
-  <link rel="stylesheet" href="css/style.css?v=20261025-mobile-menu-expanded21">
-  <link rel="stylesheet" href="css/admin.css?v=20261024-mobile-inputs1">
+  <link rel="stylesheet" href="css/style.css?v=20261025-footer-edit22">
+  <link rel="stylesheet" href="css/admin.css?v=20261025-calendar-year-width23">
   <style>
     .teacher-question-page { padding: 24px 0 40px; background: #f4f7fb; min-height: 55vh; }
     .teacher-question-page ~ .footer .container { text-align:center; }
@@ -138,13 +138,12 @@
   <main class="teacher-question-page"><div class="teacher-question-wrap">
     <h1 class="teacher-question-title">শিক্ষক লগইন</h1>
     <section id="teacherQuestionLogin" class="teacher-question-login">
-      <h2>শিক্ষক প্রবেশ</h2><p>শিক্ষক পোর্টালে প্রবেশ করতে নিজের নাম ও জন্মতারিখ দিন।</p>
+      <p>প্রশ্নপত্র তৈরি, ফলাফল ব্যবস্থাপনা ও ক্লাস কন্টেন্ট পোস্ট করতে শিক্ষক পোর্টালে লগইন করুন।</p>
       <form id="teacherQuestionLoginForm">
         <label>শিক্ষক নির্বাচন করুন<select id="teacherQuestionTeacher" required><option value="">শিক্ষক নির্বাচন করুন</option></select></label>
         <label>জন্মতারিখ<input id="teacherQuestionBirthDate" type="date" required></label>
         <button id="teacherQuestionLoginButton" type="submit">প্রবেশ করুন</button>
       </form>
-      <p class="teacher-question-note">নাম ও জন্মতারিখ যাচাই হলে তিনটি শিক্ষক সেবা ব্যবহার করতে পারবেন।</p>
       <p id="teacherQuestionLoginMessage" class="teacher-question-message" role="status" aria-live="polite"></p>
     </section>
     <section id="teacherQuestionWorkspace" class="teacher-question-workspace" hidden>
@@ -244,14 +243,28 @@
       </section>
     </section>
   </div></main>
-  <footer class="footer"><div class="container"><p>© ২০২৬ তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</p></div></footer>
+  <footer class="footer">
+    <div class="footer-bottom">
+      <div class="footer-copyright">
+        <div class="copyright-left">© ২০২৬ তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</div>
+        <div class="copyright-right">
+          <span>Designed &amp; Developed by</span>
+          <a href="https://wa.me/8801741753844" target="_blank" rel="noopener noreferrer">Jamil Hossain</a>
+          <a class="footer-admin-login" href="admin.html" aria-label="এডমিন লগইন">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10V7a5 5 0 0 1 10 0v3"/><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M12 14v3"/></svg>
+            <span>এডমিন লগইন</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
   <div id="questionPaperPrintRoot"></div>
   <script src="js/script.js?v=20261025-mobile-menu-flow20"></script>
   <script src="js/teachers-data.js?v=20261023-private-dob1"></script>
   <script src="js/themed-calendar.js?v=20261024-1"></script>
-  <script type="module" src="js/teacher-question-papers-auth.js?v=20261024-portal4"></script>
-  <script type="module" src="js/admin-question-papers.js?v=20261024-portal2"></script>
-  <script type="module" src="js/teacher-portal-tools.js?v=20261024-portal2"></script>
+  <script type="module" src="js/teacher-question-papers-auth.js?v=20261025-login-copy23"></script>
+  <script type="module" src="js/admin-question-papers.js?v=20261025-footer-edit22"></script>
+  <script type="module" src="js/teacher-portal-tools.js?v=20261025-footer-edit22"></script>
 </body>
 </html>
 

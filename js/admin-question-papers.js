@@ -240,7 +240,7 @@ function renderRows() {
     const tr = document.createElement("tr");
     tr.innerHTML = `<td>${esc(paper.exam)}</td><td>${esc(paper.className)}</td><td>${esc(paper.subject)}${paper.subjectCode ? ` · ${esc(paper.subjectCode)}` : ""}</td><td>${bnDigits(paper.year)}</td><td>${esc(paper.authorName || (paper.ownerUid ? "শিক্ষক" : "অ্যাডমিন"))}</td><td></td>`;
     const actions = tr.lastElementChild;
-    const edit = document.createElement("button"); edit.type = "button"; edit.className = "table-action"; edit.textContent = "সম্পাদনা"; edit.addEventListener("click", () => loadPaper(paper));
+    const edit = document.createElement("button"); edit.type = "button"; edit.className = "table-action"; edit.textContent = "এডিট"; edit.addEventListener("click", () => loadPaper(paper));
     const print = document.createElement("button"); print.type = "button"; print.className = "table-action"; print.textContent = "প্রিন্ট"; print.addEventListener("click", () => { loadPaper(paper); setTimeout(printPaper, 0); });
     const remove = document.createElement("button"); remove.type = "button"; remove.className = "table-action danger-action"; remove.textContent = "মুছুন"; remove.addEventListener("click", async () => { if (!confirm("প্রশ্নপত্রটি মুছে ফেলবেন?")) return; await deleteDoc(doc(db, collectionName, paper.id)); papers = papers.filter((item) => item.id !== paper.id); renderRows(); });
     actions.append(edit, print, remove); host.append(tr);

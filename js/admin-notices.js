@@ -112,7 +112,7 @@ async function loadNotices() {
 
       const actions = element("div", "", "notice-actions");
 
-      actions.append(makeButton("সম্পাদনা", "edit", id));
+      actions.append(makeButton("এডিট", "edit", id));
 
       actions.append(
         makeButton(

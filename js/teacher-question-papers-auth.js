@@ -165,7 +165,7 @@ loginForm.addEventListener("submit", async (event) => {
     const errorMessage = error.code === "auth/operation-not-allowed"
       ? "Firebase Authentication-এ Anonymous sign-in চালু করতে হবে।"
       : error.code === "permission-denied"
-        ? "জন্মতারিখটি মেলেনি অথবা ব্যক্তিগত শিক্ষক রেকর্ডটি এখনো তৈরি হয়নি। অ্যাডমিন ড্যাশবোর্ডে জনবল সম্পাদনা থেকে শিক্ষকের জন্মতারিখ সংরক্ষণ করে আবার চেষ্টা করুন।"
+        ? "আপনি অনুমোদিত শিক্ষক নন।"
         : `প্রবেশ যাচাই হয়নি (${error.code || "unknown"})। Firestore Rules প্রকাশিত আছে কি না দেখুন।`;
     showMessage(errorMessage, true);
   } finally {

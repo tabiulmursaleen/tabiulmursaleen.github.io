@@ -161,7 +161,7 @@ async function loadRoutines() {
         const cell = document.createElement("td"); cell.textContent = value; row.append(cell);
       }
       const actions = document.createElement("td");
-      const edit = document.createElement("button"); edit.type = "button"; edit.className = "secondary-button exam-routine-action"; edit.textContent = "সম্পাদনা";
+      const edit = document.createElement("button"); edit.type = "button"; edit.className = "secondary-button exam-routine-action"; edit.textContent = "এডিট";
       edit.addEventListener("click", () => editRoutine(routine));
       const remove = document.createElement("button"); remove.type = "button"; remove.className = "secondary-button exam-routine-action"; remove.textContent = "মুছুন";
       remove.addEventListener("click", async () => {
