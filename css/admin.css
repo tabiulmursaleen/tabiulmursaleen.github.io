@@ -660,7 +660,7 @@ button:disabled {
 
 .result-subject-setting {
   display: grid;
-  grid-template-columns: minmax(180px, 1.2fr) minmax(140px, 1fr) repeat(2, minmax(130px, 0.8fr)) auto;
+  grid-template-columns: minmax(180px, 1.2fr) minmax(140px, 1fr) repeat(4, minmax(130px, 0.8fr)) auto;
   align-items: end;
   gap: 12px;
   padding: 12px;
@@ -693,6 +693,10 @@ button:disabled {
 .result-matrix-wrap .data-table-wrap {
   max-height: 70vh;
   overflow: auto;
+  border: 1px solid #c8d4e0;
+  border-radius: 10px;
+  background: #fff;
+  overscroll-behavior-x: contain;
 }
 
 .result-marks-table {
@@ -706,16 +710,32 @@ button:disabled {
   position: sticky;
   left: 0;
   z-index: 1;
-  width: 68px;
-  min-width: 68px;
-  background: #f3f6fa;
+  width: 108px;
+  min-width: 108px;
+  white-space: nowrap;
+  background: #f2e5bb;
+  color: #183d63;
 }
 
 .result-marks-table th {
   position: sticky;
   top: 0;
   z-index: 2;
+  border-color: #c4d0dd;
 }
+
+.result-marks-table thead tr:first-child th {
+  background: #183d63;
+  color: #fff;
+}
+.result-marks-table thead tr:nth-child(2) th {
+  background: #f2e5bb;
+  color: #183d63;
+}
+.result-marks-table thead th:first-child { z-index: 4; }
+.result-marks-table tbody tr:nth-child(odd) { background: #fff; }
+.result-marks-table tbody tr:nth-child(even) { background: #f4f7fb; }
+.result-marks-table tbody td { border-color: #d8e0e9; }
 
 .result-marks-compact thead tr:nth-child(2) th {
   top: 36px;
@@ -736,7 +756,29 @@ button:disabled {
 .result-marks-compact .result-roll-cell {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  background: #f2e5bb !important;
+  color: #183d63;
 }
+.result-marks-compact .result-roll-cell > span { display: block; margin-bottom: 3px; }
+.result-absent-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #7b3340;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.result-absent-control input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: #9b3e4a;
+}
+.result-marks-table tr.result-student-absent td { background: #fff4f2; }
+.result-marks-table tr.result-student-absent .result-roll-cell { background: #f3d9d5 !important; }
+.result-marks-table .result-mark-input:disabled { opacity: .55; background: #f1e6e3; }
 
 .result-marks-table input.result-mark-input {
   box-sizing: border-box;
@@ -744,8 +786,23 @@ button:disabled {
   min-width: 0;
   margin: 0 auto;
   padding: 5px 3px;
+  border: 1px solid #cbd5df;
+  border-radius: 6px;
+  background: #fffdf7;
+  color: #172b42;
   text-align: center;
 }
+.result-marks-table input.result-mark-input:focus {
+  border-color: #183d63;
+  outline: 2px solid rgba(24, 61, 99, .16);
+  background: #fff;
+}
+.result-marks-table input.result-mark-input::-webkit-inner-spin-button,
+.result-marks-table input.result-mark-input::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+.result-marks-table input.result-mark-input { appearance: textfield; }
 
 .admit-fee-spreadsheet {
   margin: 10px 0 24px;
@@ -821,6 +878,23 @@ button:disabled {
 #admitPrintArea {
   margin-top: 22px;
 }
+
+.blank-exam-forms {
+  margin: 16px 0;
+  padding: 14px 16px;
+  border: 1px solid #d5dfe9;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f8fbff, #fffaf0);
+}
+.blank-exam-forms h3 { margin: 0; color: #183d63; font-size: 16px; }
+.blank-exam-forms > p { margin: 4px 0 10px; color: #58697a; font-size: 13px; }
+.blank-exam-form-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.blank-exam-form-actions button { min-height: 40px; }
+.admit-card-photo-blank { border: 1px dashed #6f8298; background: #fff; }
+.admit-blank-field dd { min-height: 1.25em; border-bottom: 1px solid #75869a; }
+.seat-plan-blank-field dd { min-height: 1em; border-bottom: 1px solid #75869a; }
+.attendance-blank-field dd { flex: 1; min-height: 1.25em; border-bottom: 1px solid #75869a; }
+.attendance-blank-field dt { white-space: nowrap; }
 
 .admit-print-page {
   display: grid;
@@ -991,8 +1065,9 @@ button:disabled {
 
   .result-marks-table th:first-child,
   .result-marks-table td:first-child {
-    width: 52px;
-    min-width: 52px;
+    width: 88px;
+    min-width: 88px;
+    white-space: nowrap;
   }
 
   .result-marks-table input.result-mark-input {
@@ -2007,6 +2082,92 @@ button:hover {
   padding: 16px;
 }
 
+.student-admin-list-tools {
+  display: grid;
+  gap: 12px;
+  margin: 12px 0;
+  padding: 14px;
+  border: 1px solid #e4dcc8;
+  border-radius: 10px;
+  background: #fbfaf6;
+}
+
+.student-admin-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px 12px;
+}
+
+.student-admin-filter-grid label {
+  display: grid;
+  align-content: end;
+  gap: 5px;
+  color: #26354b;
+  font-weight: 700;
+}
+
+.student-admin-filter-grid input,
+.student-admin-filter-grid select {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #d5dce4;
+  border-radius: 7px;
+  background: #fff;
+  color: #26354b;
+  font: inherit;
+}
+
+.student-admin-bulk-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.student-admin-bulk-actions > label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #26354b;
+  font-weight: 700;
+}
+
+.student-admin-bulk-actions > label input,
+.student-row-select {
+  width: 17px;
+  height: 17px;
+  accent-color: #183d63;
+}
+
+.student-admin-bulk-actions button {
+  min-height: 38px;
+  padding: 7px 12px;
+}
+
+.student-row-select-cell {
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .student-admin-filter-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 460px) {
+  .student-admin-filter-grid {
+    grid-template-columns: 1fr;
+  }
+  .student-admin-bulk-actions {
+    align-items: stretch;
+  }
+  .student-admin-bulk-actions button {
+    flex: 1 1 100%;
+  }
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2414,7 +2575,8 @@ button:hover {
   #prepareSeatPlan,
   #printAdmitCards,
   #printSeatPlan,
-  #checkAdmitEligibility {
+  #checkAdmitEligibility,
+  .blank-exam-form-actions button {
     width: 100%;
   }
 

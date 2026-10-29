@@ -32,6 +32,13 @@ const studentForm = document.getElementById("studentForm");
 const feeForm = document.getElementById("feeForm");
 const resultForm = document.getElementById("resultForm");
 const studentRows = document.getElementById("studentRows");
+const studentAdminBranch = document.getElementById("studentAdminBranch");
+const studentAdminClass = document.getElementById("studentAdminClass");
+const studentAdminTrade = document.getElementById("studentAdminTrade");
+const studentAdminSearch = document.getElementById("studentAdminSearch");
+const selectVisibleStudents = document.getElementById("selectVisibleStudents");
+const selectedStudentCount = document.getElementById("selectedStudentCount");
+const deleteSelectedStudentsButton = document.getElementById("deleteSelectedStudentsButton");
 const studentImportFile = document.getElementById("studentImportFile");
 const studentImportButton = document.getElementById("studentImportButton");
 const studentImportMessage = document.getElementById("studentImportMessage");
@@ -48,6 +55,7 @@ const resultMatrix = document.getElementById("resultMatrix");
 
 let currentAdmin = null;
 let students = [];
+const selectedStudentIds = new Set();
 let feeRecords = [];
 let admitCandidates = new Map();
 let admitPrintMode = "";
@@ -119,11 +127,12 @@ function updateStudentTradeOptions() {
   const allowedTrades = branch === "স্কুল" ? schoolTradeNames
     : branch === "কলেজ" ? collegeTradeNames
       : institutionTradeNames;
-  const tradeSelect = byId("studentTrade");
-  const previous = tradeSelect.value;
-  tradeSelect.replaceChildren(new Option("ট্রেড নির্বাচন করুন", ""));
-  allowedTrades.forEach((trade) => tradeSelect.add(new Option(trade, trade)));
-  if (allowedTrades.includes(previous)) tradeSelect.value = previous;
+  const tradeOptions = byId("studentTradeOptions");
+  tradeOptions.replaceChildren(...allowedTrades.map((trade) => {
+    const option = document.createElement("option");
+    option.value = trade;
+    return option;
+  }));
 }
 function formatFeeMonths(record) {
   const isEnglish = document.documentElement.lang === "en";
@@ -379,17 +388,66 @@ byId("feeSelectAll").addEventListener("change", (event) => {
   updateFeeSelectionCount();
 });
 
+function getVisibleStudents() {
+  const branchFilter = studentAdminBranch?.value || "";
+  const classFilter = studentAdminClass?.value || "";
+  const tradeFilter = studentAdminTrade?.value || "";
+  const search = (studentAdminSearch?.value || "").trim().toLocaleLowerCase();
+  return students.filter((student) => {
+    const branch = String(student.branch || "").toLocaleLowerCase();
+    const branchMatches = !branchFilter
+      || (branchFilter === "স্কুল" && ["স্কুল", "school"].includes(branch))
+      || (branchFilter === "কলেজ" && ["কলেজ", "college"].includes(branch));
+    const classMatches = !classFilter || getClassCode(student.className || "") === getClassCode(classFilter);
+    const tradeMatches = !tradeFilter || String(student.trade || "") === tradeFilter;
+    const searchable = [student.name, student.nameBn, student.studentCode, student.roll, student.boardRoll]
+      .filter(Boolean).join(" ").toLocaleLowerCase();
+    return branchMatches && classMatches && tradeMatches && (!search || searchable.includes(search));
+  });
+}
+
+function refreshStudentTradeFilter() {
+  if (!studentAdminTrade) return;
+  const selected = studentAdminTrade.value;
+  const trades = [...new Set(students.map((student) => String(student.trade || "").trim()).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, "bn"));
+  studentAdminTrade.replaceChildren(new Option("সব ট্রেড", ""));
+  trades.forEach((trade) => studentAdminTrade.add(new Option(trade, trade)));
+  if (trades.includes(selected)) studentAdminTrade.value = selected;
+}
+
+function updateStudentSelectionControls(visibleStudents) {
+  const visibleIds = visibleStudents.map((student) => student.documentId || student.studentCode);
+  const selectedVisibleCount = visibleIds.filter((id) => selectedStudentIds.has(id)).length;
+  selectedStudentCount.textContent = `${bn(selectedStudentIds.size)} জন নির্বাচিত`;
+  deleteSelectedStudentsButton.disabled = busy || selectedStudentIds.size === 0;
+  selectVisibleStudents.checked = visibleIds.length > 0 && selectedVisibleCount === visibleIds.length;
+  selectVisibleStudents.indeterminate = selectedVisibleCount > 0 && selectedVisibleCount < visibleIds.length;
+}
+
 function renderStudents() {
+  refreshStudentTradeFilter();
   studentRows.replaceChildren();
-  if (!students.length) {
+  const visibleStudents = getVisibleStudents();
+  if (!students.length || !visibleStudents.length) {
     const row = studentRows.insertRow();
-    cell(row, "এখনো কোনো শিক্ষার্থী নিবন্ধিত হয়নি।").colSpan = 6;
+    cell(row, students.length ? "এই ফিল্টারে কোনো শিক্ষার্থী পাওয়া যায়নি।" : "এখনো কোনো শিক্ষার্থী নিবন্ধিত হয়নি।").colSpan = 7;
+    updateStudentSelectionControls(visibleStudents);
     return;
   }
 
-  students.sort((a, b) => (a.name || "").localeCompare(b.name || "", "bn"));
-  for (const student of students) {
+  visibleStudents.sort((a, b) => (a.name || "").localeCompare(b.name || "", "bn"));
+  for (const student of visibleStudents) {
     const row = studentRows.insertRow();
+    const selectCell = cell(row, "");
+    selectCell.className = "student-row-select-cell";
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.className = "student-row-select";
+    checkbox.dataset.studentId = student.documentId || student.studentCode;
+    checkbox.checked = selectedStudentIds.has(checkbox.dataset.studentId);
+    checkbox.setAttribute("aria-label", `${student.name || "শিক্ষার্থী"} নির্বাচন করুন`);
+    selectCell.append(checkbox);
     cell(row, student.studentCode || "—");
     cell(row, student.name);
     cell(row, `${student.branch || ""} / ${student.className || ""}`);
@@ -400,13 +458,14 @@ function renderStudents() {
     actions.append(actionButton("এডিট", "edit-student", student.documentId || student.studentCode));
     actions.append(actionButton("মুছুন", "delete-student", student.documentId || student.studentCode, "danger-action"));
   }
+  updateStudentSelectionControls(visibleStudents);
   refreshStudentSelects();
 }
 
 async function loadStudents() {
   studentRows.replaceChildren();
   const loading = studentRows.insertRow();
-  cell(loading, "শিক্ষার্থীর তথ্য লোড হচ্ছে...").colSpan = 6;
+  cell(loading, "শিক্ষার্থীর তথ্য লোড হচ্ছে...").colSpan = 7;
 
   const snapshot = await getDocs(collection(db, studentsCollection));
   students = snapshot.docs.map((item) => ({
@@ -414,6 +473,86 @@ async function loadStudents() {
     documentId: item.id
   }));
   renderStudents();
+}
+
+for (const filter of [studentAdminBranch, studentAdminClass, studentAdminTrade]) {
+  filter.addEventListener("change", renderStudents);
+}
+studentAdminSearch.addEventListener("input", renderStudents);
+byId("clearStudentFilters").addEventListener("click", () => {
+  studentAdminBranch.value = "";
+  studentAdminClass.value = "";
+  studentAdminTrade.value = "";
+  studentAdminSearch.value = "";
+  renderStudents();
+});
+studentRows.addEventListener("change", (event) => {
+  const checkbox = event.target.closest(".student-row-select");
+  if (!checkbox) return;
+  if (checkbox.checked) selectedStudentIds.add(checkbox.dataset.studentId);
+  else selectedStudentIds.delete(checkbox.dataset.studentId);
+  updateStudentSelectionControls(getVisibleStudents());
+});
+selectVisibleStudents.addEventListener("change", () => {
+  getVisibleStudents().forEach((student) => {
+    const id = student.documentId || student.studentCode;
+    if (selectVisibleStudents.checked) selectedStudentIds.add(id);
+    else selectedStudentIds.delete(id);
+  });
+  renderStudents();
+});
+deleteSelectedStudentsButton.addEventListener("click", deleteSelectedStudents);
+
+async function deleteSelectedStudents() {
+  if (!currentAdmin || busy || selectedStudentIds.size === 0) return;
+  const targets = students.filter((student) => selectedStudentIds.has(student.documentId || student.studentCode));
+  if (!targets.length) return;
+  const approved = window.confirm(
+    `${bn(targets.length)} জন নির্বাচিত শিক্ষার্থীর তথ্য, প্রকাশিত প্রোফাইল এবং সংশ্লিষ্ট ফি/ফলাফল স্থায়ীভাবে মুছে যাবে। চালিয়ে যাবেন?`
+  );
+  if (!approved) return;
+
+  busy = true;
+  deleteSelectedStudentsButton.disabled = true;
+  const refs = new Map();
+  const addRef = (reference) => refs.set(reference.path, reference);
+  targets.forEach((student) => {
+    addRef(doc(db, studentsCollection, student.documentId || student.studentCode));
+    if (student.publicDirectoryId) addRef(doc(db, publicStudentsCollection, student.publicDirectoryId));
+  });
+  let removedCount = 0;
+  try {
+    const codes = [...new Set(targets.map((student) => student.studentCode).filter(Boolean))];
+    const relatedCollections = [feesCollection, resultsCollection, resultDraftsCollection, publicResultsCollection, publicStudentsCollection];
+    for (const name of relatedCollections) {
+      for (let start = 0; start < codes.length; start += 30) {
+        const codeChunk = codes.slice(start, start + 30);
+        if (!codeChunk.length) continue;
+        const related = codeChunk.length === 1
+          ? await getDocs(query(collection(db, name), where("studentCode", "==", codeChunk[0])))
+          : await getDocs(query(collection(db, name), where("studentCode", "in", codeChunk)));
+        related.docs.forEach((item) => addRef(item.ref));
+      }
+    }
+
+    const allRefs = [...refs.values()];
+    for (let start = 0; start < allRefs.length; start += 450) {
+      const chunk = allRefs.slice(start, start + 450);
+      const batch = writeBatch(db);
+      chunk.forEach((reference) => batch.delete(reference));
+      await batch.commit();
+      removedCount += chunk.length;
+    }
+    targets.forEach((student) => selectedStudentIds.delete(student.documentId || student.studentCode));
+    await Promise.all([loadStudents(), loadFees(), loadResults()]);
+    message("studentMessage", `${bn(targets.length)} জন নির্বাচিত শিক্ষার্থীর ${bn(removedCount)}টি সংশ্লিষ্ট রেকর্ড মুছে ফেলা হয়েছে।`);
+  } catch (error) {
+    console.error("নির্বাচিত শিক্ষার্থী মুছতে সমস্যা:", error);
+    message("studentMessage", `${bn(removedCount)}টি রেকর্ড মুছে গেছে; বাকিগুলো সম্পন্ন হয়নি। ${error.message || "ডাটাবেজে মুছতে সমস্যা হয়েছে।"}`, true);
+  } finally {
+    busy = false;
+    renderStudents();
+  }
 }
 
 function resetStudentForm() {
@@ -426,7 +565,7 @@ function resetStudentForm() {
   byId("legacyParentNameNotice").textContent = "";
   byId("legacyAddressNotice").hidden = true;
   byId("legacyAddressNotice").textContent = "";
-  byId("studentCode").readOnly = true;
+  byId("studentCode").readOnly = false;
   byId("studentCode").value = "";
   byId("saveStudentButton").textContent = "শিক্ষার্থী সংরক্ষণ";
   byId("cancelStudentEdit").hidden = true;
@@ -435,22 +574,9 @@ function resetStudentForm() {
   updatePreviousExamOptions();
 }
 
-function setStudentFormRequirements(student = null) {
-  const requiredFields = [
-    ["studentName", "name"], ["studentNameBn", "nameBn"],
-    ["studentFatherName", "fatherName"], ["studentFatherNameBn", "fatherNameBn"],
-    ["studentMotherName", "motherName"], ["studentMotherNameBn", "motherNameBn"],
-    ["studentGender", "gender"], ["studentDob", "dob"],
-    ["studentAdmissionDate", "admissionDate"], ["studentGuardianPhone", "guardianPhone"],
-    ["studentEmergencyPhone", "emergencyPhone"], ["studentVillage", "village"],
-    ["studentUpazila", "upazila"], ["studentDistrict", "district"], ["studentPhotoUrl", "photoUrl"]
-  ];
-  requiredFields.forEach(([id, key]) => {
-    byId(id).required = student ? Boolean(student[key]) : true;
-  });
-  byId("studentBranch").required = true;
-  byId("studentClass").required = true;
-  byId("studentAcademicYear").required = true;
+function setStudentFormRequirements() {
+  studentForm.querySelectorAll("[required]").forEach((field) => { field.required = false; });
+  byId("studentName").required = true;
 }
 
 byId("studentAdmissionDate").value = localDateString();
@@ -517,15 +643,11 @@ function updateClassOptions() {
 function updateBoardRegistrationOptions() {
   const completed = byId("boardRegistrationCompleted").checked;
   byId("boardRegistrationFields").hidden = !completed;
-  byId("studentBoardRoll").required = completed;
-  byId("studentBoardRegistrationNumber").required = completed;
 }
 
 function updatePreviousExamOptions() {
   const selected = Boolean(byId("studentPreviousExam").value);
   byId("previousExamFields").hidden = !selected;
-  ["studentPreviousExamRoll", "studentPreviousExamGpa", "studentPreviousExamRegistration", "studentPreviousExamSession", "studentPreviousExamPassingYear"]
-    .forEach((id) => { byId(id).required = selected; });
 }
 
 byId("studentBranch").addEventListener("change", () => {
@@ -540,62 +662,31 @@ updateStudentTradeOptions();
 updateBoardRegistrationOptions();
 updatePreviousExamOptions();
 
-function makeStudentCode({ className, trade, roll }) {
-  const sessionYear = String(new Date().getFullYear());
-
-  const classCode = getClassCode(className);
-  if (!classCode) throw new Error("৬ থেকে ১২-এর মধ্যে একটি শ্রেণি নির্বাচন করুন।");
-
-  const normalizedTrade = trade.trim().replace(/\s+/g, " ").toLocaleLowerCase();
-  const tradeCode = normalizedTrade ? tradeIdCodes.get(normalizedTrade) : "NTR";
-  if (!tradeCode) throw new Error("প্রতিষ্ঠানের তালিকাভুক্ত ট্রেডের নাম লিখুন বা নির্বাচন করুন।");
-
-  const rollCode = normalizeDigits(roll.trim());
-  if (!/^\d{1,4}$/.test(rollCode) || Number(rollCode) < 1) {
-    throw new Error("রোল নম্বরে ১–৪ অঙ্কের সঠিক সংখ্যা লিখুন।");
-  }
-
-  return `${tradeCode}-${sessionYear.slice(-2)}-${classCode}-${rollCode.padStart(3, "0")}`;
-}
-
-function nextStudentRoll({ session, className, trade }) {
-  const classCode = getClassCode(className);
-  const usedRolls = students
-    .filter((student) => String(student.session || "") === session
-      && getClassCode(student.className || "") === classCode)
-    .map((student) => Number(normalizeDigits(String(student.roll || ""))))
-    .filter((roll) => Number.isInteger(roll) && roll > 0);
-  const roll = Math.max(0, ...usedRolls) + 1;
-  if (roll > 9999) throw new Error("এই শ্রেণির জন্য আর রোল তৈরি করা যাচ্ছে না।");
-  return String(roll).padStart(3, "0");
-}
-
 studentForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!currentAdmin || busy) return;
 
   const name = byId("studentName").value.trim();
+  if (!name) {
+    message("studentMessage", "শিক্ষার্থীর ইংরেজি নাম লিখুন।", true);
+    byId("studentName").focus();
+    return;
+  }
   const branch = byId("studentBranch").value;
   const className = byId("studentClass").value.trim();
   const session = String(new Date().getFullYear());
   const trade = byId("studentTrade").value.trim();
   const editingDocumentId = editingStudentCode;
-  let studentCode = byId("studentCode").value.trim();
+  const studentCode = byId("studentCode").value.trim();
   let roll = byId("studentRoll").value.trim();
-  if (!editingDocumentId && !studentCode) {
-    try {
-      roll = nextStudentRoll({ session, className, trade });
-      studentCode = makeStudentCode({ className, trade, roll });
-    } catch (error) {
-      message("studentMessage", error.message, true);
-      return;
-    }
-  }
 
   const existing = editingDocumentId
     ? students.find((student) => student.documentId === editingDocumentId)
-    : students.find((student) => student.studentCode === studentCode);
-  if (existing && !editingDocumentId) {
+    : studentCode ? students.find((student) => student.studentCode === studentCode) : null;
+  const duplicateStudentCode = studentCode && students.some((student) =>
+    student.studentCode === studentCode && student.documentId !== editingDocumentId
+  );
+  if (duplicateStudentCode || (existing && existing.documentId !== editingDocumentId)) {
     message("studentMessage", "এই শিক্ষার্থী আইডিটি আগে থেকেই আছে।", true);
     return;
   }
@@ -610,9 +701,6 @@ studentForm.addEventListener("submit", async (event) => {
       message("studentMessage", error.message, true);
       return;
     }
-  } else if (!existing) {
-    message("studentMessage", "নতুন শিক্ষার্থীর ছবির Google Drive লিংক দিন।", true);
-    return;
   }
   const data = {
     studentCode,
@@ -663,7 +751,9 @@ studentForm.addEventListener("submit", async (event) => {
   message("studentMessage", "শিক্ষার্থীর তথ্য সংরক্ষণ হচ্ছে...");
   try {
     message("studentMessage", "শিক্ষার্থীর তথ্য ডাটাবেজে সংরক্ষণ হচ্ছে...");
-    const privateRef = doc(db, studentsCollection, editingDocumentId || studentCode);
+    const privateRef = editingDocumentId
+      ? doc(db, studentsCollection, editingDocumentId)
+      : doc(collection(db, studentsCollection));
     const publicRef = doc(db, publicStudentsCollection, publicDirectoryId);
     const privateData = {
       ...data,
@@ -706,11 +796,9 @@ studentForm.addEventListener("submit", async (event) => {
       });
     }
     resetStudentForm();
-    byId("studentRoll").value = roll;
-    byId("studentCode").value = studentCode;
     message("studentMessage", existing
       ? "শিক্ষার্থীর তথ্য হালনাগাদ হয়েছে।"
-      : `নতুন শিক্ষার্থী নিবন্ধিত হয়েছে। রোল: ${roll}। শিক্ষার্থী আইডি: ${studentCode}`);
+      : "নতুন শিক্ষার্থীর তথ্য সংরক্ষিত হয়েছে। রোল নম্বর ও শিক্ষার্থী আইডি শুধু হাতে দিলে সংরক্ষিত হবে।");
     await loadStudents();
   } catch (error) {
     console.error("শিক্ষার্থী সংরক্ষণের সমস্যা:", error);
@@ -912,12 +1000,6 @@ studentPublishImportedButton.addEventListener("click", async () => {
   }
 });
 
-studentForm.addEventListener("input", (event) => {
-  if (editingStudentCode || ["studentRoll", "studentCode"].includes(event.target.id)) return;
-  byId("studentRoll").value = "";
-  byId("studentCode").value = "";
-});
-
 studentRows.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-action]");
   if (!button) return;
@@ -931,7 +1013,7 @@ studentRows.addEventListener("click", (event) => {
 
   editingStudentCode = student.documentId || student.studentCode;
   byId("studentCode").value = student.studentCode || "";
-  byId("studentCode").readOnly = true;
+  byId("studentCode").readOnly = false;
   byId("studentName").value = student.name || "";
   byId("studentNameBn").value = student.nameBn || "";
   byId("studentBranch").value = student.branch === "স্কুল" || student.branch === "SCHOOL" ? "স্কুল"
@@ -1836,7 +1918,7 @@ function checkAdmitEligibility() {
     ? eligibleCount + " of " + classList.length + " students match this display rule for " + (window.dashboardTranslate?.(exam) || exam) + "."
     : bn(eligibleCount) + " জনের মধ্যে " + bn(classList.length) + " জন নির্বাচিত প্রদর্শন নিয়মে " + exam + " পরীক্ষার প্রবেশপত্রের জন্য আছেন।");
 }
-function buildAdmitCard(student, exam, year) {
+function buildAdmitCard(student, exam, year, selectedFields, blank = false) {
   const t = (text) => window.dashboardTranslate?.(text) || text;
   const isEnglish = document.documentElement.lang === "en";
   const yearText = new Intl.NumberFormat(uiLocale(), { useGrouping: false }).format(year);
@@ -1869,10 +1951,12 @@ function buildAdmitCard(student, exam, year) {
 
   const details = document.createElement("div");
   details.className = "admit-card-body";
-  const photo = document.createElement("img");
-  photo.className = "admit-card-photo";
+  const photo = blank ? document.createElement("div") : document.createElement("img");
+  photo.className = blank ? "admit-card-photo admit-card-photo-blank" : "admit-card-photo";
   const placeholderPhoto = studentPlaceholderForName(student.name, student.gender);
-  if (student.photoUrl) {
+  if (blank) {
+    photo.setAttribute("aria-hidden", "true");
+  } else if (student.photoUrl) {
     photo.src = admitPhotoUrl(student.photoUrl);
     photo.alt = "";
     photo.addEventListener("error", () => {
@@ -1907,19 +1991,25 @@ function buildAdmitCard(student, exam, year) {
     paymentLabel = "পরিশোধিত ফি";
     paymentValue = byId("admitExamFeeType").selectedOptions[0].textContent;
   }
+  if (blank) paymentLabel = isEnglish ? "Payment / Fee" : "বেতন / ফি";
   const fields = [
-    ["শিক্ষার্থীর নাম", name], ["শিক্ষার্থী আইডি", student.studentCode], ["শাখা", t(student.branch || "—")],
-    ["শ্রেণি", t(student.className || "—")], ["ট্রেড", t(student.trade || "—")],
-    [isEnglish ? "Class Roll" : "ক্লাস রোল", normalizeDigits(String(student.roll || "—"))],
-    [isEnglish ? "Board Roll" : "বোর্ড রোল", normalizeDigits(String(student.boardRoll || "—"))]
+    ["name", "শিক্ষার্থীর নাম", name],
+    ["studentCode", "শিক্ষার্থী আইডি", student.studentCode],
+    ["branch", "শাখা", t(student.branch || "—")],
+    ["className", "শ্রেণি", t(student.className || "—")],
+    ["trade", "ট্রেড", t(student.trade || "—")],
+    ["classRoll", isEnglish ? "Class Roll" : "ক্লাস রোল", normalizeDigits(String(student.roll || "—"))],
+    ["boardRoll", isEnglish ? "Board Roll" : "বোর্ড রোল", normalizeDigits(String(student.boardRoll || "—"))],
+    ["payment", paymentLabel, paymentValue]
   ];
-  if (mode !== "class-all") fields.push([paymentLabel, paymentValue]);
-  for (const [label, value] of fields) {
+  for (const [key, label, value] of fields) {
+    if (!selectedFields.has(key) || (key === "payment" && mode === "class-all")) continue;
     const wrapper = document.createElement("div");
     const term = document.createElement("dt");
     term.textContent = t(label);
     const detail = document.createElement("dd");
-    detail.textContent = value || "—";
+    detail.textContent = blank ? "" : (value || "—");
+    if (blank) wrapper.classList.add("admit-blank-field");
     wrapper.append(term, detail);
     list.append(wrapper);
   }
@@ -1951,6 +2041,12 @@ function generateAdmitCards() {
     message("admitMessage", admitText("প্রবেশপত্র তৈরির জন্য যোগ্য শিক্ষার্থী নির্বাচন করুন।", "Select eligible students to generate admit cards."), true);
     return;
   }
+  const mode = byId("admitDisplayMode").value;
+  const selectedFields = new Set([...document.querySelectorAll(".admit-card-field:checked")].map((input) => input.value));
+  if (![...selectedFields].some((field) => field !== "payment" || mode !== "class-all")) {
+    message("admitMessage", admitText("প্রবেশপত্রে প্রদর্শনের জন্য অন্তত একটি তথ্য নির্বাচন করুন।", "Select at least one detail to show on the admit card."), true);
+    return;
+  }
   const area = byId("admitPrintArea");
   area.replaceChildren();
   admitPrintMode = "admit";
@@ -1959,13 +2055,42 @@ function generateAdmitCards() {
   for (let offset = 0; offset < selectedStudents.length; offset += 4) {
     const page = document.createElement("section");
     page.className = "admit-print-page";
-    selectedStudents.slice(offset, offset + 4).forEach((student) => page.append(buildAdmitCard(student, exam, year)));
+    selectedStudents.slice(offset, offset + 4).forEach((student) => page.append(buildAdmitCard(student, exam, year, selectedFields)));
     area.append(page);
   }
   area.hidden = false;
   byId("printAdmitCards").hidden = false;
   byId("printSeatPlan").hidden = true;
   byId("printAttendanceSheet").hidden = true;
+  area.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function prepareBlankAdmitCards() {
+  const exam = byId("admitExam").value;
+  const className = byId("admitFeeSheetClass").value;
+  if (!exam || !className) {
+    message("admitMessage", admitText("ব্ল্যাংক প্রবেশপত্র তৈরির আগে পরীক্ষা ও শ্রেণি নির্বাচন করুন।", "Select an exam and class before preparing blank admit cards."), true);
+    return;
+  }
+  const selectedFields = new Set([...document.querySelectorAll(".admit-card-field:checked")].map((input) => input.value));
+  if (![...selectedFields].some((field) => field !== "payment")) {
+    message("admitMessage", admitText("ব্ল্যাংক প্রবেশপত্রে অন্তত একটি তথ্যের ঘর নির্বাচন করুন।", "Select at least one detail field for the blank admit card."), true);
+    return;
+  }
+  const area = byId("admitPrintArea");
+  area.replaceChildren();
+  const year = Number(byId("admitFeeSheetYear").value);
+  const blankStudent = { branch: "", className, trade: "", roll: "", boardRoll: "", studentCode: "" };
+  const page = document.createElement("section");
+  page.className = "admit-print-page";
+  for (let index = 0; index < 4; index++) page.append(buildAdmitCard(blankStudent, exam, year, selectedFields, true));
+  area.append(page);
+  admitPrintMode = "admit";
+  area.hidden = false;
+  byId("printAdmitCards").hidden = false;
+  byId("printSeatPlan").hidden = true;
+  byId("printAttendanceSheet").hidden = true;
+  message("admitMessage", admitText("একটি A4 পাতায় ৪টি ব্ল্যাংক প্রবেশপত্র তৈরি হয়েছে।", "Four blank admit cards are ready on one A4 page."));
   area.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -2042,6 +2167,70 @@ function generateSeatPlan() {
   byId("printAdmitCards").hidden = true;
   byId("printSeatPlan").hidden = false;
   byId("printAttendanceSheet").hidden = true;
+  area.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function generateBlankSeatPlan() {
+  const exam = byId("admitExam").value;
+  const className = byId("admitFeeSheetClass").value;
+  const selectedFields = [...document.querySelectorAll(".seat-plan-field:checked")].map((input) => input.value);
+  if (!exam || !className) {
+    message("admitMessage", admitText("ব্ল্যাংক সিট প্ল্যান তৈরির আগে পরীক্ষা ও শ্রেণি নির্বাচন করুন।", "Select an exam and class before preparing a blank seat plan."), true);
+    return;
+  }
+  if (!selectedFields.length) {
+    message("admitMessage", admitText("সিট প্ল্যানে অন্তত একটি তথ্যের ঘর নির্বাচন করুন।", "Select at least one detail field for the blank seat plan."), true);
+    return;
+  }
+  const area = byId("admitPrintArea");
+  area.replaceChildren();
+  const isEnglish = document.documentElement.lang === "en";
+  const t = (text) => window.dashboardTranslate?.(text) || text;
+  const yearText = new Intl.NumberFormat(uiLocale(), { useGrouping: false }).format(Number(byId("admitFeeSheetYear").value));
+  const fieldInfo = {
+    name: "শিক্ষার্থীর নাম", classRoll: isEnglish ? "Class Roll" : "ক্লাস রোল", boardRoll: "বোর্ড রোল",
+    studentCode: "শিক্ষার্থী আইডি", branch: "শাখা", className: "শ্রেণি", trade: "ট্রেড"
+  };
+  const page = document.createElement("section");
+  page.className = "seat-plan-page";
+  const grid = document.createElement("div");
+  grid.className = "seat-plan-grid";
+  for (let index = 0; index < 15; index++) {
+    const card = document.createElement("article");
+    card.className = "seat-plan-card seat-plan-card-blank";
+    const head = document.createElement("header");
+    head.className = "seat-plan-card-heading";
+    const schoolName = document.createElement("h1");
+    schoolName.textContent = isEnglish ? "Tabiul Mursaleen Nogor Karigori School & College" : "তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ";
+    head.append(schoolName);
+    card.append(head);
+    const title = document.createElement("p");
+    title.className = "seat-plan-card-title";
+    title.textContent = `${isEnglish ? "Seat Plan" : "সিট প্ল্যান"} · ${t(exam)} · ${yearText}`;
+    card.append(title);
+    const details = document.createElement("dl");
+    details.className = "seat-plan-card-details";
+    selectedFields.forEach((field) => {
+      const row = document.createElement("div");
+      const label = document.createElement("dt");
+      label.textContent = t(fieldInfo[field]);
+      const value = document.createElement("dd");
+      value.textContent = "";
+      row.classList.add("seat-plan-blank-field");
+      row.append(label, value);
+      details.append(row);
+    });
+    card.append(details);
+    grid.append(card);
+  }
+  page.append(grid);
+  area.append(page);
+  admitPrintMode = "seat-plan";
+  area.hidden = false;
+  byId("printAdmitCards").hidden = true;
+  byId("printSeatPlan").hidden = false;
+  byId("printAttendanceSheet").hidden = true;
+  message("admitMessage", admitText("একটি A4 পাতায় ১৫টি ব্ল্যাংক সিট প্ল্যান তৈরি হয়েছে।", "Fifteen blank seat-plan cards are ready on one A4 page."));
   area.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -2199,10 +2388,12 @@ async function loadAttendanceRoutinePreview({ silent = false } = {}) {
   }
 }
 
-async function generateAttendanceSheets() {
+async function generateAttendanceSheets(blank = false) {
   const selectedCodes = [...document.querySelectorAll(".admit-student-choice:checked")]
     .map((input) => input.dataset.studentCode);
-  const selectedStudents = selectedCodes.map((code) => admitCandidates.get(code)).filter(Boolean);
+  const selectedStudents = blank
+    ? [{ name: "", nameBn: "", studentCode: "", branch: "", className: byId("admitFeeSheetClass").value, trade: "", roll: "", boardRoll: "" }]
+    : selectedCodes.map((code) => admitCandidates.get(code)).filter(Boolean);
   const selectedFields = [...document.querySelectorAll(".attendance-field:checked")]
     .map((input) => input.value);
   if (!selectedStudents.length) {
@@ -2217,18 +2408,24 @@ async function generateAttendanceSheets() {
   const className = byId("admitFeeSheetClass").value;
   const exam = byId("admitExam").value.trim();
   const year = Number(byId("admitFeeSheetYear").value);
+  if (blank && (!className || !exam)) {
+    message("admitMessage", admitText("ব্ল্যাংক হাজিরা শিট তৈরির আগে পরীক্ষা ও শ্রেণি নির্বাচন করুন।", "Select an exam and class before preparing a blank attendance sheet."), true);
+    return;
+  }
   byId("admitPrintArea").hidden = true;
   byId("printAdmitCards").hidden = true;
   byId("printSeatPlan").hidden = true;
   byId("printAttendanceSheet").hidden = true;
   admitPrintMode = "";
-  message("admitMessage", admitText("প্রকাশিত পরীক্ষার রুটিন খোঁজা হচ্ছে...", "Loading the published exam routine..."));
+  if (!blank) message("admitMessage", admitText("প্রকাশিত পরীক্ষার রুটিন খোঁজা হচ্ছে...", "Loading the published exam routine..."));
   try {
-    const routine = await loadAttendanceRoutinePreview();
-    if (!routine) return;
-    const subjects = (routine?.subjects || []).filter((subject) => subject.date && subject.subject)
-      .slice().sort((a, b) => String(a.date).localeCompare(String(b.date)));
-    if (!routine || !subjects.length) {
+    const routine = blank ? null : await loadAttendanceRoutinePreview();
+    if (!blank && !routine) return;
+    const subjects = blank
+      ? []
+      : (routine?.subjects || []).filter((subject) => subject.date && subject.subject)
+        .slice().sort((a, b) => String(a.date).localeCompare(String(b.date)));
+    if (!blank && (!routine || !subjects.length)) {
       message("admitMessage", admitText("এই শ্রেণি ও পরীক্ষার কোনো প্রকাশিত পরীক্ষার রুটিন পাওয়া যায়নি। আগে পরীক্ষার রুটিন প্রকাশ করুন।", "No published exam routine was found for this class and exam. Publish the exam routine first."), true);
       return;
     }
@@ -2324,7 +2521,8 @@ async function generateAttendanceSheets() {
         const label = document.createElement("dt");
         label.textContent = fieldInfo[field].label;
         const value = document.createElement("dd");
-        value.textContent = String(fieldInfo[field].value(student) || "—");
+        value.textContent = blank ? "" : String(fieldInfo[field].value(student) || "—");
+        if (blank) row.classList.add("attendance-blank-field");
         row.append(label, value);
         studentDetails.append(row);
       });
@@ -2342,9 +2540,10 @@ async function generateAttendanceSheets() {
         head.append(cell);
       });
       const body = table.createTBody();
-      subjects.map((subject) => resolveAttendanceSubject(subject, student)).forEach((subject) => {
+      const sheetSubjects = blank ? Array.from({ length: 15 }, () => ({ date: "", displaySubject: "", displayCode: "" })) : subjects.map((subject) => resolveAttendanceSubject(subject, student));
+      sheetSubjects.forEach((subject) => {
         const row = body.insertRow();
-        [formatAttendanceDate(subject.date), subject.displaySubject, subject.displayCode, "", ""]
+        [blank ? "" : formatAttendanceDate(subject.date), subject.displaySubject, subject.displayCode, "", ""]
           .forEach((value) => {
             const cell = row.insertCell();
             cell.textContent = value;
@@ -2358,7 +2557,9 @@ async function generateAttendanceSheets() {
     byId("printAdmitCards").hidden = true;
     byId("printSeatPlan").hidden = true;
     byId("printAttendanceSheet").hidden = false;
-    message("admitMessage", admitText(`${selectedStudents.length} জন পরীক্ষার্থীর জন্য হাজিরা শিট তৈরি হয়েছে।`, `Attendance sheets prepared for ${selectedStudents.length} candidates.`));
+    message("admitMessage", blank
+      ? admitText("একটি ব্ল্যাংক হাজিরা শিট তৈরি হয়েছে।", "A blank attendance sheet is ready.")
+      : admitText(`${selectedStudents.length} জন পরীক্ষার্থীর জন্য হাজিরা শিট তৈরি হয়েছে।`, `Attendance sheets prepared for ${selectedStudents.length} candidates.`));
     area.scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (error) {
     console.error("হাজিরা শিট তৈরির জন্য পরীক্ষার রুটিন লোড হয়নি:", error);
@@ -2401,6 +2602,9 @@ byId("admitEligibleRows").addEventListener("change", () => {
 byId("prepareAdmitCards").addEventListener("click", generateAdmitCards);
 byId("prepareSeatPlan").addEventListener("click", generateSeatPlan);
 byId("prepareAttendanceSheet").addEventListener("click", generateAttendanceSheets);
+byId("prepareBlankAdmitCards").addEventListener("click", prepareBlankAdmitCards);
+byId("prepareBlankSeatPlan").addEventListener("click", generateBlankSeatPlan);
+byId("prepareBlankAttendanceSheet").addEventListener("click", () => generateAttendanceSheets(true));
 async function printAdmitOutput() {
   const images = [...byId("admitPrintArea").querySelectorAll("img")];
   await Promise.all(images.map((image) => image.decode?.().catch(() => {}) || Promise.resolve()));
@@ -2468,18 +2672,26 @@ function addResultSubjectRow(className, subject = {}) {
   codeInput.className = "result-subject-code";
   codeInput.value = subject.code || standardSubject?.code || "";
   codeLabel.append(codeInput);
-  const settings = [["theoryFullMarks", "তাত্ত্বিক পূর্ণমান", subject.theoryFullMarks ?? subject.fullMarks ?? ""], ["practicalFullMarks", "ব্যবহারিক পূর্ণমান", subject.practicalFullMarks ?? (subject.fullMarks ? 0 : "")]];
+  const settings = [
+    ["theoryFullMarks", "তাত্ত্বিক পূর্ণমান", subject.theoryFullMarks ?? subject.fullMarks ?? "", false],
+    ["practicalFullMarks", "ব্যবহারিক পূর্ণমান (ঐচ্ছিক)", subject.practicalFullMarks ?? (subject.fullMarks ? 0 : ""), false],
+    ["theoryPassMarks", "তাত্ত্বিক পাশ নম্বর (ঐচ্ছিক)", subject.theoryPassMarks ?? subject.passMarks ?? "", false],
+    ["practicalPassMarks", "ব্যবহারিক পাশ নম্বর (ঐচ্ছিক)", subject.practicalPassMarks ?? "", false]
+  ];
   row.append(subjectLabel, codeLabel);
-  settings.forEach(([key, labelText, value]) => {
+  settings.forEach(([key, labelText, value, required]) => {
     const label = document.createElement("label");
     label.textContent = labelText;
     const input = document.createElement("input");
     input.type = "number";
     input.min = "0";
     input.step = "0.01";
-    input.required = true;
+    input.required = required;
     input.value = value;
     input.dataset.markType = key;
+    if (key === "theoryFullMarks" || key === "practicalFullMarks") {
+      input.addEventListener("input", () => { byId("resultMatrixWrap").hidden = true; });
+    }
     label.append(input);
     row.append(label);
   });
@@ -2519,9 +2731,160 @@ function selectedResultSubjects() {
       : row.querySelector(".result-subject-select").value,
     code: row.querySelector(".result-subject-code").value.trim(),
     theoryFullMarks: Number(row.querySelector('[data-mark-type="theoryFullMarks"]').value),
-    practicalFullMarks: Number(row.querySelector('[data-mark-type="practicalFullMarks"]').value)
+    practicalFullMarks: Number(row.querySelector('[data-mark-type="practicalFullMarks"]').value),
+    theoryPassMarks: row.querySelector('[data-mark-type="theoryPassMarks"]').value === ""
+      ? null
+      : Number(row.querySelector('[data-mark-type="theoryPassMarks"]').value),
+    practicalPassMarks: row.querySelector('[data-mark-type="practicalPassMarks"]').value === ""
+      ? null
+      : Number(row.querySelector('[data-mark-type="practicalPassMarks"]').value)
   }));
 }
+
+function selectedResultDisplayFields() {
+  return {
+    studentId: byId("resultShowStudentId").checked,
+    boardRoll: byId("resultShowBoardRoll").checked,
+    classRoll: byId("resultShowClassRoll").checked,
+    branch: byId("resultShowBranch").checked,
+    className: byId("resultShowClass").checked,
+    trade: byId("resultShowTrade").checked,
+    meritRank: byId("resultShowMeritRank").checked,
+    failSubjectCount: byId("resultShowFailSubjectCount").checked,
+    absentSubjectCount: byId("resultShowAbsentSubjectCount").checked
+  };
+}
+
+function applyResultDisplayFields(fields = {}) {
+  byId("resultShowStudentId").checked = fields.studentId !== false;
+  byId("resultShowBoardRoll").checked = fields.boardRoll !== false;
+  byId("resultShowClassRoll").checked = fields.classRoll !== false;
+  byId("resultShowBranch").checked = fields.branch !== false;
+  byId("resultShowClass").checked = fields.className !== false;
+  byId("resultShowTrade").checked = fields.trade !== false;
+  byId("resultShowMeritRank").checked = fields.meritRank !== false;
+  byId("resultShowFailSubjectCount").checked = fields.failSubjectCount !== false;
+  byId("resultShowAbsentSubjectCount").checked = fields.absentSubjectCount !== false;
+}
+
+function selectedMeritDisplayFields() {
+  return {
+    rank: byId("meritShowRank").checked,
+    name: byId("meritShowName").checked,
+    studentId: byId("meritShowStudentId").checked,
+    classRoll: byId("meritShowClassRoll").checked,
+    marks: byId("meritShowMarks").checked,
+    percentage: byId("meritShowPercentage").checked
+  };
+}
+
+function applyMeritDisplayFields(fields = {}) {
+  byId("meritShowRank").checked = fields.rank !== false;
+  byId("meritShowName").checked = fields.name !== false;
+  byId("meritShowStudentId").checked = fields.studentId !== false;
+  byId("meritShowClassRoll").checked = fields.classRoll !== false;
+  byId("meritShowMarks").checked = fields.marks !== false;
+  byId("meritShowPercentage").checked = fields.percentage !== false;
+}
+
+function downloadClassResultsPdf() {
+  const className = byId("resultClass").value;
+  const exam = byId("resultExam").value;
+  const year = Number(byId("resultYear").value);
+  if (!className || !exam || !Number.isInteger(year)) {
+    message("resultMessage", "PDF তৈরির আগে শ্রেণি, পরীক্ষা ও শিক্ষাবর্ষ নির্বাচন করুন।", true);
+    return;
+  }
+
+  const records = resultRecords
+    .filter((record) => record.className === className && record.exam === exam && Number(record.year) === year)
+    .sort((a, b) => Number(normalizeDigits(String(a.roll || ""))) - Number(normalizeDigits(String(b.roll || "")))
+      || String(a.studentName || "").localeCompare(String(b.studentName || ""), "bn"));
+  if (!records.length) {
+    message("resultMessage", "নির্বাচিত শ্রেণি, পরীক্ষা ও শিক্ষাবর্ষের কোনো সংরক্ষিত ফলাফল পাওয়া যায়নি।", true);
+    return;
+  }
+
+  const number = (value) => value === "" ? "" : bn(value ?? 0);
+  const fontUrl = new URL("fonts/kalpurush.ttf", location.href).href;
+  const logoUrl = new URL("images/logo/logo-transparent.png", location.href).href;
+  const pages = records.map((record, index) => {
+    const subjects = record.subjects || [];
+    const hasTheory = subjects.some((subject) => Number(subject.theoryFullMarks) > 0);
+    const hasPractical = subjects.some((subject) => Number(subject.practicalFullMarks) > 0);
+    const showPractical = record.showPractical === true && hasPractical;
+    const hasTheoryPass = hasTheory && subjects.some((subject) => (subject.theoryPassMarks ?? subject.passMarks) != null && (subject.theoryPassMarks ?? subject.passMarks) !== "");
+    const hasPracticalPass = showPractical && subjects.some((subject) => subject.practicalPassMarks != null && subject.practicalPassMarks !== "");
+    const headers = ["ক্রমিক", "বিষয়", "বিষয় কোড"];
+    if (showPractical) {
+      if (hasTheory) headers.push("তাত্ত্বিক পূর্ণমান", "তাত্ত্বিক নম্বর");
+      if (hasTheoryPass) headers.push("তাত্ত্বিক পাশ নম্বর");
+      headers.push("ব্যবহারিক পূর্ণমান", "ব্যবহারিক নম্বর");
+      if (hasPracticalPass) headers.push("ব্যবহারিক পাশ নম্বর");
+      headers.push("মোট পূর্ণমান", "মোট নম্বর");
+    } else {
+      headers.push("পূর্ণমান", "প্রাপ্ত নম্বর");
+      if (hasTheoryPass) headers.push("পাশ নম্বর");
+    }
+    const header = headers.map((title) => `<th>${receiptEscape(title)}</th>`).join("");
+    const rows = subjects.map((subject, subjectIndex) => {
+      const absentText = record.absent === true ? "অনুপস্থিত" : "";
+      const cells = [number(subjectIndex + 1), subject.name || "—", subject.code || "—"];
+      if (showPractical) {
+        if (hasTheory) cells.push(Number(subject.theoryFullMarks) > 0 ? number(subject.theoryFullMarks) : "", Number(subject.theoryFullMarks) > 0 ? (record.absent ? absentText : number(subject.theoryMarks)) : "");
+        if (hasTheoryPass) cells.push(Number(subject.theoryFullMarks) > 0 ? number(subject.theoryPassMarks ?? subject.passMarks ?? "") : "");
+        cells.push(Number(subject.practicalFullMarks) > 0 ? number(subject.practicalFullMarks) : "", Number(subject.practicalFullMarks) > 0 ? (record.absent ? absentText : number(subject.practicalMarks)) : "");
+        if (hasPracticalPass) cells.push(Number(subject.practicalFullMarks) > 0 ? number(subject.practicalPassMarks ?? "") : "");
+        cells.push(number(subject.fullMarks), record.absent ? absentText : number(subject.marks));
+      } else {
+        cells.push(number(subject.fullMarks), record.absent ? absentText : number(subject.marks));
+        if (hasTheoryPass) cells.push(number(subject.theoryPassMarks ?? subject.passMarks ?? ""));
+      }
+      return `<tr>${cells.map((value) => `<td>${receiptEscape(value)}</td>`).join("")}</tr>`;
+    }).join("");
+
+    const display = record.displayFields || {};
+    const identity = [
+      ["শিক্ষার্থী আইডি", record.studentCode, display.studentId !== false],
+      ["বোর্ড রোল", record.boardRoll, display.boardRoll !== false],
+      ["ক্লাস রোল", record.roll, display.classRoll !== false],
+      ["শাখা", record.branch, display.branch !== false],
+      ["শ্রেণি", record.className, display.className !== false],
+      ["ট্রেড", record.trade, display.trade !== false]
+    ].filter(([, value, enabled]) => enabled && value != null && value !== "")
+      .map(([label, value]) => `<span>${receiptEscape(label)}: ${receiptEscape(value)}</span>`).join("");
+    const rank = records.filter((candidate) => Number(candidate.totalMarks || 0) > Number(record.totalMarks || 0)).length + 1;
+    const rankBadge = display.meritRank === false ? "" : `<p class="rank">মেধাতালিকায় ${number(rank)}তম স্থান</p>`;
+    const absentBadge = record.absent === true ? '<p class="absent">অনুপস্থিত</p>' : "";
+    const percentage = number(record.percentage);
+    return `<article class="result-page${index === records.length - 1 ? " last-page" : ""}">
+      <img class="watermark" src="${receiptEscape(logoUrl)}" alt="" aria-hidden="true">
+      <header class="school"><h1>তাবিউল মুরসালীন নগর কারিগরি স্কুল এন্ড কলেজ</h1><p>টেঙ্গুরী, কেন্দুয়া, নেত্রকোণা · EIIN No. 136065</p></header>
+      <h2 class="exam-title">${receiptEscape(exam)} পরীক্ষার ফলাফল — ${number(year)}</h2>
+      <h3 class="student-name">${receiptEscape(record.studentName || "")}</h3>
+      <div class="identity">${identity}</div>${absentBadge}${rankBadge}
+      <table><thead><tr>${header}</tr></thead><tbody>${rows}</tbody></table>
+      <p class="total">মোট: ${number(record.totalMarks)} / ${number(record.fullMarks)} · শতকরা: ${percentage}%</p>
+      <footer><span>অভিভাবকের স্বাক্ষর</span><span>প্রতিষ্ঠান প্রধানের স্বাক্ষর ও সিল</span></footer>
+    </article>`;
+  }).join("");
+  const safeTitle = receiptEscape(`${className}-${exam}-${year}-results`);
+  const win = window.open("", "_blank", "width=900,height=750");
+  if (!win) {
+    message("resultMessage", "PDF তৈরির প্রিন্ট উইন্ডো খুলতে ব্রাউজারের পপ-আপ অনুমতি দিন।", true);
+    return;
+  }
+  win.document.open();
+  win.document.write(`<!doctype html><html lang="bn"><head><meta charset="utf-8"><base href="${receiptEscape(location.href)}"><title>${safeTitle}</title><style>
+    @font-face{font-family:Kalpurush;src:url("${receiptEscape(fontUrl)}") format("truetype")}@page{size:A4 portrait;margin:8mm}*{box-sizing:border-box}html,body{margin:0;padding:0}body{font-family:Kalpurush,Arial,sans-serif;color:#111}.result-page{position:relative;isolation:isolate;min-height:281mm;padding:3mm 2mm;page-break-after:always;break-after:page}.result-page:last-child{page-break-after:auto;break-after:auto}.watermark{position:absolute;z-index:0;top:50%;left:50%;width:145mm;height:145mm;max-width:82%;max-height:72%;object-fit:contain;transform:translate(-50%,-50%);opacity:.065!important;pointer-events:none}.result-page>*:not(.watermark){position:relative;z-index:1}.school{text-align:center;border-bottom:1px solid #8a8a8a;padding:0 0 2mm;margin:0 0 3mm}.school h1{font-size:16pt;line-height:1.2;margin:0}.school p{font-size:9pt;margin:1mm 0 0}.exam-title{text-align:center;font-size:12pt;margin:2mm 0 3mm;padding:1.5mm;border:1px solid #333}.student-name{text-align:center;font-size:12pt;margin:0 0 1mm}.identity{display:flex;justify-content:center;flex-wrap:wrap;gap:1mm 3mm;margin:0 0 3mm;font-size:9pt}.identity span{white-space:nowrap}.absent,.rank{text-align:center;margin:1mm auto;padding:1mm}.absent{color:#8d303e}.rank{font-weight:bold}table{width:100%;border-collapse:collapse;table-layout:auto;font-size:9pt}th,td{border:1px solid #555;padding:1.7mm 1mm;text-align:center;line-height:1.2}thead{display:table-header-group}th{font-weight:bold}.total{text-align:right;font-weight:bold;margin:3mm 0}footer{display:flex;justify-content:space-between;gap:20mm;margin-top:16mm}footer span{width:55mm;border-top:1px solid #333;text-align:center;padding-top:1mm;font-size:9pt}@media screen{body{background:#e7ebef;padding:12mm}.result-page{width:210mm;min-height:297mm;background:#fff;margin:0 auto 10mm;box-shadow:0 2px 12px #8792a0}}
+    </style></head><body>${pages}<script>window.addEventListener('load',async()=>{try{await document.fonts.ready}catch{}window.focus();setTimeout(()=>window.print(),150)});</script></body></html>`);
+  win.document.close();
+  message("resultMessage", document.documentElement.lang === "en"
+    ? `${bn(records.length)} students' results are ready. Select “Save as PDF” in the print destination.`
+    : `${bn(records.length)} জন শিক্ষার্থীর ফলাফল PDF প্রিন্টে প্রস্তুত। গন্তব্য থেকে “Save as PDF” নির্বাচন করুন।`);
+}
+
+byId("downloadClassResultPdf")?.addEventListener("click", downloadClassResultsPdf);
 
 function classStudents(className, rollType) {
   const classCode = getClassCode(className);
@@ -2545,8 +2908,8 @@ function renderResultMatrix(prefillRecords = []) {
     byId("resultMatrixWrap").hidden = true;
     return;
   }
-  if (!subjects.length || subjects.some((subject) => !subject.name)) {
-    message("resultMessage", "কমপক্ষে একটি বিষয় নির্বাচন করুন।", true);
+  if (!subjects.length || subjects.some((subject) => !subject.name || subject.theoryFullMarks + subject.practicalFullMarks <= 0)) {
+    message("resultMessage", "প্রতিটি বিষয়ের তাত্ত্বিক বা ব্যবহারিক পূর্ণমান দিন।", true);
     byId("resultMatrixWrap").hidden = true;
     return;
   }
@@ -2560,22 +2923,29 @@ function renderResultMatrix(prefillRecords = []) {
   const table = document.createElement("table");
   table.className = "data-table result-marks-table";
   table.classList.add("result-marks-compact");
+  table.dataset.rollType = rollType;
+  const scoreColumnCount = subjects.reduce((count, subject) => count
+    + (Number(subject.theoryFullMarks) > 0 ? 1 : 0)
+    + (Number(subject.practicalFullMarks) > 0 ? 1 : 0), 0);
+  table.style.width = "max-content";
+  table.style.minWidth = `${108 + scoreColumnCount * 82}px`;
   const t = (value) => window.dashboardTranslate?.(value) || value;
   const thead = table.createTHead();
   const subjectHeader = thead.insertRow();
   const rollHeader = document.createElement("th");
   rollHeader.rowSpan = 2;
-  rollHeader.textContent = t("রোল");
+  rollHeader.textContent = t("রোল / অবস্থা");
   subjectHeader.append(rollHeader);
   subjects.forEach((subject) => {
     const th = document.createElement("th");
-    th.colSpan = Number(subject.practicalFullMarks) > 0 ? 2 : 1;
+    th.colSpan = (Number(subject.theoryFullMarks) > 0 ? 1 : 0) + (Number(subject.practicalFullMarks) > 0 ? 1 : 0);
     th.textContent = `${t(subject.name)}${subject.code ? ` · ${subject.code}` : ""}`;
     subjectHeader.append(th);
   });
   const componentHeader = thead.insertRow();
   subjects.forEach((subject) => {
-    const parts = [["তাত্ত্বিক", subject.theoryFullMarks]];
+    const parts = [];
+    if (Number(subject.theoryFullMarks) > 0) parts.push(["তাত্ত্বিক", subject.theoryFullMarks]);
     if (Number(subject.practicalFullMarks) > 0) parts.push(["ব্যবহারিক", subject.practicalFullMarks]);
     parts.forEach(([label, maximum]) => {
       const th = document.createElement("th");
@@ -2594,12 +2964,27 @@ function renderResultMatrix(prefillRecords = []) {
     row.dataset.studentCode = student.studentCode;
     const rollCell = row.insertCell();
     rollCell.className = "result-roll-cell";
-    rollCell.textContent = normalizeDigits(String(student[rollType] || "—"));
+    const savedStudentRecord = [...savedRecords].reverse().find((record) => record.studentCode === student.studentCode);
+    const rollText = document.createElement("span");
+    rollText.textContent = normalizeDigits(String(student[rollType] || "—"));
+    rollCell.append(rollText);
+    const absentLabel = document.createElement("label");
+    absentLabel.className = "result-absent-control";
+    const absentToggle = document.createElement("input");
+    absentToggle.type = "checkbox";
+    absentToggle.className = "result-absent-toggle";
+    absentToggle.checked = savedStudentRecord?.absent === true;
+    row.classList.toggle("result-student-absent", absentToggle.checked);
+    absentToggle.setAttribute("aria-label", `${normalizeDigits(String(student[rollType] || "—"))} রোল অনুপস্থিত`);
+    const absentText = document.createElement("span");
+    absentText.textContent = "অনুপস্থিত";
+    absentLabel.append(absentToggle, absentText);
+    rollCell.append(absentLabel);
     subjects.forEach((subject) => {
-      const saved = savedRecords.filter((record) => record.studentCode === student.studentCode)
-        .flatMap((record) => record.subjects || [])
+      const saved = (savedStudentRecord?.subjects || [])
         .find((item) => item.name === subject.name || (subject.code && item.code === subject.code));
-      const parts = [["theory", subject.theoryFullMarks]];
+      const parts = [];
+      if (Number(subject.theoryFullMarks) > 0) parts.push(["theory", subject.theoryFullMarks]);
       if (Number(subject.practicalFullMarks) > 0) parts.push(["practical", subject.practicalFullMarks]);
       parts.forEach(([component, maximum]) => {
         const cell = row.insertCell();
@@ -2618,6 +3003,7 @@ function renderResultMatrix(prefillRecords = []) {
         input.value = saved
           ? (saved[`${component}Marks`] ?? (component === "theory" ? saved.marks : 0))
           : "";
+        input.disabled = absentToggle.checked;
         cell.append(input);
       });
     });
@@ -2643,6 +3029,8 @@ byId("prepareResultMatrix").addEventListener("click", () => {
   if (savedDraft?.subjects?.length && selected.length === 1 && !selected[0].name) {
     renderSubjectOptions(className, savedDraft.subjects);
     byId("resultShowPractical").checked = savedDraft.showPractical === true;
+    applyResultDisplayFields(savedDraft.displayFields);
+    applyMeritDisplayFields(savedDraft.meritDisplayFields);
   }
   renderResultMatrix();
 });
@@ -2652,8 +3040,18 @@ const resultDraftSavesInProgress = new Set();
 
 resultMatrix.addEventListener("change", async (event) => {
   const input = event.target.closest("input.result-mark-input");
-  if (!input) return;
-  const studentCode = input.dataset.studentCode;
+  const absentToggle = event.target.closest("input.result-absent-toggle");
+  if (!input && !absentToggle) return;
+  const studentRow = (input || absentToggle).closest("tr");
+  const studentCode = studentRow?.dataset.studentCode;
+  if (!studentCode) return;
+  if (absentToggle) {
+    studentRow.classList.toggle("result-student-absent", absentToggle.checked);
+    studentRow.querySelectorAll("input.result-mark-input").forEach((markInput) => {
+      markInput.disabled = absentToggle.checked;
+      if (absentToggle.checked) markInput.value = "";
+    });
+  }
   if (resultDraftSavesInProgress.has(studentCode)) return;
   const className = byId("resultClass").value;
   const rollType = byId("resultRollType").value;
@@ -2662,20 +3060,36 @@ resultMatrix.addEventListener("change", async (event) => {
   const student = classStudents(className, rollType).find((item) => item.studentCode === studentCode);
   const subjects = selectedResultSubjects();
   const inputs = [...resultMatrix.querySelectorAll(`input.result-mark-input[data-student-code="${CSS.escape(studentCode)}"]`)];
+  const absent = studentRow.querySelector(".result-absent-toggle")?.checked === true;
+  if (absentToggle && !absent) {
+    const draftId = resultDocumentId(studentCode, year, exam);
+    const absentDraft = resultDraftRecords.find((record) => record.id === draftId && record.absent);
+    if (absentDraft && currentAdmin) {
+      try {
+        await deleteDoc(doc(db, resultDraftsCollection, draftId));
+        resultDraftRecords = resultDraftRecords.filter((record) => record.id !== draftId);
+        message("resultMessage", "অনুপস্থিতির খসড়া বাতিল হয়েছে; নম্বর লিখুন।");
+      } catch (error) {
+        console.error("অনুপস্থিতির খসড়া বাতিল হয়নি:", error);
+        message("resultMessage", "অনুপস্থিতির খসড়া বাতিল হয়নি। Firestore access rules পরীক্ষা করুন।", true);
+      }
+    }
+    return;
+  }
   if (!currentAdmin || !student || !exam || !Number.isInteger(year) || !subjects.length
-    || inputs.some((field) => field.value === "" || Number(field.value) < 0 || Number(field.value) > Number(field.max))) return;
+    || (!absent && inputs.some((field) => field.value === "" || Number(field.value) < 0 || Number(field.value) > Number(field.max)))) return;
   resultDraftSavesInProgress.add(studentCode);
   try {
     const studentSubjects = subjects.map((subject) => {
       const getMark = (component) => Number(resultMatrix.querySelector(`input[data-student-code="${CSS.escape(studentCode)}"][data-subject-name="${CSS.escape(subject.name)}"][data-component="${component}"]`)?.value || 0);
-      const theoryMarks = getMark("theory");
-      const practicalMarks = getMark("practical");
+      const theoryMarks = absent ? 0 : getMark("theory");
+      const practicalMarks = absent ? 0 : getMark("practical");
       return { ...subject, theoryMarks, practicalMarks, fullMarks: subject.theoryFullMarks + subject.practicalFullMarks, marks: theoryMarks + practicalMarks };
     });
     const totalMarks = studentSubjects.reduce((sum, subject) => sum + subject.marks, 0);
     const fullMarks = studentSubjects.reduce((sum, subject) => sum + subject.fullMarks, 0);
     const draftId = resultDocumentId(studentCode, year, exam);
-    const draft = { studentCode, studentName: student.name, branch: student.branch, className: student.className, roll: student.roll || "", boardRoll: student.boardRoll || "", rollType, exam, year, subjects: studentSubjects, totalMarks, fullMarks, percentage: fullMarks ? Math.round((totalMarks / fullMarks) * 10000) / 100 : 0, showPractical: byId("resultShowPractical").checked, updatedAt: serverTimestamp(), updatedBy: currentAdmin.uid };
+    const draft = { studentCode, studentName: student.name, branch: student.branch, className: student.className, trade: student.trade || "", roll: student.roll || "", boardRoll: student.boardRoll || "", rollType, exam, year, subjects: studentSubjects, absent, totalMarks, fullMarks, percentage: fullMarks ? Math.round((totalMarks / fullMarks) * 10000) / 100 : 0, showPractical: byId("resultShowPractical").checked, displayFields: selectedResultDisplayFields(), meritDisplayFields: selectedMeritDisplayFields(), updatedAt: serverTimestamp(), updatedBy: currentAdmin.uid };
     await setDoc(doc(db, resultDraftsCollection, draftId), draft, { merge: true });
     resultDraftRecords = [...resultDraftRecords.filter((record) => record.id !== draftId), { ...draft, id: draftId }];
     message("resultMessage", "নম্বরের খসড়া স্বয়ংক্রিয়ভাবে সংরক্ষিত হয়েছে।");
@@ -2719,9 +3133,14 @@ resultForm.addEventListener("submit", async (event) => {
     message("resultMessage", "শ্রেণি, পরীক্ষা, বিষয় ও রোলের ছক তৈরি করুন।", true);
     return;
   }
-  if (subjects.some((subject) => !subject.name || !Number.isFinite(subject.theoryFullMarks) || subject.theoryFullMarks < 0 || !Number.isFinite(subject.practicalFullMarks) || subject.practicalFullMarks < 0 || subject.theoryFullMarks + subject.practicalFullMarks <= 0)
+  if (subjects.some((subject) => !subject.name || !Number.isFinite(subject.theoryFullMarks) || subject.theoryFullMarks < 0 || !Number.isFinite(subject.practicalFullMarks) || subject.practicalFullMarks < 0 || subject.theoryFullMarks + subject.practicalFullMarks <= 0
+    || (subject.theoryPassMarks !== null && (!Number.isFinite(subject.theoryPassMarks) || subject.theoryPassMarks < 0 || subject.theoryPassMarks > subject.theoryFullMarks))
+    || (subject.practicalPassMarks !== null && (!Number.isFinite(subject.practicalPassMarks) || subject.practicalPassMarks < 0 || subject.practicalPassMarks > subject.practicalFullMarks)))
     || new Set(subjects.map((subject) => subject.name)).size !== subjects.length
-    || inputs.some((input) => input.value === "" || Number(input.value) < 0 || Number(input.value) > Number(input.max))) {
+    || inputs.some((input) => {
+      if (input.closest("tr")?.querySelector(".result-absent-toggle")?.checked) return false;
+      return input.value === "" || Number(input.value) < 0 || Number(input.value) > Number(input.max);
+    })) {
     message("resultMessage", "প্রতিটি বিষয়ের পূর্ণমান দিন এবং প্রাপ্ত নম্বর পূর্ণমানের মধ্যে রাখুন।", true);
     return;
   }
@@ -2739,13 +3158,14 @@ resultForm.addEventListener("submit", async (event) => {
           const findMark = (component) => Number(resultMatrix.querySelector(`input[data-student-code="${CSS.escape(student.studentCode)}"][data-subject-name="${CSS.escape(subject.name)}"][data-component="${component}"]`)?.value || 0);
           const theoryMarks = findMark("theory");
           const practicalMarks = findMark("practical");
-          return { name: subject.name, code: subject.code, theoryFullMarks: subject.theoryFullMarks, practicalFullMarks: subject.practicalFullMarks, theoryMarks, practicalMarks, fullMarks: subject.theoryFullMarks + subject.practicalFullMarks, marks: theoryMarks + practicalMarks };
+          return { name: subject.name, code: subject.code, theoryFullMarks: subject.theoryFullMarks, practicalFullMarks: subject.practicalFullMarks, theoryPassMarks: subject.theoryPassMarks, practicalPassMarks: subject.practicalPassMarks, theoryMarks, practicalMarks, fullMarks: subject.theoryFullMarks + subject.practicalFullMarks, marks: theoryMarks + practicalMarks };
         });
         const totalMarks = studentSubjects.reduce((sum, subject) => sum + subject.marks, 0);
         const fullMarks = studentSubjects.reduce((sum, subject) => sum + subject.fullMarks, 0);
         const percentage = fullMarks ? Math.round((totalMarks / fullMarks) * 10000) / 100 : 0;
         const resultId = resultDocumentId(student.studentCode, year, exam);
-        const data = { studentCode: student.studentCode, studentName: student.name, branch: student.branch, className: student.className, roll: student.roll || "", boardRoll: student.boardRoll || "", rollType, exam, year, subjects: studentSubjects, totalMarks, fullMarks, percentage, published, showPractical, updatedAt: serverTimestamp() };
+        const absent = resultMatrix.querySelector(`tr[data-student-code="${CSS.escape(student.studentCode)}"] .result-absent-toggle`)?.checked === true;
+        const data = { studentCode: student.studentCode, studentName: student.name, branch: student.branch, className: student.className, trade: student.trade || "", roll: student.roll || "", boardRoll: student.boardRoll || "", rollType, exam, year, subjects: studentSubjects, absent, totalMarks, fullMarks, percentage, published, showPractical, displayFields: selectedResultDisplayFields(), meritDisplayFields: selectedMeritDisplayFields(), updatedAt: serverTimestamp() };
         const existing = resultRecords.some((record) => record.studentCode === student.studentCode && record.year === year && record.exam === exam);
         batch.set(doc(db, resultsCollection, resultId), { ...data, ...(existing ? {} : { createdAt: serverTimestamp(), createdBy: currentAdmin.uid }) }, { merge: true });
         batch.set(doc(db, publicResultsCollection, resultId), data, { merge: true });
@@ -2870,6 +3290,8 @@ resultRows.addEventListener("click", async (event) => {
       byId("resultYear").value = data.year || "";
       byId("resultPublished").checked = data.published === true;
       byId("resultShowPractical").checked = data.showPractical === true;
+      applyResultDisplayFields(data.displayFields);
+      applyMeritDisplayFields(data.meritDisplayFields);
       byId("resultClass").value = data.className || "";
       byId("resultRollType").value = data.rollType || "roll";
       editingResultGroup = { exam: data.exam, year: data.year, className: data.className };
