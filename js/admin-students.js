@@ -390,15 +390,15 @@ function renderStudents() {
   students.sort((a, b) => (a.name || "").localeCompare(b.name || "", "bn"));
   for (const student of students) {
     const row = studentRows.insertRow();
-    cell(row, student.studentCode);
+    cell(row, student.studentCode || "—");
     cell(row, student.name);
     cell(row, `${student.branch || ""} / ${student.className || ""}`);
     cell(row, student.roll);
     cell(row, student.published ? "প্রকাশিত" : "গোপন");
     const actions = cell(row, "");
     actions.className = "table-actions-cell";
-    actions.append(actionButton("এডিট", "edit-student", student.studentCode));
-    actions.append(actionButton("মুছুন", "delete-student", student.studentCode, "danger-action"));
+    actions.append(actionButton("এডিট", "edit-student", student.documentId || student.studentCode));
+    actions.append(actionButton("মুছুন", "delete-student", student.documentId || student.studentCode, "danger-action"));
   }
   refreshStudentSelects();
 }
@@ -410,8 +410,8 @@ async function loadStudents() {
 
   const snapshot = await getDocs(collection(db, studentsCollection));
   students = snapshot.docs.map((item) => ({
-    studentCode: item.id,
-    ...item.data()
+    ...item.data(),
+    documentId: item.id
   }));
   renderStudents();
 }
@@ -579,9 +579,10 @@ studentForm.addEventListener("submit", async (event) => {
   const className = byId("studentClass").value.trim();
   const session = String(new Date().getFullYear());
   const trade = byId("studentTrade").value.trim();
-  let studentCode = editingStudentCode;
+  const editingDocumentId = editingStudentCode;
+  let studentCode = byId("studentCode").value.trim();
   let roll = byId("studentRoll").value.trim();
-  if (!studentCode) {
+  if (!editingDocumentId && !studentCode) {
     try {
       roll = nextStudentRoll({ session, className, trade });
       studentCode = makeStudentCode({ className, trade, roll });
@@ -591,8 +592,10 @@ studentForm.addEventListener("submit", async (event) => {
     }
   }
 
-  const existing = students.find((student) => student.studentCode === studentCode);
-  if (existing && editingStudentCode !== studentCode) {
+  const existing = editingDocumentId
+    ? students.find((student) => student.documentId === editingDocumentId)
+    : students.find((student) => student.studentCode === studentCode);
+  if (existing && !editingDocumentId) {
     message("studentMessage", "এই শিক্ষার্থী আইডিটি আগে থেকেই আছে।", true);
     return;
   }
@@ -660,7 +663,7 @@ studentForm.addEventListener("submit", async (event) => {
   message("studentMessage", "শিক্ষার্থীর তথ্য সংরক্ষণ হচ্ছে...");
   try {
     message("studentMessage", "শিক্ষার্থীর তথ্য ডাটাবেজে সংরক্ষণ হচ্ছে...");
-    const privateRef = doc(db, studentsCollection, studentCode);
+    const privateRef = doc(db, studentsCollection, editingDocumentId || studentCode);
     const publicRef = doc(db, publicStudentsCollection, publicDirectoryId);
     const privateData = {
       ...data,
@@ -743,47 +746,41 @@ studentImportButton.addEventListener("click", async () => {
     }
 
     const currentSnapshot = await getDocs(collection(db, studentsCollection));
-    const currentStudents = currentSnapshot.docs.map((item) => ({ studentCode: item.id, ...item.data() }));
+    const currentStudents = currentSnapshot.docs.map((item) => ({ ...item.data(), documentId: item.id }));
     students = currentStudents;
-    const existingImportKeys = new Set(currentStudents.map((student) => student.sourceImportKey).filter(Boolean));
-    const pending = payload.records.filter((record) => !existingImportKeys.has(record.sourceImportKey));
-    const skipped = payload.records.length - pending.length;
+    const keyedRecords = new Map(currentStudents.filter((student) => student.sourceImportKey)
+      .map((student) => [student.sourceImportKey, student]));
+    const boardRollRecords = new Map(currentStudents.filter((student) => student.boardRoll)
+      .map((student) => [normalizeDigits(String(student.boardRoll)).replace(/\D/g, ""), student]));
+    const registrationRecords = new Map(currentStudents.filter((student) => student.boardRegistrationNumber)
+      .map((student) => [normalizeDigits(String(student.boardRegistrationNumber)).replace(/\D/g, ""), student]));
+    const pending = payload.records.map((record) => {
+      const boardRoll = normalizeDigits(String(record.boardRoll || "")).replace(/\D/g, "");
+      const registration = normalizeDigits(String(record.boardRegistrationNumber || "")).replace(/\D/g, "");
+      const existing = keyedRecords.get(record.sourceImportKey)
+        || (boardRoll && boardRollRecords.get(boardRoll))
+        || (registration && registrationRecords.get(registration));
+      return { record, existing, documentId: existing?.documentId || doc(collection(db, studentsCollection)).id };
+    });
+    const skipped = pending.filter(({ existing }) => existing).length;
     if (!pending.length) {
       message("studentImportMessage", `এই ফাইলের সব ${bn(payload.records.length)}টি রেকর্ড আগে থেকেই ডাটাবেজে আছে।`);
       renderStudents();
       return;
     }
 
-    const importSession = String(new Date().getFullYear());
-    const classRolls = new Map();
-    const usedIds = new Set(currentStudents.map((student) => student.studentCode));
-    currentStudents.forEach((student) => {
-      if (String(student.session || "") !== importSession) return;
-      const classCode = getClassCode(student.className || "");
-      const roll = Number(normalizeDigits(String(student.roll || "")));
-      if (classCode && Number.isInteger(roll) && roll > 0) {
-        classRolls.set(classCode, Math.max(classRolls.get(classCode) || 0, roll));
-      }
-    });
-
     const importedAt = serverTimestamp();
-    const prepared = pending.map((record) => {
+    const prepared = pending.map(({ record, existing, documentId }) => {
       const classCode = getClassCode(String(record.className || ""));
       const trade = String(record.trade || "").trim();
       if (!classCode || !tradeIdCodes.has(trade.toLocaleLowerCase()) || !record.name || !record.fatherName || !record.motherName) {
         throw new Error(`ফাইলে শ্রেণি, ট্রেড বা নামের তথ্য অসম্পূর্ণ আছে (উৎস: ${record.sourceImportKey})।`);
       }
-      const nextRoll = (classRolls.get(classCode) || 0) + 1;
-      if (nextRoll > 9999) throw new Error(`শ্রেণি ${record.className}-এ আর রোল তৈরি করা যাচ্ছে না।`);
-      classRolls.set(classCode, nextRoll);
-      const roll = String(nextRoll).padStart(3, "0");
-      const studentCode = makeStudentCode({ className: record.className, trade, roll });
-      if (usedIds.has(studentCode)) throw new Error(`তৈরি হওয়া আইডি আগে থেকেই আছে: ${studentCode}`);
-      usedIds.add(studentCode);
       return {
-        studentCode,
-        session: importSession,
-        publicDirectoryId: crypto.randomUUID(),
+        documentId,
+        studentCode: existing?.studentCode || "",
+        session: existing?.session || String(record.sourceSession || ""),
+        publicDirectoryId: existing?.publicDirectoryId || crypto.randomUUID(),
         sourceImportKey: record.sourceImportKey,
         sourceSheet: String(record.sourceSheet || ""),
         sourceTradeName: String(record.sourceTradeName || ""),
@@ -791,26 +788,26 @@ studentImportButton.addEventListener("click", async () => {
         studentType: String(record.studentType || ""),
         subjectCodes: String(record.subjectCodes || ""),
         name: String(record.name).trim(),
-        nameBn: "",
+        nameBn: existing?.nameBn || "",
         branch: String(record.branch),
         className: String(record.className),
         trade,
-        roll,
-        dob: "",
-        gender: "",
-        admissionDate: "",
-        academicYear: Number(new Date().getFullYear()),
+        roll: existing?.roll || "",
+        dob: existing?.dob || "",
+        gender: existing?.gender || "",
+        admissionDate: existing?.admissionDate || "",
+        academicYear: existing?.academicYear || Number(new Date().getFullYear()),
         fatherName: String(record.fatherName).trim(),
-        fatherNameBn: "",
+        fatherNameBn: existing?.fatherNameBn || "",
         motherName: String(record.motherName).trim(),
-        motherNameBn: "",
-        guardianName: "",
-        guardianPhone: "",
-        emergencyPhone: "",
-        village: "",
-        upazila: "",
-        district: "",
-        address: "",
+        motherNameBn: existing?.motherNameBn || "",
+        guardianName: existing?.guardianName || "",
+        guardianPhone: existing?.guardianPhone || "",
+        emergencyPhone: existing?.emergencyPhone || "",
+        village: existing?.village || "",
+        upazila: existing?.upazila || "",
+        district: existing?.district || "",
+        address: existing?.address || "",
         boardRegistrationCompleted: Boolean(record.boardRoll || record.boardRegistrationNumber),
         boardRoll: String(record.boardRoll || ""),
         boardRegistrationNumber: String(record.boardRegistrationNumber || ""),
@@ -820,34 +817,32 @@ studentImportButton.addEventListener("click", async () => {
         previousExamRegistrationNumber: "",
         previousExamSession: "",
         previousExamPassingYear: "",
-        photoUrl: "",
-        published: false,
-        createdAt: importedAt,
-        createdBy: currentAdmin.uid,
+        photoUrl: existing?.photoUrl || "",
+        published: existing?.published === true,
+        ...(existing ? {} : { createdAt: importedAt, createdBy: currentAdmin.uid }),
         updatedAt: importedAt
       };
     });
 
-    if (!window.confirm(`${bn(prepared.length)}টি নতুন শিক্ষার্থী রেকর্ড ডাটাবেজে যোগ হবে। কোনো তথ্য ওয়েবসাইটে প্রকাশ করা হবে না। চালিয়ে যাবেন?`)) {
+    if (!window.confirm(`${bn(prepared.length - skipped)}টি নতুন এবং ${bn(skipped)}টি বিদ্যমান শিক্ষার্থী রেকর্ড ডাটাবেজে হালনাগাদ হবে। নতুন রেকর্ডে ক্লাস রোল ও শিক্ষার্থী আইডি ফাঁকা থাকবে। নতুন রেকর্ড অপ্রকাশিত থাকবে; বিদ্যমান রেকর্ডের প্রকাশ অবস্থা অপরিবর্তিত থাকবে। চালিয়ে যাবেন?`)) {
       message("studentImportMessage", "আমদানি বাতিল করা হয়েছে।");
       return;
     }
 
     for (let start = 0; start < prepared.length; start += 80) {
       const chunk = prepared.slice(start, start + 80);
-      await runTransaction(db, async (transaction) => {
-        const refs = chunk.map((student) => doc(db, studentsCollection, student.studentCode));
-        const snapshots = await Promise.all(refs.map((ref) => transaction.get(ref)));
-        const collision = snapshots.find((snapshot) => snapshot.exists());
-        if (collision) throw new Error(`আইডি আগে থেকেই ডাটাবেজে আছে: ${collision.id}`);
-        chunk.forEach((student, index) => transaction.set(refs[index], student));
+      const batch = writeBatch(db);
+      chunk.forEach((student) => {
+        const { documentId, ...data } = student;
+        batch.set(doc(db, studentsCollection, documentId), data, { merge: true });
       });
+      await batch.commit();
       savedCount += chunk.length;
       message("studentImportMessage", `${bn(savedCount)} / ${bn(prepared.length)}টি রেকর্ড যোগ হয়েছে...`);
     }
 
     await loadStudents();
-    message("studentImportMessage", `${bn(savedCount)}টি রেকর্ড ডাটাবেজে যোগ হয়েছে। ${bn(skipped)}টি আগে থেকেই ছিল। রোল ও আইডি শ্রেণি অনুযায়ী তৈরি হয়েছে; সব রেকর্ড অপ্রকাশিত রাখা হয়েছে।`);
+    message("studentImportMessage", `${bn(savedCount - skipped)}টি নতুন রেকর্ড যোগ এবং ${bn(skipped)}টি বিদ্যমান রেকর্ড হালনাগাদ হয়েছে। নতুন রেকর্ডে ক্লাস রোল ও শিক্ষার্থী আইডি ফাঁকা রাখা হয়েছে; বিদ্যমান রেকর্ডের প্রকাশ অবস্থা অপরিবর্তিত আছে।`);
   } catch (error) {
     console.error("শিক্ষার্থী আমদানির সমস্যা:", error);
     message("studentImportMessage", `${bn(savedCount)}টি রেকর্ড যোগ হয়েছে; বাকিগুলো সম্পন্ন হয়নি। ${error.message || "ডাটাবেজে সংরক্ষণ করা যায়নি।"}`, true);
@@ -878,11 +873,11 @@ studentPublishImportedButton.addEventListener("click", async () => {
       const chunk = importedStudents.slice(start, start + 200);
       const batch = writeBatch(db);
       chunk.forEach((student) => {
-        if (!student.publicDirectoryId) {
+        if (!student.publicDirectoryId || !student.documentId) {
           throw new Error(`প্রকাশিত তালিকার আইডি নেই: ${student.studentCode}`);
         }
         const updatedAt = serverTimestamp();
-        batch.set(doc(db, studentsCollection, student.studentCode), { published: true, updatedAt }, { merge: true });
+        batch.set(doc(db, studentsCollection, student.documentId), { published: true, updatedAt }, { merge: true });
         batch.set(doc(db, publicStudentsCollection, student.publicDirectoryId), {
           name: student.name || "",
           studentCode: student.studentCode,
@@ -926,7 +921,7 @@ studentForm.addEventListener("input", (event) => {
 studentRows.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-action]");
   if (!button) return;
-  const student = students.find((item) => item.studentCode === button.dataset.id);
+  const student = students.find((item) => (item.documentId || item.studentCode) === button.dataset.id);
   if (!student) return;
   if (button.dataset.action === "delete-student") {
     deleteStudentAndRelatedRecords(student);
@@ -934,8 +929,8 @@ studentRows.addEventListener("click", (event) => {
   }
   if (button.dataset.action !== "edit-student") return;
 
-  editingStudentCode = student.studentCode;
-  byId("studentCode").value = student.studentCode;
+  editingStudentCode = student.documentId || student.studentCode;
+  byId("studentCode").value = student.studentCode || "";
   byId("studentCode").readOnly = true;
   byId("studentName").value = student.name || "";
   byId("studentNameBn").value = student.nameBn || "";
@@ -1015,13 +1010,15 @@ async function deleteStudentAndRelatedRecords(student) {
       publicResultsCollection,
       publicStudentsCollection
     ];
-    const relatedSnapshots = await Promise.all(relatedCollections.map((name) =>
-      getDocs(query(collection(db, name), where("studentCode", "==", student.studentCode)))
-    ));
+    const relatedSnapshots = student.studentCode
+      ? await Promise.all(relatedCollections.map((name) =>
+        getDocs(query(collection(db, name), where("studentCode", "==", student.studentCode)))
+      ))
+      : [];
 
     const refs = new Map();
     const addRef = (reference) => refs.set(reference.path, reference);
-    addRef(doc(db, studentsCollection, student.studentCode));
+    addRef(doc(db, studentsCollection, student.documentId || student.studentCode));
     if (student.publicDirectoryId) addRef(doc(db, publicStudentsCollection, student.publicDirectoryId));
     relatedSnapshots.forEach((snapshot) => snapshot.docs.forEach((item) => addRef(item.ref)));
 
@@ -1034,7 +1031,7 @@ async function deleteStudentAndRelatedRecords(student) {
       removedCount += Math.min(450, allRefs.length - start);
     }
 
-    if (editingStudentCode === student.studentCode) resetStudentForm();
+    if (editingStudentCode === (student.documentId || student.studentCode)) resetStudentForm();
     await Promise.all([loadStudents(), loadFees(), loadResults()]);
     message("studentMessage", `${student.name} (${student.studentCode})-এর ${bn(removedCount)}টি সংশ্লিষ্ট রেকর্ড মুছে ফেলা হয়েছে।`);
   } catch (error) {
