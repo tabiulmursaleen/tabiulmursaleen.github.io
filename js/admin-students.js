@@ -2701,12 +2701,28 @@ function addResultSubjectRow(className, subject = {}) {
   edit.className = "secondary-button edit-subject-button";
   edit.textContent = "এডিট";
   edit.addEventListener("click", () => {
-    resultSubjectRows.querySelectorAll(".result-subject-setting.is-editing").forEach((item) => item.classList.remove("is-editing"));
-    row.classList.add("is-editing");
-    byId("resultMatrixWrap").hidden = true;
-    const focusTarget = customSubjectInput.hidden ? select : customSubjectInput;
-    focusTarget.focus();
-    row.scrollIntoView({ behavior: "smooth", block: "center" });
+    const subjectIndex = [...resultSubjectRows.querySelectorAll(".result-subject-setting")].indexOf(row);
+    const subject = selectedResultSubjects()[subjectIndex];
+    if (!subject?.name) {
+      message("resultMessage", "আগে এই বিষয়ের নাম নির্বাচন বা লিখুন।", true);
+      return;
+    }
+    const className = byId("resultClass").value;
+    const exam = byId("resultExam").value;
+    const year = Number(byId("resultYear").value);
+    if (!className || !exam || !Number.isInteger(year) || year <= 0) {
+      message("resultMessage", "বিষয়ের নম্বর দেখতে পরীক্ষা, শিক্ষাবর্ষ ও শ্রেণি নির্বাচন করুন।", true);
+      return;
+    }
+    if (!byId("resultRollType").value) byId("resultRollType").value = "roll";
+    preferredResultSubjectName = subject.name;
+    byId("prepareResultMatrix").click();
+    if (!byId("resultMatrixWrap").hidden) {
+      byId("resultSubjectFilter").value = subject.name;
+      preferredResultSubjectName = subject.name;
+      updateResultSubjectColumns(subject.name);
+      byId("resultMatrixWrap").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   });
   const save = document.createElement("button");
   save.type = "button";
