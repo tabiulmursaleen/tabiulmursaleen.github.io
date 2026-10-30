@@ -30,6 +30,8 @@
     .teacher-tool-panel .admin-form { margin-bottom:18px; }
     #teacherResultMatrix input { width:96px; min-height:40px; padding:7px; }
     #teacherResultMatrix td:nth-child(2) { min-width:170px; }
+    .teacher-result-absent-control { display:flex; align-items:center; justify-content:center; gap:4px; white-space:nowrap; }
+    .teacher-result-absent-control input { width:18px !important; min-height:18px !important; margin:0; accent-color:#183d63; }
     .teacher-question-message.is-error { color:#a72d2d; }
     .teacher-question-workspace-head { display:flex; align-items:center; justify-content:flex-end; margin-bottom:14px; }
     .teacher-question-account { position:relative; display:flex; justify-content:flex-end; }
@@ -177,6 +179,7 @@
             <label>শাখা <span>*</span><select id="teacherContentBranch" required><option value="School">স্কুল</option><option value="College">কলেজ</option></select></label>
             <label>শ্রেণি <span>*</span><select id="teacherContentClass" required><option value="">শ্রেণি নির্বাচন করুন</option><option>ষষ্ঠ</option><option>সপ্তম</option><option>অষ্টম</option><option>নবম</option><option>দশম</option><option>একাদশ</option><option>দ্বাদশ</option></select></label>
             <label>বিষয় <span>*</span><input id="teacherContentSubject" required maxlength="120"></label>
+            <label>শিক্ষকের নাম <span>*</span><input id="teacherContentTeacher" required maxlength="120" readonly></label>
             <label>কন্টেন্টের শিরোনাম <span>*</span><input id="teacherContentTitle" required maxlength="180"></label>
             <label class="full-width">বর্ণনা<textarea id="teacherContentDescription" rows="3" maxlength="1000"></textarea></label>
             <label class="full-width">Google Drive ফাইল লিংক <span>*</span><input id="teacherContentUrl" type="url" required placeholder="https://drive.google.com/file/d/..."></label>
@@ -199,13 +202,17 @@
             <label>শ্রেণি <span>*</span><select id="teacherResultClass" required><option value="">শ্রেণি নির্বাচন করুন</option></select></label>
             <label>ট্রেড <select id="teacherResultTrade"><option value="">সব / সাধারণ বিষয়</option></select></label>
             <label>বিষয় <span>*</span><select id="teacherResultSubject" required><option value="">বিষয় নির্বাচন করুন</option></select></label>
-            <label>বিষয় কোড<input id="teacherResultSubjectCode" readonly></label>
+            <label id="teacherResultCustomSubjectField" hidden>নিজের বিষয় লিখুন <span>*</span><input id="teacherResultCustomSubject" maxlength="160"></label>
+            <label>বিষয় কোড<input id="teacherResultSubjectCode" maxlength="40"></label>
             <label>তাত্ত্বিক পূর্ণমান <span>*</span><input id="teacherResultTheoryFull" type="number" min="0" step="0.01" required></label>
             <label>ব্যবহারিক পূর্ণমান<input id="teacherResultPracticalFull" type="number" min="0" step="0.01" value="0"></label>
+            <label>তাত্ত্বিক পাশ নম্বর<input id="teacherResultTheoryPass" type="number" min="0" step="0.01"></label>
+            <label>ব্যবহারিক পাশ নম্বর<input id="teacherResultPracticalPass" type="number" min="0" step="0.01"></label>
+            <label>রোলের ধরন <span>*</span><select id="teacherResultRollType" required><option value="roll">শ্রেণি রোল</option><option value="boardRoll">বোর্ড রোল</option></select></label>
           </div>
           <button id="teacherResultPrepare" type="button" class="secondary-button">রোলসহ নম্বরের ছক তৈরি করুন</button>
           <div id="teacherResultMatrixWrap" class="result-matrix-wrap" hidden><h3>রোল অনুযায়ী নম্বর</h3><div id="teacherResultMatrix" class="data-table-wrap"></div></div>
-          <button id="teacherResultSave" type="submit">জমা দিন</button>
+          <button id="teacherResultSave" type="submit">খসড়া জমা দিন</button>
         </form>
         <p id="teacherResultMessage" class="module-message" role="status" aria-live="polite"></p>
         <h3>আমার সংরক্ষিত ফলাফল</h3>
@@ -264,7 +271,7 @@
   <script src="js/themed-calendar.js?v=20261024-1"></script>
   <script type="module" src="js/teacher-question-papers-auth.js?v=20261025-login-copy23"></script>
   <script type="module" src="js/admin-question-papers.js?v=20261025-question-owner24"></script>
-  <script type="module" src="js/teacher-portal-tools.js?v=20261025-footer-edit22"></script>
+  <script type="module" src="js/teacher-portal-tools.js?v=20261030-admin-options1"></script>
 </body>
 </html>
 

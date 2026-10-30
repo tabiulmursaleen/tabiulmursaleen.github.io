@@ -56,6 +56,11 @@ function getTeacherContext() {
   currentUser = window.teacherPortalUser || null;
   teacher = window.teacherQuestionSignedInTeacher || null;
   isAdmin = Boolean(window.teacherQuestionIsAdmin || currentUser?.uid === ADMIN_UID);
+  const teacherNameInput = $("teacherContentTeacher");
+  if (teacherNameInput) {
+    teacherNameInput.readOnly = !isAdmin;
+    if (!isAdmin && teacher) teacherNameInput.value = teacher.name || "";
+  }
 }
 
 async function loadContents() {
@@ -98,6 +103,8 @@ function renderContentRows() {
       $("teacherContentTitle").value = item.title || "";
       $("teacherContentDescription").value = item.description || "";
       $("teacherContentUrl").value = item.driveUrl || "";
+      $("teacherContentTeacher").value = item.teacherName || item.authorName || teacher?.name || "";
+      $("teacherContentTeacher").readOnly = !isAdmin;
       $("teacherContentPublished").checked = item.published === true;
       $("teacherContentForm").scrollIntoView({ behavior: "smooth", block: "start" });
     });
@@ -128,7 +135,7 @@ $("teacherContentForm").addEventListener("submit", async (event) => {
     branch: $("teacherContentBranch").value,
     className: $("teacherContentClass").value,
     subject: $("teacherContentSubject").value.trim(),
-    teacherName: isAdmin ? (existing?.teacherName || existing?.authorName || "") : teacher.name,
+    teacherName: isAdmin ? $("teacherContentTeacher").value.trim() : teacher.name,
     title: $("teacherContentTitle").value.trim(),
     description: $("teacherContentDescription").value.trim(),
     driveUrl,
@@ -140,12 +147,14 @@ $("teacherContentForm").addEventListener("submit", async (event) => {
     if (id) await setDoc(doc(db, "classContents", id), record, { merge: true });
     else await addDoc(collection(db, "classContents"), record);
     $("teacherContentForm").reset(); $("teacherContentId").value = ""; $("teacherContentPublished").checked = true;
+    if (!isAdmin) $("teacherContentTeacher").value = teacher?.name || "";
     await loadContents(); portalMessage("ক্লাস কন্টেন্ট সংরক্ষিত হয়েছে।");
   } catch (error) { console.error(error); portalMessage("কন্টেন্ট সংরক্ষিত হয়নি। Firestore Rules প্রকাশ হয়েছে কি না দেখুন।", true); }
 });
 
 $("teacherContentReset").addEventListener("click", () => {
   $("teacherContentForm").reset(); $("teacherContentId").value = ""; $("teacherContentPublished").checked = true;
+  if (!isAdmin) $("teacherContentTeacher").value = teacher?.name || "";
 });
 
 const resultClass = $("teacherResultClass");
@@ -166,15 +175,20 @@ function fillSubjectOptions() {
     const option = new Option(`${subject.name}${subject.code ? ` · ${subject.code}` : ""}`, subject.name);
     option.dataset.code = subject.code;
     return option;
-  }));
+  }), new Option("নিজের বিষয় লিখুন", "__manual__"));
   $("teacherResultSubjectCode").value = "";
+  $("teacherResultCustomSubjectField").hidden = true;
+  $("teacherResultCustomSubject").required = false;
 }
 
 resultBranch.addEventListener("change", () => fillClassOptions(resultBranch.value));
 resultClass.addEventListener("change", fillSubjectOptions);
 resultSubject.addEventListener("change", () => {
   const selected = resultSubject.selectedOptions[0];
-  $("teacherResultSubjectCode").value = selected?.dataset.code || "";
+  const custom = resultSubject.value === "__manual__";
+  $("teacherResultCustomSubjectField").hidden = !custom;
+  $("teacherResultCustomSubject").required = custom;
+  if (!custom) $("teacherResultSubjectCode").value = selected?.dataset.code || "";
 });
 
 async function loadRoster() {
@@ -189,10 +203,13 @@ function currentResultMeta() {
     branch: resultBranch.value,
     className: resultClass.value,
     trade: resultTrade.value,
-    subjectName: resultSubject.value,
+    subjectName: resultSubject.value === "__manual__" ? $("teacherResultCustomSubject").value.trim() : resultSubject.value,
     subjectCode: $("teacherResultSubjectCode").value.trim(),
     theoryFullMarks: Number($("teacherResultTheoryFull").value),
-    practicalFullMarks: Number($("teacherResultPracticalFull").value || 0)
+    practicalFullMarks: Number($("teacherResultPracticalFull").value || 0),
+    theoryPassMarks: $("teacherResultTheoryPass").value === "" ? null : Number($("teacherResultTheoryPass").value),
+    practicalPassMarks: $("teacherResultPracticalPass").value === "" ? null : Number($("teacherResultPracticalPass").value),
+    rollType: $("teacherResultRollType").value
   };
 }
 
@@ -242,10 +259,17 @@ function renderResultDraftRows() {
       resultClass.value = item.className || "";
       fillSubjectOptions();
       resultTrade.value = item.trade || "";
-      resultSubject.value = item.subjectName || "";
+      const catalogSubject = [...resultSubject.options].some((option) => option.value === item.subjectName);
+      resultSubject.value = catalogSubject ? item.subjectName : "__manual__";
+      $("teacherResultCustomSubject").value = catalogSubject ? "" : item.subjectName || "";
+      $("teacherResultCustomSubjectField").hidden = catalogSubject;
+      $("teacherResultCustomSubject").required = !catalogSubject;
       $("teacherResultSubjectCode").value = item.subjectCode || "";
       $("teacherResultTheoryFull").value = item.theoryFullMarks ?? "";
       $("teacherResultPracticalFull").value = item.practicalFullMarks ?? 0;
+      $("teacherResultTheoryPass").value = item.theoryPassMarks ?? "";
+      $("teacherResultPracticalPass").value = item.practicalPassMarks ?? "";
+      $("teacherResultRollType").value = item.rollType || "roll";
       $("teacherResultPrepare").click();
       $("teacherResultForm").scrollIntoView({ behavior: "smooth", block: "start" });
     });
@@ -267,25 +291,40 @@ $("teacherResultPrepare").addEventListener("click", async () => {
   const students = roster.filter((student) => studentBranchMatches(student.branch, meta.branch)
     && academicClassCode(student.className) === academicClassCode(meta.className)
     && isStudentInSelectedTrade(student, meta.trade))
-    .sort((a, b) => Number(a.roll || 0) - Number(b.roll || 0));
+    .sort((a, b) => {
+      const key = meta.rollType === "boardRoll" ? "boardRoll" : "roll";
+      return Number(a[key] || 0) - Number(b[key] || 0)
+        || String(a[key] || "").localeCompare(String(b[key] || ""), "en", { numeric: true });
+    });
   if (!students.length) { resultMessage("এই শ্রেণি ও ট্রেডে প্রকাশিত শিক্ষার্থী পাওয়া যায়নি।", true); return; }
   const existing = resultDrafts.filter((item) => item.year === meta.year && item.exam === meta.exam
     && item.className === meta.className && item.subjectName === meta.subjectName);
   const table = document.createElement("table"); table.className = "data-table result-marks-table result-marks-compact";
-  table.innerHTML = "<thead><tr><th>রোল</th><th>শিক্ষার্থী</th><th>তাত্ত্বিক নম্বর</th><th>ব্যবহারিক নম্বর</th></tr></thead>";
+  table.innerHTML = "<thead><tr><th>রোল</th><th>শিক্ষার্থী</th><th>অনুপস্থিত</th><th>তাত্ত্বিক নম্বর</th><th>ব্যবহারিক নম্বর</th></tr></thead>";
   const body = table.createTBody();
   students.forEach((student) => {
     const row = body.insertRow(); row.dataset.studentCode = student.studentCode;
-    row.insertCell().textContent = student.roll || "—";
+    row.insertCell().textContent = student[meta.rollType] || "—";
     row.insertCell().textContent = student.name || "";
+    const absentCell = row.insertCell();
+    const absentLabel = document.createElement("label");
+    absentLabel.className = "teacher-result-absent-control";
+    const absentToggle = document.createElement("input");
+    absentToggle.type = "checkbox";
+    absentToggle.className = "teacher-result-absent-toggle";
+    absentToggle.checked = existing.find((item) => item.studentCode === student.studentCode)?.absent === true;
+    absentToggle.setAttribute("aria-label", `${student[meta.rollType] || ""} রোলের অনুপস্থিতি`);
+    absentLabel.append(absentToggle, document.createTextNode("হ্যাঁ"));
+    absentCell.append(absentLabel);
     [["theory", meta.theoryFullMarks], ["practical", meta.practicalFullMarks]].forEach(([component, max]) => {
       const cell = row.insertCell();
       const input = document.createElement("input"); input.type = "number"; input.min = "0"; input.max = String(max); input.step = "0.01"; input.inputMode = "decimal"; input.className = "teacher-mark-input"; input.dataset.component = component; input.setAttribute("aria-label", `${student.roll || ""} ${component}`);
       const saved = existing.find((item) => item.studentCode === student.studentCode);
       input.value = saved ? String(saved[component === "theory" ? "theoryMarks" : "practicalMarks"] ?? "") : "";
-      if (max <= 0) input.disabled = true;
+      if (max <= 0 || absentToggle.checked) input.disabled = true;
       cell.append(input);
     });
+    absentToggle.addEventListener("change", () => row.querySelectorAll(".teacher-mark-input").forEach((input) => { input.disabled = absentToggle.checked || Number(input.max) <= 0; }));
   });
   $("teacherResultMatrix").replaceChildren(table);
   $("teacherResultMatrixWrap").hidden = false;
@@ -299,16 +338,22 @@ $("teacherResultForm").addEventListener("submit", async (event) => {
   const rows = [...$("teacherResultMatrix").querySelectorAll("tbody tr")];
   if (!rows.length) { resultMessage("আগে রোলসহ নম্বরের ছক তৈরি করুন।", true); return; }
   const entries = rows.map((row, index) => {
-    const inputs = [...row.querySelectorAll("input")];
-    return { student: currentRows[index], theoryMarks: inputs[0].value === "" ? null : Number(inputs[0].value), practicalMarks: inputs[1].disabled || inputs[1].value === "" ? 0 : Number(inputs[1].value) };
+    const inputs = [...row.querySelectorAll(".teacher-mark-input")];
+    const absent = row.querySelector(".teacher-result-absent-toggle")?.checked === true;
+    return { student: currentRows[index], absent, theoryMarks: inputs[0].value === "" ? null : Number(inputs[0].value), practicalMarks: inputs[1].disabled || inputs[1].value === "" ? 0 : Number(inputs[1].value) };
   });
-  const enteredEntries = entries.filter((entry) => entry.theoryMarks !== null);
-  if (!enteredEntries.length || enteredEntries.some((entry) => !entry.student || entry.theoryMarks < 0 || entry.theoryMarks > meta.theoryFullMarks || entry.practicalMarks < 0 || entry.practicalMarks > meta.practicalFullMarks)) {
+  const enteredEntries = entries.filter((entry) => entry.absent || entry.theoryMarks !== null);
+  const invalidEntry = enteredEntries.some((entry) => !entry.student || (!entry.absent
+    && (entry.theoryMarks === null || entry.theoryMarks < 0 || entry.theoryMarks > meta.theoryFullMarks
+      || entry.practicalMarks < 0 || entry.practicalMarks > meta.practicalFullMarks)));
+  const invalidPassMarks = (meta.theoryPassMarks != null && meta.theoryPassMarks > meta.theoryFullMarks)
+    || (meta.practicalPassMarks != null && meta.practicalPassMarks > meta.practicalFullMarks);
+  if (!enteredEntries.length || invalidEntry || invalidPassMarks) {
     resultMessage("অন্তত একজনের নম্বর দিন; কোনো নম্বর পূর্ণমানের বেশি হতে পারবে না।", true); return;
   }
   try {
     const owner = isAdmin ? { ownerUid: currentUser.uid, authorTeacherId: "admin", authorName: "অ্যাডমিন" } : teacherOwnerFields();
-    await Promise.all(enteredEntries.map(({ student, theoryMarks, practicalMarks }) => {
+    await Promise.all(enteredEntries.map(({ student, absent, theoryMarks, practicalMarks }) => {
       const subjectKey = encodeURIComponent(`${meta.subjectName}_${meta.subjectCode}`).replace(/%/g, "~").slice(0, 100);
       const examKey = encodeURIComponent(meta.exam).replace(/%/g, "~").slice(0, 50);
       const id = `${currentUser.uid}_${student.studentCode}_${meta.year}_${examKey}_${subjectKey}`;
@@ -316,10 +361,11 @@ $("teacherResultForm").addEventListener("submit", async (event) => {
         ...owner,
         studentCode: student.studentCode, studentName: student.name || "", branch: meta.branch,
         className: meta.className, trade: meta.trade || student.trade || "", roll: student.roll || "",
-        boardRoll: student.boardRoll || "", exam: meta.exam, year: meta.year,
+        boardRoll: student.boardRoll || "", rollType: meta.rollType, exam: meta.exam, year: meta.year,
         subjectName: meta.subjectName, subjectCode: meta.subjectCode,
         theoryFullMarks: meta.theoryFullMarks, practicalFullMarks: meta.practicalFullMarks,
-        theoryMarks, practicalMarks, totalMarks: theoryMarks + practicalMarks,
+        theoryPassMarks: meta.theoryPassMarks, practicalPassMarks: meta.practicalPassMarks,
+        absent, theoryMarks: absent ? 0 : theoryMarks, practicalMarks: absent ? 0 : practicalMarks, totalMarks: absent ? 0 : theoryMarks + practicalMarks,
         fullMarks: meta.theoryFullMarks + meta.practicalFullMarks,
         updatedAt: serverTimestamp()
       }, { merge: true });

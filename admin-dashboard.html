@@ -723,7 +723,7 @@
 
     <section id="results" class="dashboard-section" hidden>
       <h2>ফলাফল ব্যবস্থাপনা</h2>
-      <p class="section-help">শ্রেণি নির্বাচন করে বিষয় ও তাত্ত্বিক বা ব্যবহারিক পূর্ণমান দিন; যে অংশের পূর্ণমান থাকবে, নম্বরের ছকে শুধু সেই অংশের ঘর আসবে। রোলের পাশে “অনুপস্থিত” টিক দিলে ওই শিক্ষার্থীর অনুপস্থিতি সংরক্ষিত হবে।</p>
+      <p class="section-help">শ্রেণি নির্বাচন করে বিষয় ও পূর্ণমান দিন। নম্বর দেওয়ার সময় বিষয় বেছে নিলে শুধু সেই বিষয়ের কলাম দেখা যাবে। রোলের পাশে “সব বিষয়ে অনুপস্থিত” দিলে পুরো পরীক্ষায় অনুপস্থিত হবে; বিষয় কলামের “অনুপস্থিতি” টিক দিলে শুধু সেই বিষয়েই অনুপস্থিত দেখাবে।</p>
       <form id="resultForm" class="admin-form">
         <div class="form-grid">
           <label>শ্রেণি <span>*</span><select id="resultClass" required><option value="">শ্রেণি নির্বাচন করুন</option><option value="ষষ্ঠ">ষষ্ঠ</option><option value="সপ্তম">সপ্তম</option><option value="অষ্টম">অষ্টম</option><option value="নবম">নবম</option><option value="দশম">দশম</option><option value="একাদশ">একাদশ</option><option value="দ্বাদশ">দ্বাদশ</option></select></label>
@@ -742,10 +742,11 @@
         </div>
         <div id="resultMatrixWrap" class="result-matrix-wrap" hidden>
           <h3>রোল অনুযায়ী নম্বর</h3>
+          <label class="result-subject-filter-label">যে বিষয়ের নম্বর দেবেন<select id="resultSubjectFilter" aria-label="নম্বর ইনপুটের বিষয়"></select></label>
           <div id="resultMatrix" class="data-table-wrap"></div>
         </div>
-        <label class="check-label"><input id="resultPublished" type="checkbox"> ওয়েবসাইটে ফলাফল প্রকাশ করুন</label>
-        <label class="check-label"><input id="resultShowPractical" type="checkbox" checked> প্রকাশিত ফলে ব্যবহারিক নম্বর দেখান</label>
+        <label class="check-label"><input id="resultPublished" type="checkbox" checked> ওয়েবসাইটে ফলাফল প্রকাশ করুন</label>
+        <label class="check-label"><input id="resultShowPractical" type="checkbox"> প্রকাশিত ফলে ব্যবহারিক নম্বর দেখান</label>
         <fieldset class="seat-plan-fields result-display-fields">
           <legend>একক ফলে যে পরিচিতি তথ্য দেখাবেন</legend>
           <label><input id="resultShowStudentId" type="checkbox" checked> শিক্ষার্থী আইডি</label>
@@ -763,9 +764,13 @@
           <label><input id="meritShowRank" type="checkbox" checked> মেধাক্রম</label>
           <label><input id="meritShowName" type="checkbox" checked> শিক্ষার্থীর নাম</label>
           <label><input id="meritShowStudentId" type="checkbox" checked> শিক্ষার্থী আইডি</label>
+          <label><input id="meritShowBoardRoll" type="checkbox" checked> বোর্ড রোল</label>
           <label><input id="meritShowClassRoll" type="checkbox" checked> ক্লাস রোল</label>
+          <label><input id="meritShowTrade" type="checkbox" checked> ট্রেড</label>
           <label><input id="meritShowMarks" type="checkbox" checked> প্রাপ্ত নম্বর</label>
           <label><input id="meritShowPercentage" type="checkbox" checked> শতকরা</label>
+          <label><input id="meritShowFailSubjectCount" type="checkbox" checked> ফেল বিষয় সংখ্যা</label>
+          <label><input id="meritShowAbsentSubjectCount" type="checkbox" checked> অনুপস্থিত বিষয় সংখ্যা</label>
         </fieldset>
         <button id="downloadClassResultPdf" type="button" class="secondary-button">শ্রেণির সকল একক ফলাফল PDF</button>
         <button id="saveResultButton" type="submit">ফলাফল সংরক্ষণ</button>

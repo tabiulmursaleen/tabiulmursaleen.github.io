@@ -117,6 +117,7 @@ function renderResult(result, rank) {
     || ((Number(subject.practicalFullMarks) > 0) && passNumberFor(subject, "practical") != null && passNumberFor(subject, "practical") !== "")
   );
   const failedSubjectCount = result.absent === true ? 0 : resultSubjects.filter((subject) => {
+    if (subject.absent === true) return false;
     const theoryPass = passNumberFor(subject, "theory");
     const practicalPass = passNumberFor(subject, "practical");
     const theoryFailed = Number(subject.theoryFullMarks) > 0 && theoryPass != null && theoryPass !== ""
@@ -125,7 +126,9 @@ function renderResult(result, rank) {
       && Number(subject.practicalMarks || 0) < Number(practicalPass);
     return theoryFailed || practicalFailed;
   }).length;
-  const absentSubjectCount = result.absent === true ? resultSubjects.length : 0;
+  const absentSubjectCount = result.absent === true
+    ? resultSubjects.length
+    : resultSubjects.filter((subject) => subject.absent === true).length;
   const identityParts = [
     ["আইডি", result.studentCode, displayFields.studentId !== false],
     ["বোর্ড রোল", result.boardRoll, displayFields.boardRoll !== false],
@@ -193,6 +196,7 @@ function renderResult(result, rank) {
   const tbody = table.createTBody();
   subjects.forEach((subject, index) => {
     const row = tbody.insertRow();
+    const subjectAbsent = result.absent === true || subject.absent === true;
     addCell(row, "td", number(index + 1)).className = "result-subject-serial";
     addCell(row, "td", subject.name);
     addCell(row, "td", subject.code);
@@ -200,18 +204,18 @@ function renderResult(result, rank) {
       if (hasTheory) {
         const theoryActive = Number(subject.theoryFullMarks) > 0;
         addCell(row, "td", theoryActive ? number(subject.theoryFullMarks) : "");
-        addCell(row, "td", !theoryActive ? "" : result.absent === true ? "অনুপস্থিত" : number(subject.theoryMarks));
+        addCell(row, "td", !theoryActive ? "" : subjectAbsent ? "অনুপস্থিত" : number(subject.theoryMarks));
       }
       if (showTheoryPass) addCell(row, "td", Number(subject.theoryFullMarks) <= 0 || (subject.theoryPassMarks == null && subject.passMarks == null) ? "" : number(subject.theoryPassMarks ?? subject.passMarks));
       const practicalActive = Number(subject.practicalFullMarks) > 0;
       addCell(row, "td", practicalActive ? number(subject.practicalFullMarks) : "");
-      addCell(row, "td", !practicalActive ? "" : result.absent === true ? "অনুপস্থিত" : number(subject.practicalMarks));
+      addCell(row, "td", !practicalActive ? "" : subjectAbsent ? "অনুপস্থিত" : number(subject.practicalMarks));
       if (showPracticalPass) addCell(row, "td", !practicalActive || subject.practicalPassMarks == null || subject.practicalPassMarks === "" ? "" : number(subject.practicalPassMarks));
       addCell(row, "td", number(subject.fullMarks));
-      addCell(row, "td", result.absent === true ? "অনুপস্থিত" : number(subject.marks));
+      addCell(row, "td", subjectAbsent ? "অনুপস্থিত" : number(subject.marks));
     } else {
       addCell(row, "td", number(subject.fullMarks));
-      addCell(row, "td", result.absent === true ? "অনুপস্থিত" : number(subject.marks));
+      addCell(row, "td", subjectAbsent ? "অনুপস্থিত" : number(subject.marks));
       if (showTheoryPass) addCell(row, "td", subject.theoryPassMarks == null && subject.passMarks == null ? "" : number(subject.theoryPassMarks ?? subject.passMarks));
     }
   });
@@ -276,9 +280,13 @@ function renderMeritList(records) {
     { key: "rank", label: "মেধাক্রম" },
     { key: "name", label: "শিক্ষার্থীর নাম" },
     { key: "studentId", label: "শিক্ষার্থী আইডি" },
+    { key: "boardRoll", label: "বোর্ড রোল" },
     { key: "classRoll", label: "ক্লাস রোল" },
+    { key: "trade", label: "ট্রেড" },
     { key: "marks", label: "প্রাপ্ত নম্বর" },
-    { key: "percentage", label: "শতকরা" }
+    { key: "percentage", label: "শতকরা" },
+    { key: "failSubjectCount", label: "ফেল বিষয় সংখ্যা" },
+    { key: "absentSubjectCount", label: "অনুপস্থিত বিষয় সংখ্যা" }
   ].filter((column) => display[column.key] !== false);
   const head = table.createTHead().insertRow();
   columns.forEach((column) => {
@@ -293,13 +301,32 @@ function renderMeritList(records) {
     if (marks !== previousMarks) rank = index + 1;
     previousMarks = marks;
     const row = body.insertRow();
+    const subjects = student.subjects || [];
+    const hasPassMarks = subjects.some((subject) =>
+      (Number(subject.theoryFullMarks) > 0 && (subject.theoryPassMarks ?? subject.passMarks) != null && (subject.theoryPassMarks ?? subject.passMarks) !== "")
+      || (Number(subject.practicalFullMarks) > 0 && subject.practicalPassMarks != null && subject.practicalPassMarks !== "")
+    );
+    const failedSubjectCount = student.absent === true ? 0 : subjects.filter((subject) => {
+      if (subject.absent === true) return false;
+      const theoryPass = subject.theoryPassMarks ?? subject.passMarks;
+      const practicalPass = subject.practicalPassMarks;
+      return (Number(subject.theoryFullMarks) > 0 && theoryPass != null && theoryPass !== "" && Number(subject.theoryMarks || 0) < Number(theoryPass))
+        || (Number(subject.practicalFullMarks) > 0 && practicalPass != null && practicalPass !== "" && Number(subject.practicalMarks || 0) < Number(practicalPass));
+    }).length;
+    const absentSubjectCount = student.absent === true
+      ? subjects.length
+      : subjects.filter((subject) => subject.absent === true).length;
     const values = {
       rank: number(rank),
       name: student.studentName || "—",
       studentId: student.studentCode || "—",
+      boardRoll: student.boardRoll || "—",
       classRoll: student.roll || "—",
+      trade: student.trade || "—",
       marks: `${number(marks)} / ${number(student.fullMarks)}`,
-      percentage: `${number(student.percentage)}%`
+      percentage: `${number(student.percentage)}%`,
+      failSubjectCount: hasPassMarks ? number(failedSubjectCount) : "পাশ নম্বর দেওয়া নেই",
+      absentSubjectCount: number(absentSubjectCount)
     };
     columns.forEach((column) => {
       const cell = addCell(row, "td", values[column.key]);

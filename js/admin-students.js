@@ -64,6 +64,7 @@ let editingResultId = null;
 let resultRecords = [];
 let resultDraftRecords = [];
 let editingResultGroup = null;
+let preferredResultSubjectName = "";
 let busy = false;
 
 const byId = (id) => document.getElementById(id);
@@ -2695,21 +2696,43 @@ function addResultSubjectRow(className, subject = {}) {
     label.append(input);
     row.append(label);
   });
+  const edit = document.createElement("button");
+  edit.type = "button";
+  edit.className = "secondary-button edit-subject-button";
+  edit.textContent = "এডিট";
+  edit.addEventListener("click", () => {
+    resultSubjectRows.querySelectorAll(".result-subject-setting.is-editing").forEach((item) => item.classList.remove("is-editing"));
+    row.classList.add("is-editing");
+    byId("resultMatrixWrap").hidden = true;
+    const focusTarget = customSubjectInput.hidden ? select : customSubjectInput;
+    focusTarget.focus();
+    row.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+  const save = document.createElement("button");
+  save.type = "button";
+  save.className = "secondary-button save-subject-button";
+  save.textContent = "সংরক্ষণ";
+  save.title = "এই পরীক্ষা, শিক্ষাবর্ষ ও শ্রেণির সব বিষয়ের সেটিংস সংরক্ষণ করুন";
+  save.addEventListener("click", () => saveResultSubjectConfiguration(save));
   const remove = document.createElement("button");
   remove.type = "button";
   remove.className = "secondary-button remove-subject-button";
   remove.textContent = "সরান";
   remove.addEventListener("click", () => { row.remove(); byId("resultMatrixWrap").hidden = true; });
-  row.append(remove);
+  row.append(edit, save, remove);
   select.addEventListener("change", () => {
     const customMode = select.value === RESULT_CUSTOM_SUBJECT;
     customSubjectInput.hidden = !customMode;
     customSubjectInput.required = customMode;
     const entry = getAcademicSubjects(className).find((item) => item.name === select.value);
     codeInput.value = entry?.code || "";
+    if (!customMode && select.value) preferredResultSubjectName = select.value;
     byId("resultMatrixWrap").hidden = true;
   });
-  customSubjectInput.addEventListener("input", () => { byId("resultMatrixWrap").hidden = true; });
+  customSubjectInput.addEventListener("input", () => {
+    preferredResultSubjectName = customSubjectInput.value.trim();
+    byId("resultMatrixWrap").hidden = true;
+  });
   resultSubjectRows.append(row);
 }
 
@@ -2739,6 +2762,112 @@ function selectedResultSubjects() {
       ? null
       : Number(row.querySelector('[data-mark-type="practicalPassMarks"]').value)
   }));
+}
+
+function mergeResultSubjects(previousSubjects = [], updatedSubjects = []) {
+  const merged = [...previousSubjects];
+  updatedSubjects.forEach((subject) => {
+    const subjectName = String(subject.name || "").trim().toLocaleLowerCase("bn-BD");
+    const subjectCode = String(subject.code || "").trim();
+    const index = merged.findIndex((saved) => {
+      const sameCode = subjectCode && String(saved.code || "").trim() === subjectCode;
+      const sameName = subjectName && String(saved.name || "").trim().toLocaleLowerCase("bn-BD") === subjectName;
+      return sameCode || sameName;
+    });
+    if (index === -1) merged.push(subject);
+    else merged[index] = { ...merged[index], ...subject };
+  });
+  return merged;
+}
+
+let resultSubjectSelectionKey = "";
+
+function resultSubjectConfigId(className, year, exam) {
+  return `subject-config-${encodeURIComponent(getClassCode(className))}-${year}-${encodeURIComponent(exam)}`;
+}
+
+async function saveResultSubjectConfiguration(button) {
+  const className = byId("resultClass").value;
+  const exam = byId("resultExam").value;
+  const year = Number(byId("resultYear").value);
+  const subjects = selectedResultSubjects().filter((subject) => subject.name);
+  if (!currentAdmin || !className || !exam || !Number.isInteger(year) || year <= 0) {
+    message("resultMessage", "পরীক্ষা, শিক্ষাবর্ষ ও শ্রেণি নির্বাচন করুন।", true);
+    return;
+  }
+  if (!subjects.length || subjects.some((subject) => !Number.isFinite(subject.theoryFullMarks)
+    || !Number.isFinite(subject.practicalFullMarks)
+    || subject.theoryFullMarks < 0 || subject.practicalFullMarks < 0
+    || subject.theoryFullMarks + subject.practicalFullMarks <= 0)) {
+    message("resultMessage", "বিষয়ের নাম ও অন্তত একটি পূর্ণমান দিয়ে সংরক্ষণ করুন।", true);
+    return;
+  }
+
+  const originalText = button.textContent;
+  button.disabled = true;
+  button.textContent = "সংরক্ষণ হচ্ছে…";
+  try {
+    const id = resultSubjectConfigId(className, year, exam);
+    const configuration = {
+      id,
+      subjectConfig: true,
+      className,
+      exam,
+      year,
+      subjects,
+      updatedAt: serverTimestamp(),
+      updatedBy: currentAdmin.uid
+    };
+    await setDoc(doc(db, resultDraftsCollection, id), configuration, { merge: true });
+    resultDraftRecords = [...resultDraftRecords.filter((record) => record.id !== id), configuration];
+    resultSubjectSelectionKey = `${getClassCode(className)}|${exam}|${year}`;
+    message("resultMessage", "বিষয়গুলোর সেটিংস সংরক্ষণ হয়েছে।");
+  } catch (error) {
+    console.error("বিষয়ের সেটিংস সংরক্ষণ হয়নি:", error);
+    message("resultMessage", "বিষয়ের সেটিংস সংরক্ষণ হয়নি। Firestore access rules পরীক্ষা করুন।", true);
+  } finally {
+    button.disabled = false;
+    button.textContent = originalText;
+  }
+}
+
+function refreshSavedResultSubjects(force = false) {
+  const className = byId("resultClass").value;
+  const exam = byId("resultExam").value;
+  const year = Number(byId("resultYear").value);
+  const selectionKey = className && exam && Number.isInteger(year) && year > 0
+    ? `${getClassCode(className)}|${exam}|${year}`
+    : "";
+
+  if (!force && selectionKey === resultSubjectSelectionKey) return;
+  resultSubjectSelectionKey = selectionKey;
+  if (!className) return;
+  if (!selectionKey) {
+    renderSubjectOptions(className);
+    return;
+  }
+
+  const matchingRecords = [...resultRecords, ...resultDraftRecords]
+    .filter((record) => record.exam === exam
+      && Number(record.year) === year
+      && getClassCode(record.className || "") === getClassCode(className))
+    .sort((a, b) => (a.updatedAt?.toMillis?.() || 0) - (b.updatedAt?.toMillis?.() || 0));
+  const savedSubjects = matchingRecords.reduce(
+    (subjects, record) => mergeResultSubjects(subjects, record.subjects || []),
+    []
+  );
+  renderSubjectOptions(className, savedSubjects);
+}
+
+function updateResultSubjectColumns(subjectName) {
+  const table = byId("resultMatrix")?.querySelector(".result-marks-table");
+  if (!table) return;
+  table.querySelectorAll("[data-subject-name]").forEach((cell) => {
+    cell.hidden = cell.dataset.subjectName !== subjectName;
+  });
+  const visibleSubject = table.querySelector(`thead tr:first-child th[data-subject-name="${CSS.escape(subjectName)}"]`);
+  table.style.width = "max-content";
+  table.style.minWidth = `${108 + Number(visibleSubject?.colSpan || 0) * 82}px`;
 }
 
 function selectedResultDisplayFields() {
@@ -2772,9 +2901,13 @@ function selectedMeritDisplayFields() {
     rank: byId("meritShowRank").checked,
     name: byId("meritShowName").checked,
     studentId: byId("meritShowStudentId").checked,
+    boardRoll: byId("meritShowBoardRoll").checked,
     classRoll: byId("meritShowClassRoll").checked,
+    trade: byId("meritShowTrade").checked,
     marks: byId("meritShowMarks").checked,
-    percentage: byId("meritShowPercentage").checked
+    percentage: byId("meritShowPercentage").checked,
+    failSubjectCount: byId("meritShowFailSubjectCount").checked,
+    absentSubjectCount: byId("meritShowAbsentSubjectCount").checked
   };
 }
 
@@ -2782,9 +2915,13 @@ function applyMeritDisplayFields(fields = {}) {
   byId("meritShowRank").checked = fields.rank !== false;
   byId("meritShowName").checked = fields.name !== false;
   byId("meritShowStudentId").checked = fields.studentId !== false;
+  byId("meritShowBoardRoll").checked = fields.boardRoll !== false;
   byId("meritShowClassRoll").checked = fields.classRoll !== false;
+  byId("meritShowTrade").checked = fields.trade !== false;
   byId("meritShowMarks").checked = fields.marks !== false;
   byId("meritShowPercentage").checked = fields.percentage !== false;
+  byId("meritShowFailSubjectCount").checked = fields.failSubjectCount !== false;
+  byId("meritShowAbsentSubjectCount").checked = fields.absentSubjectCount !== false;
 }
 
 function downloadClassResultsPdf() {
@@ -2828,16 +2965,17 @@ function downloadClassResultsPdf() {
     }
     const header = headers.map((title) => `<th>${receiptEscape(title)}</th>`).join("");
     const rows = subjects.map((subject, subjectIndex) => {
-      const absentText = record.absent === true ? "অনুপস্থিত" : "";
+      const subjectAbsent = record.absent === true || subject.absent === true;
+      const absentText = subjectAbsent ? "অনুপস্থিত" : "";
       const cells = [number(subjectIndex + 1), subject.name || "—", subject.code || "—"];
       if (showPractical) {
-        if (hasTheory) cells.push(Number(subject.theoryFullMarks) > 0 ? number(subject.theoryFullMarks) : "", Number(subject.theoryFullMarks) > 0 ? (record.absent ? absentText : number(subject.theoryMarks)) : "");
+        if (hasTheory) cells.push(Number(subject.theoryFullMarks) > 0 ? number(subject.theoryFullMarks) : "", Number(subject.theoryFullMarks) > 0 ? (subjectAbsent ? absentText : number(subject.theoryMarks)) : "");
         if (hasTheoryPass) cells.push(Number(subject.theoryFullMarks) > 0 ? number(subject.theoryPassMarks ?? subject.passMarks ?? "") : "");
-        cells.push(Number(subject.practicalFullMarks) > 0 ? number(subject.practicalFullMarks) : "", Number(subject.practicalFullMarks) > 0 ? (record.absent ? absentText : number(subject.practicalMarks)) : "");
+        cells.push(Number(subject.practicalFullMarks) > 0 ? number(subject.practicalFullMarks) : "", Number(subject.practicalFullMarks) > 0 ? (subjectAbsent ? absentText : number(subject.practicalMarks)) : "");
         if (hasPracticalPass) cells.push(Number(subject.practicalFullMarks) > 0 ? number(subject.practicalPassMarks ?? "") : "");
-        cells.push(number(subject.fullMarks), record.absent ? absentText : number(subject.marks));
+        cells.push(number(subject.fullMarks), subjectAbsent ? absentText : number(subject.marks));
       } else {
-        cells.push(number(subject.fullMarks), record.absent ? absentText : number(subject.marks));
+        cells.push(number(subject.fullMarks), subjectAbsent ? absentText : number(subject.marks));
         if (hasTheoryPass) cells.push(number(subject.theoryPassMarks ?? subject.passMarks ?? ""));
       }
       return `<tr>${cells.map((value) => `<td>${receiptEscape(value)}</td>`).join("")}</tr>`;
@@ -2925,6 +3063,7 @@ function renderResultMatrix(prefillRecords = []) {
   table.classList.add("result-marks-compact");
   table.dataset.rollType = rollType;
   const scoreColumnCount = subjects.reduce((count, subject) => count
+    + 1
     + (Number(subject.theoryFullMarks) > 0 ? 1 : 0)
     + (Number(subject.practicalFullMarks) > 0 ? 1 : 0), 0);
   table.style.width = "max-content";
@@ -2938,17 +3077,23 @@ function renderResultMatrix(prefillRecords = []) {
   subjectHeader.append(rollHeader);
   subjects.forEach((subject) => {
     const th = document.createElement("th");
-    th.colSpan = (Number(subject.theoryFullMarks) > 0 ? 1 : 0) + (Number(subject.practicalFullMarks) > 0 ? 1 : 0);
+    th.colSpan = 1 + (Number(subject.theoryFullMarks) > 0 ? 1 : 0) + (Number(subject.practicalFullMarks) > 0 ? 1 : 0);
+    th.dataset.subjectName = subject.name;
     th.textContent = `${t(subject.name)}${subject.code ? ` · ${subject.code}` : ""}`;
     subjectHeader.append(th);
   });
   const componentHeader = thead.insertRow();
   subjects.forEach((subject) => {
+    const absentHeader = document.createElement("th");
+    absentHeader.dataset.subjectName = subject.name;
+    absentHeader.textContent = t("অনুপস্থিতি");
+    componentHeader.append(absentHeader);
     const parts = [];
     if (Number(subject.theoryFullMarks) > 0) parts.push(["তাত্ত্বিক", subject.theoryFullMarks]);
     if (Number(subject.practicalFullMarks) > 0) parts.push(["ব্যবহারিক", subject.practicalFullMarks]);
     parts.forEach(([label, maximum]) => {
       const th = document.createElement("th");
+      th.dataset.subjectName = subject.name;
       th.textContent = `${t(label)} · ${bn(maximum)}`;
       componentHeader.append(th);
     });
@@ -2956,9 +3101,10 @@ function renderResultMatrix(prefillRecords = []) {
   const body = table.createTBody();
   const exam = byId("resultExam").value;
   const year = Number(byId("resultYear").value);
-  const savedRecords = [...prefillRecords, ...resultDraftRecords.filter((record) =>
-    record.exam === exam && Number(record.year) === year
-  )];
+  const savedRecords = [...prefillRecords,
+    ...resultRecords.filter((record) => record.exam === exam && Number(record.year) === year),
+    ...resultDraftRecords.filter((record) => record.exam === exam && Number(record.year) === year)
+  ];
   classList.forEach((student) => {
     const row = body.insertRow();
     row.dataset.studentCode = student.studentCode;
@@ -2975,45 +3121,78 @@ function renderResultMatrix(prefillRecords = []) {
     absentToggle.className = "result-absent-toggle";
     absentToggle.checked = savedStudentRecord?.absent === true;
     row.classList.toggle("result-student-absent", absentToggle.checked);
-    absentToggle.setAttribute("aria-label", `${normalizeDigits(String(student[rollType] || "—"))} রোল অনুপস্থিত`);
+    absentToggle.setAttribute("aria-label", `${normalizeDigits(String(student[rollType] || "—"))} রোলের সব বিষয়ে অনুপস্থিত`);
     const absentText = document.createElement("span");
-    absentText.textContent = "অনুপস্থিত";
+    absentText.textContent = "সব বিষয়ে অনুপস্থিত";
     absentLabel.append(absentToggle, absentText);
     rollCell.append(absentLabel);
     subjects.forEach((subject) => {
       const saved = (savedStudentRecord?.subjects || [])
         .find((item) => item.name === subject.name || (subject.code && item.code === subject.code));
+      const subjectAbsentCell = row.insertCell();
+      subjectAbsentCell.dataset.subjectName = subject.name;
+      const subjectAbsentLabel = document.createElement("label");
+      subjectAbsentLabel.className = "result-subject-absent-control";
+      const subjectAbsentToggle = document.createElement("input");
+      subjectAbsentToggle.type = "checkbox";
+      subjectAbsentToggle.className = "result-subject-absent-toggle";
+      subjectAbsentToggle.dataset.subjectName = subject.name;
+      subjectAbsentToggle.checked = saved?.absent === true;
+      subjectAbsentToggle.disabled = absentToggle.checked;
+      subjectAbsentToggle.setAttribute("aria-label", `${normalizeDigits(String(student[rollType] || "—"))} রোল · ${subject.name} বিষয়ে অনুপস্থিত`);
+      const subjectAbsentText = document.createElement("span");
+      subjectAbsentText.textContent = "হ্যাঁ";
+      subjectAbsentLabel.append(subjectAbsentToggle, subjectAbsentText);
+      subjectAbsentCell.append(subjectAbsentLabel);
       const parts = [];
       if (Number(subject.theoryFullMarks) > 0) parts.push(["theory", subject.theoryFullMarks]);
       if (Number(subject.practicalFullMarks) > 0) parts.push(["practical", subject.practicalFullMarks]);
       parts.forEach(([component, maximum]) => {
         const cell = row.insertCell();
+        cell.dataset.subjectName = subject.name;
         const input = document.createElement("input");
         input.type = "number";
         input.min = "0";
         input.max = String(maximum);
         input.step = "0.01";
-        input.required = true;
+        input.required = false;
         input.inputMode = "decimal";
         input.className = "result-mark-input";
         input.setAttribute("aria-label", `${t("রোল")} ${student[rollType] || "—"} · ${t(subject.name)} · ${t(component === "theory" ? "তাত্ত্বিক" : "ব্যবহারিক")}`);
         input.dataset.studentCode = student.studentCode;
         input.dataset.subjectName = subject.name;
         input.dataset.component = component;
+        input.disabled = absentToggle.checked || subjectAbsentToggle.checked;
         input.value = saved
           ? (saved[`${component}Marks`] ?? (component === "theory" ? saved.marks : 0))
           : "";
-        input.disabled = absentToggle.checked;
         cell.append(input);
       });
     });
   });
   byId("resultMatrix").replaceChildren(table);
+  const subjectFilter = byId("resultSubjectFilter");
+  const previousFilter = subjectFilter.value;
+  subjectFilter.replaceChildren(...subjects.map((subject) => new Option(`${subject.name}${subject.code ? ` · ${subject.code}` : ""}`, subject.name)));
+  subjectFilter.value = subjects.some((subject) => subject.name === previousFilter)
+    ? previousFilter
+    : subjects.some((subject) => subject.name === preferredResultSubjectName)
+      ? preferredResultSubjectName
+      : (subjects[0]?.name || "");
+  preferredResultSubjectName = subjectFilter.value;
+  subjectFilter.disabled = subjects.length < 2;
+  updateResultSubjectColumns(subjectFilter.value);
   byId("resultMatrixWrap").hidden = false;
   message("resultMessage", `${bn(classList.length)} জন শিক্ষার্থীর জন্য নম্বরের ছক তৈরি হয়েছে।`);
 }
 
-byId("resultClass").addEventListener("change", () => renderSubjectOptions(byId("resultClass").value));
+byId("resultClass").addEventListener("change", () => refreshSavedResultSubjects());
+byId("resultExam").addEventListener("change", () => refreshSavedResultSubjects());
+byId("resultYear").addEventListener("change", () => refreshSavedResultSubjects());
+byId("resultSubjectFilter").addEventListener("change", (event) => {
+  preferredResultSubjectName = event.target.value;
+  updateResultSubjectColumns(event.target.value);
+});
 byId("addResultSubject").addEventListener("click", () => {
   const className = byId("resultClass").value;
   if (className) addResultSubjectRow(className);
@@ -3023,36 +3202,60 @@ byId("prepareResultMatrix").addEventListener("click", () => {
   const exam = byId("resultExam").value;
   const year = Number(byId("resultYear").value);
   const selected = selectedResultSubjects();
-  const savedDraft = resultDraftRecords.find((record) => record.exam === exam
+  const savedDraft = resultDraftRecords.find((record) => !record.subjectConfig && record.exam === exam
     && Number(record.year) === year
     && getClassCode(record.className || "") === getClassCode(className || ""));
-  if (savedDraft?.subjects?.length && selected.length === 1 && !selected[0].name) {
-    renderSubjectOptions(className, savedDraft.subjects);
+  const savedResult = resultRecords.find((record) => record.exam === exam
+    && Number(record.year) === year
+    && getClassCode(record.className || "") === getClassCode(className || ""));
+  const savedSubjects = mergeResultSubjects(savedResult?.subjects || [], savedDraft?.subjects || []);
+  if (savedSubjects.length) {
+    const selectedSubjects = selected.filter((subject) => subject.name);
+    const subjectsToKeep = mergeResultSubjects(savedSubjects, selectedSubjects);
+    if (subjectsToKeep.length > selectedSubjects.length || !selectedSubjects.length) {
+      renderSubjectOptions(className, subjectsToKeep);
+    }
+  }
+  if (savedDraft?.subjects?.length) {
     byId("resultShowPractical").checked = savedDraft.showPractical === true;
     applyResultDisplayFields(savedDraft.displayFields);
     applyMeritDisplayFields(savedDraft.meritDisplayFields);
+  } else if (savedResult) {
+    byId("resultShowPractical").checked = savedResult.showPractical === true;
+    applyResultDisplayFields(savedResult.displayFields);
+    applyMeritDisplayFields(savedResult.meritDisplayFields);
   }
   renderResultMatrix();
 });
 byId("resultRollType").addEventListener("change", () => { byId("resultMatrixWrap").hidden = true; });
 
-const resultDraftSavesInProgress = new Set();
+const resultDraftSavesInProgress = new Map();
 
 resultMatrix.addEventListener("change", async (event) => {
   const input = event.target.closest("input.result-mark-input");
   const absentToggle = event.target.closest("input.result-absent-toggle");
-  if (!input && !absentToggle) return;
-  const studentRow = (input || absentToggle).closest("tr");
+  const subjectAbsentToggle = event.target.closest("input.result-subject-absent-toggle");
+  if (!input && !absentToggle && !subjectAbsentToggle) return;
+  const studentRow = (input || absentToggle || subjectAbsentToggle).closest("tr");
   const studentCode = studentRow?.dataset.studentCode;
   if (!studentCode) return;
   if (absentToggle) {
     studentRow.classList.toggle("result-student-absent", absentToggle.checked);
+    studentRow.querySelectorAll("input.result-subject-absent-toggle").forEach((toggle) => { toggle.disabled = absentToggle.checked; });
     studentRow.querySelectorAll("input.result-mark-input").forEach((markInput) => {
-      markInput.disabled = absentToggle.checked;
-      if (absentToggle.checked) markInput.value = "";
+      const subjectToggle = [...studentRow.querySelectorAll("input.result-subject-absent-toggle")]
+        .find((toggle) => toggle.dataset.subjectName === markInput.dataset.subjectName);
+      markInput.disabled = absentToggle.checked || subjectToggle?.checked === true;
     });
   }
-  if (resultDraftSavesInProgress.has(studentCode)) return;
+  if (subjectAbsentToggle) {
+    const subjectName = subjectAbsentToggle.dataset.subjectName;
+    studentRow.classList.toggle("result-subject-absent", subjectAbsentToggle.checked);
+    studentRow.querySelectorAll(`input.result-mark-input[data-subject-name="${CSS.escape(subjectName)}"]`).forEach((markInput) => {
+      markInput.disabled = studentRow.querySelector(".result-absent-toggle")?.checked === true || subjectAbsentToggle.checked;
+      if (subjectAbsentToggle.checked) markInput.value = "";
+    });
+  }
   const className = byId("resultClass").value;
   const rollType = byId("resultRollType").value;
   const exam = byId("resultExam").value;
@@ -3061,43 +3264,49 @@ resultMatrix.addEventListener("change", async (event) => {
   const subjects = selectedResultSubjects();
   const inputs = [...resultMatrix.querySelectorAll(`input.result-mark-input[data-student-code="${CSS.escape(studentCode)}"]`)];
   const absent = studentRow.querySelector(".result-absent-toggle")?.checked === true;
-  if (absentToggle && !absent) {
-    const draftId = resultDocumentId(studentCode, year, exam);
-    const absentDraft = resultDraftRecords.find((record) => record.id === draftId && record.absent);
-    if (absentDraft && currentAdmin) {
-      try {
-        await deleteDoc(doc(db, resultDraftsCollection, draftId));
-        resultDraftRecords = resultDraftRecords.filter((record) => record.id !== draftId);
-        message("resultMessage", "অনুপস্থিতির খসড়া বাতিল হয়েছে; নম্বর লিখুন।");
-      } catch (error) {
-        console.error("অনুপস্থিতির খসড়া বাতিল হয়নি:", error);
-        message("resultMessage", "অনুপস্থিতির খসড়া বাতিল হয়নি। Firestore access rules পরীক্ষা করুন।", true);
-      }
-    }
-    return;
-  }
   if (!currentAdmin || !student || !exam || !Number.isInteger(year) || !subjects.length
-    || (!absent && inputs.some((field) => field.value === "" || Number(field.value) < 0 || Number(field.value) > Number(field.max)))) return;
-  resultDraftSavesInProgress.add(studentCode);
+    || inputs.some((field) => !field.disabled && field.value !== "" && (Number(field.value) < 0 || Number(field.value) > Number(field.max)))) return;
+  const draftId = resultDocumentId(studentCode, year, exam);
+  const existingDraft = resultDraftRecords.find((record) => record.id === draftId);
+  const existingResult = resultRecords.find((record) => record.studentCode === studentCode && Number(record.year) === year && record.exam === exam);
+  let queuedSave = null;
   try {
-    const studentSubjects = subjects.map((subject) => {
-      const getMark = (component) => Number(resultMatrix.querySelector(`input[data-student-code="${CSS.escape(studentCode)}"][data-subject-name="${CSS.escape(subject.name)}"][data-component="${component}"]`)?.value || 0);
-      const theoryMarks = absent ? 0 : getMark("theory");
-      const practicalMarks = absent ? 0 : getMark("practical");
-      return { ...subject, theoryMarks, practicalMarks, fullMarks: subject.theoryFullMarks + subject.practicalFullMarks, marks: theoryMarks + practicalMarks };
+    const previousSubjects = mergeResultSubjects(existingResult?.subjects || [], existingDraft?.subjects || []);
+    const updatedSubjects = subjects.flatMap((subject) => {
+      const subjectInputs = inputs.filter((field) => field.dataset.subjectName === subject.name);
+      const subjectAbsent = studentRow.querySelector(`input.result-subject-absent-toggle[data-subject-name="${CSS.escape(subject.name)}"]`)?.checked === true;
+      const savedSubject = previousSubjects.find((item) => item.name === subject.name || (subject.code && item.code === subject.code));
+      const subjectTouched = absent || subjectAbsent || subjectInputs.some((field) => field.value !== "");
+      if (!subjectTouched && !savedSubject) return [];
+      const getMark = (component) => {
+        if (absent || subjectAbsent) return 0;
+        const field = subjectInputs.find((item) => item.dataset.component === component);
+        if (field && field.value !== "") return Number(field.value);
+        return savedSubject?.[`${component}Marks`] ?? (component === "theory" ? savedSubject?.marks ?? "" : "");
+      };
+      const theoryMarks = getMark("theory");
+      const practicalMarks = getMark("practical");
+      const total = Number(theoryMarks || 0) + Number(practicalMarks || 0);
+      return [{ ...subject, absent: subjectAbsent, theoryMarks, practicalMarks, fullMarks: subject.theoryFullMarks + subject.practicalFullMarks, marks: total }];
     });
+    if (!updatedSubjects.length) return;
+    let studentSubjects = mergeResultSubjects(previousSubjects, updatedSubjects);
+    if (absent) studentSubjects = studentSubjects.map((subject) => ({ ...subject, theoryMarks: 0, practicalMarks: 0, marks: 0 }));
     const totalMarks = studentSubjects.reduce((sum, subject) => sum + subject.marks, 0);
     const fullMarks = studentSubjects.reduce((sum, subject) => sum + subject.fullMarks, 0);
-    const draftId = resultDocumentId(studentCode, year, exam);
     const draft = { studentCode, studentName: student.name, branch: student.branch, className: student.className, trade: student.trade || "", roll: student.roll || "", boardRoll: student.boardRoll || "", rollType, exam, year, subjects: studentSubjects, absent, totalMarks, fullMarks, percentage: fullMarks ? Math.round((totalMarks / fullMarks) * 10000) / 100 : 0, showPractical: byId("resultShowPractical").checked, displayFields: selectedResultDisplayFields(), meritDisplayFields: selectedMeritDisplayFields(), updatedAt: serverTimestamp(), updatedBy: currentAdmin.uid };
-    await setDoc(doc(db, resultDraftsCollection, draftId), draft, { merge: true });
+    const previousSave = resultDraftSavesInProgress.get(studentCode) || Promise.resolve();
+    const currentSave = previousSave.catch(() => {}).then(() => setDoc(doc(db, resultDraftsCollection, draftId), draft, { merge: true }));
+    queuedSave = currentSave;
+    resultDraftSavesInProgress.set(studentCode, currentSave);
+    await currentSave;
     resultDraftRecords = [...resultDraftRecords.filter((record) => record.id !== draftId), { ...draft, id: draftId }];
     message("resultMessage", "নম্বরের খসড়া স্বয়ংক্রিয়ভাবে সংরক্ষিত হয়েছে।");
   } catch (error) {
     console.error("নম্বরের খসড়া সেভ হয়নি:", error);
     message("resultMessage", "নম্বরের খসড়া সেভ হয়নি। Firestore access rules পরীক্ষা করুন।", true);
   } finally {
-    resultDraftSavesInProgress.delete(studentCode);
+    if (queuedSave && resultDraftSavesInProgress.get(studentCode) === queuedSave) resultDraftSavesInProgress.delete(studentCode);
   }
 });
 
@@ -3111,7 +3320,7 @@ function resetResultForm() {
   resultForm.reset();
   editingResultId = null;
   editingResultGroup = null;
-  byId("resultShowPractical").checked = true;
+  byId("resultShowPractical").checked = false;
   byId("saveResultButton").textContent = "ফলাফল সংরক্ষণ";
   byId("cancelResultEdit").hidden = true;
   resultSubjectRows.replaceChildren();
@@ -3138,7 +3347,7 @@ resultForm.addEventListener("submit", async (event) => {
     || (subject.practicalPassMarks !== null && (!Number.isFinite(subject.practicalPassMarks) || subject.practicalPassMarks < 0 || subject.practicalPassMarks > subject.practicalFullMarks)))
     || new Set(subjects.map((subject) => subject.name)).size !== subjects.length
     || inputs.some((input) => {
-      if (input.closest("tr")?.querySelector(".result-absent-toggle")?.checked) return false;
+      if (input.disabled) return false;
       return input.value === "" || Number(input.value) < 0 || Number(input.value) > Number(input.max);
     })) {
     message("resultMessage", "প্রতিটি বিষয়ের পূর্ণমান দিন এবং প্রাপ্ত নম্বর পূর্ণমানের মধ্যে রাখুন।", true);
@@ -3154,17 +3363,25 @@ resultForm.addEventListener("submit", async (event) => {
     for (let start = 0; start < classList.length; start += 250) {
       const batch = writeBatch(db);
       classList.slice(start, start + 250).forEach((student) => {
-        const studentSubjects = subjects.map((subject) => {
+        const absent = resultMatrix.querySelector(`tr[data-student-code="${CSS.escape(student.studentCode)}"] .result-absent-toggle`)?.checked === true;
+        const updatedSubjects = subjects.map((subject) => {
           const findMark = (component) => Number(resultMatrix.querySelector(`input[data-student-code="${CSS.escape(student.studentCode)}"][data-subject-name="${CSS.escape(subject.name)}"][data-component="${component}"]`)?.value || 0);
-          const theoryMarks = findMark("theory");
-          const practicalMarks = findMark("practical");
-          return { name: subject.name, code: subject.code, theoryFullMarks: subject.theoryFullMarks, practicalFullMarks: subject.practicalFullMarks, theoryPassMarks: subject.theoryPassMarks, practicalPassMarks: subject.practicalPassMarks, theoryMarks, practicalMarks, fullMarks: subject.theoryFullMarks + subject.practicalFullMarks, marks: theoryMarks + practicalMarks };
+          const subjectAbsent = resultMatrix.querySelector(`tr[data-student-code="${CSS.escape(student.studentCode)}"] input.result-subject-absent-toggle[data-subject-name="${CSS.escape(subject.name)}"]`)?.checked === true;
+          const theoryMarks = absent || subjectAbsent ? 0 : findMark("theory");
+          const practicalMarks = absent || subjectAbsent ? 0 : findMark("practical");
+          return { name: subject.name, code: subject.code, absent: subjectAbsent, theoryFullMarks: subject.theoryFullMarks, practicalFullMarks: subject.practicalFullMarks, theoryPassMarks: subject.theoryPassMarks, practicalPassMarks: subject.practicalPassMarks, theoryMarks, practicalMarks, fullMarks: subject.theoryFullMarks + subject.practicalFullMarks, marks: theoryMarks + practicalMarks };
         });
+        const previousResult = resultRecords.find((record) => record.studentCode === student.studentCode && Number(record.year) === year && record.exam === exam);
+        const previousDraft = resultDraftRecords.find((record) => record.studentCode === student.studentCode && Number(record.year) === year && record.exam === exam);
+        let studentSubjects = mergeResultSubjects(
+          mergeResultSubjects(previousResult?.subjects || [], previousDraft?.subjects || []),
+          updatedSubjects
+        );
+        if (absent) studentSubjects = studentSubjects.map((subject) => ({ ...subject, theoryMarks: 0, practicalMarks: 0, marks: 0 }));
         const totalMarks = studentSubjects.reduce((sum, subject) => sum + subject.marks, 0);
         const fullMarks = studentSubjects.reduce((sum, subject) => sum + subject.fullMarks, 0);
         const percentage = fullMarks ? Math.round((totalMarks / fullMarks) * 10000) / 100 : 0;
         const resultId = resultDocumentId(student.studentCode, year, exam);
-        const absent = resultMatrix.querySelector(`tr[data-student-code="${CSS.escape(student.studentCode)}"] .result-absent-toggle`)?.checked === true;
         const data = { studentCode: student.studentCode, studentName: student.name, branch: student.branch, className: student.className, trade: student.trade || "", roll: student.roll || "", boardRoll: student.boardRoll || "", rollType, exam, year, subjects: studentSubjects, absent, totalMarks, fullMarks, percentage, published, showPractical, displayFields: selectedResultDisplayFields(), meritDisplayFields: selectedMeritDisplayFields(), updatedAt: serverTimestamp() };
         const existing = resultRecords.some((record) => record.studentCode === student.studentCode && record.year === year && record.exam === exam);
         batch.set(doc(db, resultsCollection, resultId), { ...data, ...(existing ? {} : { createdAt: serverTimestamp(), createdBy: currentAdmin.uid }) }, { merge: true });
@@ -3218,6 +3435,9 @@ async function loadResults() {
         code: item.subjectCode,
         theoryFullMarks: Number(item.theoryFullMarks || 0),
         practicalFullMarks: Number(item.practicalFullMarks || 0),
+        theoryPassMarks: item.theoryPassMarks == null ? null : Number(item.theoryPassMarks),
+        practicalPassMarks: item.practicalPassMarks == null ? null : Number(item.practicalPassMarks),
+        absent: item.absent === true,
         theoryMarks: Number(item.theoryMarks || 0),
         practicalMarks: Number(item.practicalMarks || 0),
         fullMarks: Number(item.fullMarks || 0),
@@ -3226,6 +3446,7 @@ async function loadResults() {
     }))
   ];
   resultRecords = records;
+  refreshSavedResultSubjects(true);
   renderTeacherResultSubmissions(teacherDrafts);
   records.sort((a, b) => (b.year || 0) - (a.year || 0) || (a.exam || "").localeCompare(b.exam || "", "bn"));
   resultRows.replaceChildren();

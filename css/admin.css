@@ -629,6 +629,25 @@ button:disabled {
   color: #183d63;
   margin: 0 0 12px;
 }
+.result-subject-filter-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(100%, 460px);
+  margin: 0 0 10px;
+  color: #183d63;
+  font-weight: 700;
+}
+.result-subject-filter-label select {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid #c8d2de;
+  border-radius: 8px;
+  background: #fff;
+  color: #183d63;
+  font: inherit;
+}
 
 .result-subject-choices {
   display: grid;
@@ -660,7 +679,7 @@ button:disabled {
 
 .result-subject-setting {
   display: grid;
-  grid-template-columns: minmax(180px, 1.2fr) minmax(140px, 1fr) repeat(4, minmax(130px, 0.8fr)) auto;
+  grid-template-columns: minmax(180px, 1.2fr) minmax(140px, 1fr) repeat(4, minmax(130px, 0.8fr)) repeat(3, auto);
   align-items: end;
   gap: 12px;
   padding: 12px;
@@ -668,6 +687,7 @@ button:disabled {
   border-radius: 8px;
   background: #fbfcfe;
 }
+.result-subject-setting.is-editing { border-color: #c49a37; background: #fffaf0; box-shadow: 0 0 0 2px rgba(196,154,55,.12); }
 
 .result-subject-setting > strong {
   padding-bottom: 9px;
@@ -747,6 +767,7 @@ button:disabled {
   text-align: center;
   overflow-wrap: anywhere;
 }
+.result-marks-table [hidden] { display: none !important; }
 
 .result-marks-compact thead th {
   font-size: 0.82rem;
@@ -770,6 +791,19 @@ button:disabled {
   font-weight: 700;
   cursor: pointer;
 }
+.result-subject-absent-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: #8d303e;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.result-subject-absent-control input { width: 13px; height: 13px; margin: 0; accent-color: #9b3e4a; }
+.result-marks-table tr.result-subject-absent td { background: #fff0ed !important; }
 .result-absent-control input {
   width: 14px;
   height: 14px;
@@ -2432,6 +2466,26 @@ button:hover {
   padding: 8px 10px;
   background: #e9e3d5;
   color: #26354b;
+  font-size: 15px;
+}
+.edit-subject-button {
+  width: auto;
+  min-width: 58px;
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid #c9d6e3;
+  background: #edf3f8;
+  color: #183d63;
+  font-size: 15px;
+}
+.save-subject-button {
+  width: auto;
+  min-width: 78px;
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid #b7c9d9;
+  background: #e7f0f7;
+  color: #183d63;
   font-size: 15px;
 }
 
