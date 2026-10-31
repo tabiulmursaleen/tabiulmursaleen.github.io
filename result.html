@@ -245,7 +245,7 @@
         @media(max-width:650px){.public-results-content{margin-top:-14px}.public-results-search,.merit-search{grid-template-columns:1fr}.public-results-search button,.merit-search button{width:100%}.merit-search h2,.merit-search button{grid-column:auto}.result-tabs{gap:5px;margin-bottom:0}.result-tab{padding:11px 6px;font-size:15px}.public-result-card{padding:14px}.public-result-table th,.public-result-table td{padding:8px 6px;font-size:15px}}
         @media(max-width:480px){.result-access-gate{padding:20px 16px}.result-access-form{flex-direction:column}.result-access-form button{width:100%}}
         @page single-result-print { size: A4 portrait; margin: 8mm; }
-        @page merit-list-print { size: A4 portrait; margin: 6mm; }
+        @page merit-list-print { size: A4 portrait; margin: 5mm; }
         @media print {
           body.print-merit { page: merit-list-print !important; margin: 0 !important; padding: 0 !important; }
           body.print-merit > :not(main.public-results-page) { display: none !important; }
@@ -435,13 +435,21 @@
           }
           body.print-single-result .result-subject-serial { display: table-cell !important; width: 8mm; text-align: center !important; white-space: nowrap !important; }
           body.print-single-result .result-signatures { margin-top: 16mm !important; }
-          body.print-merit .merit-table { table-layout: fixed !important; }
-          body.print-merit .merit-table [data-column="rank"] { width: 9%; }
-          body.print-merit .merit-table [data-column="name"] { width: 32%; }
-          body.print-merit .merit-table [data-column="studentId"] { width: 20%; }
-          body.print-merit .merit-table [data-column="classRoll"] { width: 9%; }
-          body.print-merit .merit-table [data-column="marks"] { width: 18%; white-space: nowrap !important; }
-          body.print-merit .merit-table [data-column="percentage"] { width: 12%; white-space: nowrap !important; }
+          body.print-merit .merit-table { table-layout: fixed !important; width: 100% !important; }
+          body.print-merit .merit-table th,
+          body.print-merit .merit-table td { box-sizing: border-box; padding: .7mm .45mm !important; font-size: 6.2pt !important; line-height: 1.08 !important; word-break: normal !important; overflow-wrap: anywhere !important; white-space: normal !important; }
+          body.print-merit .merit-table thead { display: table-header-group; }
+          body.print-merit .merit-table tr { break-inside: avoid; page-break-inside: avoid; }
+          body.print-merit .merit-table [data-column="rank"] { width: 5%; }
+          body.print-merit .merit-table [data-column="name"] { width: 17%; }
+          body.print-merit .merit-table [data-column="studentId"] { width: 10%; }
+          body.print-merit .merit-table [data-column="boardRoll"] { width: 8%; }
+          body.print-merit .merit-table [data-column="classRoll"] { width: 5%; }
+          body.print-merit .merit-table [data-column="trade"] { width: 13%; }
+          body.print-merit .merit-table [data-column="marks"] { width: 11%; white-space: nowrap !important; overflow-wrap: normal !important; }
+          body.print-merit .merit-table [data-column="percentage"] { width: 7%; white-space: nowrap !important; overflow-wrap: normal !important; }
+          body.print-merit .merit-table [data-column="failSubjectCount"] { width: 12%; }
+          body.print-merit .merit-table [data-column="absentSubjectCount"] { width: 12%; }
           body.print-merit {
             position: relative !important; isolation: isolate;
             background: #fff !important;

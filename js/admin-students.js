@@ -2602,7 +2602,7 @@ byId("admitEligibleRows").addEventListener("change", () => {
 });
 byId("prepareAdmitCards").addEventListener("click", generateAdmitCards);
 byId("prepareSeatPlan").addEventListener("click", generateSeatPlan);
-byId("prepareAttendanceSheet").addEventListener("click", generateAttendanceSheets);
+byId("prepareAttendanceSheet").addEventListener("click", () => generateAttendanceSheets(false));
 byId("prepareBlankAdmitCards").addEventListener("click", prepareBlankAdmitCards);
 byId("prepareBlankSeatPlan").addEventListener("click", generateBlankSeatPlan);
 byId("prepareBlankAttendanceSheet").addEventListener("click", () => generateAttendanceSheets(true));

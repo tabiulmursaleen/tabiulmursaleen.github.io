@@ -241,13 +241,20 @@
           body.print-merit #meritResults .merit-print-watermark { display:block!important; position:absolute; z-index:0; top:50%; left:50%; width:145mm; height:145mm; max-width:82%; max-height:72%; object-fit:contain; transform:translate(-50%,-50%); opacity:.065; pointer-events:none; }
           body.print-merit #meritResults .public-result-card>:not(.merit-print-watermark) { position:relative; z-index:1; }
           body.print-merit .merit-print-button { display:none!important; }
-          body.print-merit .merit-table th,body.print-merit .merit-table td { color:#111!important; background:#fff!important; padding:2mm 1mm; font-size:9pt; line-height:1.2; word-break:normal; overflow-wrap:anywhere; }
-          body.print-merit .merit-table th[data-column="rank"],body.print-merit .merit-table td[data-column="rank"] { width:9%; }
-          body.print-merit .merit-table th[data-column="name"],body.print-merit .merit-table td[data-column="name"] { width:32%; }
-          body.print-merit .merit-table th[data-column="studentId"],body.print-merit .merit-table td[data-column="studentId"] { width:20%; }
-          body.print-merit .merit-table th[data-column="classRoll"],body.print-merit .merit-table td[data-column="classRoll"] { width:9%; }
-          body.print-merit .merit-table th[data-column="marks"],body.print-merit .merit-table td[data-column="marks"] { width:18%; white-space:nowrap; overflow-wrap:normal; }
-          body.print-merit .merit-table th[data-column="percentage"],body.print-merit .merit-table td[data-column="percentage"] { width:12%; white-space:nowrap; overflow-wrap:normal; }
+          body.print-merit .merit-table { width:100%; table-layout:fixed; }
+          body.print-merit .merit-table th,body.print-merit .merit-table td { box-sizing:border-box; color:#111!important; background:#fff!important; padding:.7mm .45mm; font-size:6.2pt; line-height:1.08; word-break:normal; overflow-wrap:anywhere; white-space:normal; }
+          body.print-merit .merit-table thead { display:table-header-group; }
+          body.print-merit .merit-table tr { break-inside:avoid; page-break-inside:avoid; }
+          body.print-merit .merit-table [data-column="rank"] { width:5%; }
+          body.print-merit .merit-table [data-column="name"] { width:17%; }
+          body.print-merit .merit-table [data-column="studentId"] { width:10%; }
+          body.print-merit .merit-table [data-column="boardRoll"] { width:8%; }
+          body.print-merit .merit-table [data-column="classRoll"] { width:5%; }
+          body.print-merit .merit-table [data-column="trade"] { width:13%; }
+          body.print-merit .merit-table [data-column="marks"] { width:11%; white-space:nowrap; overflow-wrap:normal; }
+          body.print-merit .merit-table [data-column="percentage"] { width:7%; white-space:nowrap; overflow-wrap:normal; }
+          body.print-merit .merit-table [data-column="failSubjectCount"] { width:12%; }
+          body.print-merit .merit-table [data-column="absentSubjectCount"] { width:12%; }
         }
     </style>
 <link rel="icon" type="image/png" sizes="512x512" href="images/logo/favicon-512.png">
