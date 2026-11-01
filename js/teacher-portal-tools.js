@@ -321,13 +321,16 @@ $("teacherResultPrepare").addEventListener("click", async () => {
   const existing = resultDrafts.filter((item) => item.year === meta.year && item.exam === meta.exam
     && item.className === meta.className && item.subjectName === meta.subjectName);
   const table = document.createElement("table"); table.className = "data-table result-marks-table result-marks-compact";
-  table.innerHTML = `<thead><tr><th>রোল</th><th>শিক্ষার্থী</th><th>অনুপস্থিত</th><th>তাত্ত্বিক নম্বর</th>${meta.hasPractical ? "<th>ব্যবহারিক নম্বর</th>" : ""}</tr></thead>`;
+  if (meta.hasPractical) table.classList.add("has-practical");
+  table.innerHTML = `<thead><tr><th>রোল</th><th>শিক্ষার্থী</th><th>তাত্ত্বিক নম্বর</th>${meta.hasPractical ? "<th>ব্যবহারিক নম্বর</th>" : ""}</tr></thead>`;
   const body = table.createTBody();
   students.forEach((student) => {
     const row = body.insertRow(); row.dataset.studentCode = student.studentCode;
-    row.insertCell().textContent = student[meta.rollType] || "—";
-    row.insertCell().textContent = student.name || "";
-    const absentCell = row.insertCell();
+    const rollCell = row.insertCell();
+    rollCell.className = "teacher-result-roll-cell";
+    const roll = document.createElement("span");
+    roll.textContent = student[meta.rollType] || "—";
+    rollCell.append(roll);
     const absentLabel = document.createElement("label");
     absentLabel.className = "teacher-result-absent-control";
     const absentToggle = document.createElement("input");
@@ -335,8 +338,9 @@ $("teacherResultPrepare").addEventListener("click", async () => {
     absentToggle.className = "teacher-result-absent-toggle";
     absentToggle.checked = existing.find((item) => item.studentCode === student.studentCode)?.absent === true;
     absentToggle.setAttribute("aria-label", `${student[meta.rollType] || ""} রোলের অনুপস্থিতি`);
-    absentLabel.append(absentToggle, document.createTextNode("হ্যাঁ"));
-    absentCell.append(absentLabel);
+    absentLabel.append(absentToggle, document.createTextNode("অনুপস্থিত"));
+    rollCell.append(absentLabel);
+    row.insertCell().textContent = student.name || "";
     const components = [["theory", meta.theoryFullMarks]];
     if (meta.hasPractical) components.push(["practical", meta.practicalFullMarks]);
     components.forEach(([component, max]) => {

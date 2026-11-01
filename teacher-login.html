@@ -57,7 +57,31 @@
     .teacher-logout-action:hover,.teacher-logout-action:focus-visible { background:#f4e8bf; color:#8c3d35; }
     .teacher-question-message { min-height:1.4em; margin:8px 0 0; color:#21633d; }
     .teacher-question-message.is-error { color:#a72d2d; }
-    @media(max-width:650px) { .teacher-portal-choices { grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; } .teacher-portal-choice { min-height:90px; padding:10px 5px; font-size:.9rem; } .teacher-portal-choice span { font-size:25px; } .teacher-tool-panel { min-width:0; padding:10px; } #teacherResultMatrix .result-marks-table { min-width:600px; } #teacherResultMatrix input:not([type="checkbox"]) { min-height:44px; } .teacher-question-account-label { max-width:48vw; font-size:.88rem; } }
+    @media(max-width:650px) {
+      .teacher-portal-choices { grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; }
+      .teacher-portal-choice { min-height:90px; padding:10px 5px; font-size:.9rem; }
+      .teacher-portal-choice span { font-size:25px; }
+      .teacher-tool-panel { min-width:0; padding:10px; }
+      #teacherResultMatrix { overflow-x:hidden; }
+      #teacherResultMatrix .result-marks-table { width:100%; min-width:0; table-layout:fixed; }
+      #teacherResultMatrix .result-marks-table th,
+      #teacherResultMatrix .result-marks-table td { min-width:0; padding:4px 2px; overflow-wrap:anywhere; }
+      #teacherResultMatrix .result-marks-table th { white-space:normal; font-size:12px; line-height:1.2; }
+      #teacherResultMatrix .result-marks-table th:first-child,
+      #teacherResultMatrix .result-marks-table td:first-child { width:20%; min-width:0; white-space:normal; }
+      #teacherResultMatrix .result-marks-table th:nth-child(2),
+      #teacherResultMatrix .result-marks-table td:nth-child(2) { width:38%; min-width:0; font-size:12px; line-height:1.3; }
+      #teacherResultMatrix .result-marks-table:not(.has-practical) th:nth-child(3),
+      #teacherResultMatrix .result-marks-table:not(.has-practical) td:nth-child(3) { width:42%; }
+      #teacherResultMatrix .result-marks-table.has-practical th:nth-child(3),
+      #teacherResultMatrix .result-marks-table.has-practical td:nth-child(3),
+      #teacherResultMatrix .result-marks-table.has-practical th:nth-child(4),
+      #teacherResultMatrix .result-marks-table.has-practical td:nth-child(4) { width:21%; }
+      #teacherResultMatrix input:not([type="checkbox"]) { width:100%; min-width:0; min-height:40px; padding:4px 2px; font-size:14px; }
+      #teacherResultMatrix .teacher-result-absent-control { display:flex; flex-direction:column; gap:0; margin-top:3px; color:#a72d2d; font-size:6px; line-height:1.1; white-space:normal; }
+      #teacherResultMatrix .teacher-result-absent-control input { width:18px !important; min-width:18px; min-height:18px !important; }
+      .teacher-question-account-label { max-width:48vw; font-size:.88rem; }
+    }
     @media(max-width:560px) { .teacher-question-page { padding:16px 0 26px; } .teacher-question-workspace { padding:10px; } .teacher-question-workspace-head { justify-content:flex-end; } .teacher-question-login { padding:16px; } }
   </style>
 <link rel="icon" type="image/png" sizes="512x512" href="images/logo/favicon-512.png">
