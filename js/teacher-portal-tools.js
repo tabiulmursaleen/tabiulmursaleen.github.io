@@ -197,6 +197,7 @@ async function loadRoster() {
 }
 
 function currentResultMeta() {
+  const hasPractical = $("teacherResultHasPractical").checked;
   return {
     year: Number($("teacherResultYear").value),
     exam: $("teacherResultExam").value,
@@ -206,12 +207,30 @@ function currentResultMeta() {
     subjectName: resultSubject.value === "__manual__" ? $("teacherResultCustomSubject").value.trim() : resultSubject.value,
     subjectCode: $("teacherResultSubjectCode").value.trim(),
     theoryFullMarks: Number($("teacherResultTheoryFull").value),
-    practicalFullMarks: Number($("teacherResultPracticalFull").value || 0),
+    hasPractical,
+    practicalFullMarks: hasPractical ? Number($("teacherResultPracticalFull").value || 0) : 0,
     theoryPassMarks: $("teacherResultTheoryPass").value === "" ? null : Number($("teacherResultTheoryPass").value),
-    practicalPassMarks: $("teacherResultPracticalPass").value === "" ? null : Number($("teacherResultPracticalPass").value),
+    practicalPassMarks: hasPractical && $("teacherResultPracticalPass").value !== "" ? Number($("teacherResultPracticalPass").value) : null,
     rollType: $("teacherResultRollType").value
   };
 }
+
+function updatePracticalFields() {
+  const enabled = $("teacherResultHasPractical").checked;
+  $("teacherResultPracticalFullField").hidden = !enabled;
+  $("teacherResultPracticalPassField").hidden = !enabled;
+}
+
+updatePracticalFields();
+$("teacherResultHasPractical").addEventListener("change", () => {
+  updatePracticalFields();
+  if (!$("teacherResultMatrixWrap").hidden) {
+    $("teacherResultMatrixWrap").hidden = true;
+    $("teacherResultMatrix").replaceChildren();
+    currentRows = [];
+    resultMessage("ব্যবহারিক অংশের সেটিং বদলেছে। নতুন করে রোলসহ নম্বরের ছক তৈরি করুন।");
+  }
+});
 
 function isStudentInSelectedTrade(student, trade) {
   if (!trade) return true;
@@ -266,6 +285,8 @@ function renderResultDraftRows() {
       $("teacherResultCustomSubject").required = !catalogSubject;
       $("teacherResultSubjectCode").value = item.subjectCode || "";
       $("teacherResultTheoryFull").value = item.theoryFullMarks ?? "";
+      $("teacherResultHasPractical").checked = Number(item.practicalFullMarks) > 0;
+      updatePracticalFields();
       $("teacherResultPracticalFull").value = item.practicalFullMarks ?? 0;
       $("teacherResultTheoryPass").value = item.theoryPassMarks ?? "";
       $("teacherResultPracticalPass").value = item.practicalPassMarks ?? "";
@@ -300,7 +321,7 @@ $("teacherResultPrepare").addEventListener("click", async () => {
   const existing = resultDrafts.filter((item) => item.year === meta.year && item.exam === meta.exam
     && item.className === meta.className && item.subjectName === meta.subjectName);
   const table = document.createElement("table"); table.className = "data-table result-marks-table result-marks-compact";
-  table.innerHTML = "<thead><tr><th>রোল</th><th>শিক্ষার্থী</th><th>অনুপস্থিত</th><th>তাত্ত্বিক নম্বর</th><th>ব্যবহারিক নম্বর</th></tr></thead>";
+  table.innerHTML = `<thead><tr><th>রোল</th><th>শিক্ষার্থী</th><th>অনুপস্থিত</th><th>তাত্ত্বিক নম্বর</th>${meta.hasPractical ? "<th>ব্যবহারিক নম্বর</th>" : ""}</tr></thead>`;
   const body = table.createTBody();
   students.forEach((student) => {
     const row = body.insertRow(); row.dataset.studentCode = student.studentCode;
@@ -316,7 +337,9 @@ $("teacherResultPrepare").addEventListener("click", async () => {
     absentToggle.setAttribute("aria-label", `${student[meta.rollType] || ""} রোলের অনুপস্থিতি`);
     absentLabel.append(absentToggle, document.createTextNode("হ্যাঁ"));
     absentCell.append(absentLabel);
-    [["theory", meta.theoryFullMarks], ["practical", meta.practicalFullMarks]].forEach(([component, max]) => {
+    const components = [["theory", meta.theoryFullMarks]];
+    if (meta.hasPractical) components.push(["practical", meta.practicalFullMarks]);
+    components.forEach(([component, max]) => {
       const cell = row.insertCell();
       const input = document.createElement("input"); input.type = "number"; input.min = "0"; input.max = String(max); input.step = "0.01"; input.inputMode = "decimal"; input.className = "teacher-mark-input"; input.dataset.component = component; input.setAttribute("aria-label", `${student.roll || ""} ${component}`);
       const saved = existing.find((item) => item.studentCode === student.studentCode);
@@ -340,7 +363,13 @@ $("teacherResultForm").addEventListener("submit", async (event) => {
   const entries = rows.map((row, index) => {
     const inputs = [...row.querySelectorAll(".teacher-mark-input")];
     const absent = row.querySelector(".teacher-result-absent-toggle")?.checked === true;
-    return { student: currentRows[index], absent, theoryMarks: inputs[0].value === "" ? null : Number(inputs[0].value), practicalMarks: inputs[1].disabled || inputs[1].value === "" ? 0 : Number(inputs[1].value) };
+    const practicalInput = meta.hasPractical ? inputs[1] : null;
+    return {
+      student: currentRows[index],
+      absent,
+      theoryMarks: inputs[0].value === "" ? null : Number(inputs[0].value),
+      practicalMarks: practicalInput && !practicalInput.disabled && practicalInput.value !== "" ? Number(practicalInput.value) : 0
+    };
   });
   const enteredEntries = entries.filter((entry) => entry.absent || entry.theoryMarks !== null);
   const invalidEntry = enteredEntries.some((entry) => !entry.student || (!entry.absent
